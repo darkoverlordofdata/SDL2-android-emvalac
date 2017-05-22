@@ -1,3 +1,9 @@
+# SDL2-android-emvalac
+
+clone of https://github.com/ade/SDL2-android-helloworld
+
+using emvalac 
+
 # SDL2-android-helloworld
 Skeleton for compiling an SDL2 app for android
 
