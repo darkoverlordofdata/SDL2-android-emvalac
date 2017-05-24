@@ -1,14 +1,3 @@
-public void draw(SDL.Video.Window window, SDL.Video.Renderer renderer, Sprite sprite)
-{
-    int w, h;
-
-    window.get_size(out w, out h);
-
-    //  SDL.Video.Rect destRect = { w/2 - sprite.w/2, h/2 - sprite.h/2, sprite.w, sprite.h };
-    SDL.Video.Rect destRect = { 0, 0, sprite.w, sprite.h };
-    /* Blit the sprite onto the screen */
-    renderer.copy(sprite.texture, null, null);
-}
 
 public int main(string args[]) {
     
@@ -22,6 +11,10 @@ public int main(string args[]) {
     //  Sprite sprite = new Sprite("sample.png", renderer);
     if(sprite.texture == null)
         return 2;
+
+    Text text = new Text("Dude!", renderer);        
+    //  if(text.texture == null)
+    //      return 2;
 
     /* Main render loop */
     bool done = false;
@@ -39,10 +32,16 @@ public int main(string args[]) {
         
         
         /* Draw a gray background */
-        renderer.set_draw_color(0x00, 0x00, 0xff, 0xFF);
+        if (text.texture == null) {
+            renderer.set_draw_color(0x00, 0x00, 0xff, 0xFF);
+        } else {
+            renderer.set_draw_color(sdx.Color.LightSteelBlue.r, sdx.Color.LightSteelBlue.g, sdx.Color.LightSteelBlue.b, sdx.Color.LightSteelBlue.a);
+        }
         renderer.clear();
         
-        draw(window, renderer, sprite);
+        //renderer.copy(sprite.texture, null, null);
+
+        //  renderer.copy(texture, null, { 100, 100, h, w } );
     
         /* Update the screen! */
         renderer.present();

@@ -14,7 +14,7 @@ LOCAL_SRC_FILES += $(wildcard $(LOCAL_PATH)/**/*.c)
 LOCAL_SRC_FILES += $(wildcard $(LOCAL_PATH)/**/**/*.c)
 
 
-LOCAL_SHARED_LIBRARIES := SDL2 SDL2_image
+LOCAL_SHARED_LIBRARIES := SDL2 SDL2_image SDL2_ttf
 
 LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -llog
 

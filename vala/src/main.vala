@@ -12,6 +12,10 @@ public int main(string args[]) {
     if(sprite.texture == null)
         return 2;
 
+    Text text = new Text("Dude!", renderer);        
+    //  if(text.texture == null)
+    //      return 2;
+
     /* Main render loop */
     bool done = false;
     SDL.Event event;
@@ -28,10 +32,16 @@ public int main(string args[]) {
         
         
         /* Draw a gray background */
-        renderer.set_draw_color(0x00, 0x00, 0xff, 0xFF);
+        if (text.texture == null) {
+            renderer.set_draw_color(0x00, 0x00, 0xff, 0xFF);
+        } else {
+            renderer.set_draw_color(sdx.Color.LightSteelBlue.r, sdx.Color.LightSteelBlue.g, sdx.Color.LightSteelBlue.b, sdx.Color.LightSteelBlue.a);
+        }
         renderer.clear();
         
-        renderer.copy(sprite.texture, null, null);
+        //renderer.copy(sprite.texture, null, null);
+
+        //  renderer.copy(texture, null, { 100, 100, h, w } );
     
         /* Update the screen! */
         renderer.present();

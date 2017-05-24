@@ -10,14 +10,28 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_pixels.h>
+#include <android/log.h>
 
 typedef struct _Sprite Sprite;
 #define _SDL_DestroyTexture0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyTexture (var), NULL)))
 #define _SDL_FreeSurface0(var) ((var == NULL) ? NULL : (var = (SDL_FreeSurface (var), NULL)))
+typedef struct _Text Text;
+#define _TTF_CloseFont0(var) ((var == NULL) ? NULL : (var = (TTF_CloseFont (var), NULL)))
 
 struct _Sprite {
 	gint _retainCount;
 	SDL_Texture* texture;
+	guint16 w;
+	guint16 h;
+};
+
+struct _Text {
+	gint _retainCount;
+	SDL_Texture* texture;
+	SDL_Surface* surface;
+	TTF_Font* font;
 	guint16 w;
 	guint16 h;
 };
@@ -30,7 +44,14 @@ Sprite* sprite_retain (Sprite* self);
 void sprite_release (Sprite* self);
 void sprite_free (Sprite* self);
 Sprite* sprite_new (const gchar* file, SDL_Renderer* renderer);
+void text_free (Text* self);
+static void text_instance_init (Text * self);
+Text* text_retain (Text* self);
+void text_release (Text* self);
+void text_free (Text* self);
+Text* text_new (const gchar* text, SDL_Renderer* renderer);
 
+extern const SDL_Color SDX_COLOR_LimeGreen;
 
 Sprite* sprite_retain (Sprite* self) {
 	Sprite* result = NULL;
@@ -110,6 +131,77 @@ static void sprite_instance_init (Sprite * self) {
 void sprite_free (Sprite* self) {
 	_SDL_DestroyTexture0 (self->texture);
 	g_slice_free (Sprite, self);
+}
+
+
+Text* text_retain (Text* self) {
+	Text* result = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_atomic_int_add ((volatile gint *) (&self->_retainCount), 1);
+	result = self;
+	return result;
+}
+
+
+void text_release (Text* self) {
+	gboolean _tmp0_ = FALSE;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = g_atomic_int_dec_and_test ((volatile gint *) (&self->_retainCount));
+	if (_tmp0_) {
+		text_free (self);
+	}
+}
+
+
+Text* text_new (const gchar* text, SDL_Renderer* renderer) {
+	Text* self;
+	TTF_Font* _tmp0_ = NULL;
+	TTF_Font* _tmp1_ = NULL;
+	SDL_Surface* _tmp2_ = NULL;
+	SDL_Surface* _tmp3_ = NULL;
+	SDL_Surface* _tmp5_ = NULL;
+	gint _tmp6_ = 0;
+	SDL_Surface* _tmp7_ = NULL;
+	gint _tmp8_ = 0;
+	g_return_val_if_fail (text != NULL, NULL);
+	g_return_val_if_fail (renderer != NULL, NULL);
+	self = g_slice_new0 (Text);
+	text_instance_init (self);
+	_tmp0_ = TTF_OpenFont ("assets/fonts/OpenDyslexic-Bold.otf", 32);
+	_TTF_CloseFont0 (self->font);
+	self->font = _tmp0_;
+	_tmp1_ = self->font;
+	_tmp2_ = TTF_RenderUTF8_Solid (_tmp1_, "FRed", SDX_COLOR_LimeGreen);
+	_SDL_FreeSurface0 (self->surface);
+	self->surface = _tmp2_;
+	_tmp3_ = self->surface;
+	if (_tmp3_ == NULL) {
+		const gchar* _tmp4_ = NULL;
+		__android_log_write (ANDROID_LOG_ERROR, "Text", "Surface is null");
+		_tmp4_ = SDL_GetError ();
+		__android_log_write (ANDROID_LOG_ERROR, "Text", _tmp4_);
+		return self;
+	}
+	_tmp5_ = self->surface;
+	_tmp6_ = _tmp5_->w;
+	self->w = (guint16) _tmp6_;
+	_tmp7_ = self->surface;
+	_tmp8_ = _tmp7_->h;
+	self->h = (guint16) _tmp8_;
+	return self;
+}
+
+
+static void text_instance_init (Text * self) {
+	self->_retainCount = 1;
+}
+
+
+void text_free (Text* self) {
+	_SDL_DestroyTexture0 (self->texture);
+	_SDL_FreeSurface0 (self->surface);
+	_TTF_CloseFont0 (self->font);
+	g_slice_free (Text, self);
 }
 
 
