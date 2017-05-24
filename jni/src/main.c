@@ -6,13 +6,15 @@
 #include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_hints.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_surface.h>
-#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_pixels.h>
-#include <SDL2/SDL_image.h>
 
 #define _SDL_DestroyWindow0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyWindow (var), NULL)))
 #define _SDL_DestroyRenderer0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyRenderer (var), NULL)))
@@ -29,6 +31,15 @@ Text* text_retain (Text* self);
 typedef struct _Zed Zed;
 #define _SDL_FreeSurface0(var) ((var == NULL) ? NULL : (var = (SDL_FreeSurface (var), NULL)))
 
+typedef enum  {
+	SDL_EXCEPTION_Initialization,
+	SDL_EXCEPTION_ImageInitialization,
+	SDL_EXCEPTION_TtfInitialization,
+	SDL_EXCEPTION_TextureFilteringNotEnabled,
+	SDL_EXCEPTION_OpenWindow,
+	SDL_EXCEPTION_CreateRenderer
+} SdlException;
+#define SDL_EXCEPTION sdl_exception_quark ()
 struct _Sprite {
 	gint _retainCount;
 	SDL_Texture* texture;
@@ -51,6 +62,7 @@ struct _Zed {
 
 
 
+GQuark sdl_exception_quark (void);
 gint _vala_main (const gchar* args, int args_length1);
 void sprite_free (Sprite* self);
 Sprite* sprite_new (const gchar* file, SDL_Renderer* renderer);
@@ -65,131 +77,209 @@ Zed* zed_new (const gchar* file, SDL_Renderer* renderer);
 
 extern const SDL_Color SDX_COLOR_LightSteelBlue;
 
+GQuark sdl_exception_quark (void) {
+	return g_quark_from_static_string ("sdl_exception-quark");
+}
+
+
 gint _vala_main (const gchar* args, int args_length1) {
 	gint result = 0;
+	gint _tmp0_ = 0;
+	gint _tmp4_ = 0;
+	gboolean _tmp8_ = FALSE;
+	gint _tmp12_ = 0;
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
-	SDL_Window* _tmp0_ = NULL;
-	SDL_Renderer* _tmp1_ = NULL;
-	gint _tmp2_ = 0;
+	SDL_Window* _tmp16_ = NULL;
+	SDL_Renderer* _tmp17_ = NULL;
+	gint _tmp18_ = 0;
 	Sprite* sprite = NULL;
-	SDL_Renderer* _tmp3_ = NULL;
-	Sprite* _tmp4_ = NULL;
-	Sprite* _tmp5_ = NULL;
-	SDL_Texture* _tmp6_ = NULL;
+	SDL_Renderer* _tmp19_ = NULL;
+	Sprite* _tmp20_ = NULL;
+	Sprite* _tmp21_ = NULL;
+	SDL_Texture* _tmp22_ = NULL;
 	Text* text = NULL;
-	SDL_Renderer* _tmp7_ = NULL;
-	Text* _tmp8_ = NULL;
+	SDL_Renderer* _tmp23_ = NULL;
+	Text* _tmp24_ = NULL;
 	gboolean done = FALSE;
 	SDL_Event event = {0};
-	_tmp2_ = SDL_CreateWindowAndRenderer (0, 0, (guint32) 0, &_tmp0_, &_tmp1_);
+	GError * _inner_error_ = NULL;
+	_tmp0_ = SDL_Init ((guint32) ((SDL_INIT_VIDEO | SDL_INIT_TIMER) | SDL_INIT_EVENTS));
+	if (_tmp0_ < 0) {
+		const gchar* _tmp1_ = NULL;
+		GError* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		_tmp1_ = SDL_GetError ();
+		_tmp2_ = g_error_new_literal (SDL_EXCEPTION, SDL_EXCEPTION_Initialization, _tmp1_);
+		_inner_error_ = _tmp2_;
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return _tmp3_;
+	}
+	_tmp4_ = IMG_Init ((gint) IMG_INIT_PNG);
+	if (_tmp4_ < 0) {
+		const gchar* _tmp5_ = NULL;
+		GError* _tmp6_ = NULL;
+		gint _tmp7_ = 0;
+		_tmp5_ = SDL_GetError ();
+		_tmp6_ = g_error_new_literal (SDL_EXCEPTION, SDL_EXCEPTION_ImageInitialization, _tmp5_);
+		_inner_error_ = _tmp6_;
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return _tmp7_;
+	}
+	_tmp8_ = SDL_SetHint (SDL_HINT_RENDER_SCALE_QUALITY, "1");
+	if (!_tmp8_) {
+		const gchar* _tmp9_ = NULL;
+		GError* _tmp10_ = NULL;
+		gint _tmp11_ = 0;
+		_tmp9_ = SDL_GetError ();
+		_tmp10_ = g_error_new_literal (SDL_EXCEPTION, SDL_EXCEPTION_TextureFilteringNotEnabled, _tmp9_);
+		_inner_error_ = _tmp10_;
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return _tmp11_;
+	}
+	_tmp12_ = TTF_Init ();
+	if (_tmp12_ == -1) {
+		const gchar* _tmp13_ = NULL;
+		GError* _tmp14_ = NULL;
+		gint _tmp15_ = 0;
+		_tmp13_ = SDL_GetError ();
+		_tmp14_ = g_error_new_literal (SDL_EXCEPTION, SDL_EXCEPTION_TtfInitialization, _tmp13_);
+		_inner_error_ = _tmp14_;
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return _tmp15_;
+	}
+	_tmp18_ = SDL_CreateWindowAndRenderer (0, 0, (guint32) 0, &_tmp16_, &_tmp17_);
 	_SDL_DestroyWindow0 (window);
-	window = _tmp0_;
+	window = _tmp16_;
 	_SDL_DestroyRenderer0 (renderer);
-	renderer = _tmp1_;
-	if (_tmp2_ < 0) {
+	renderer = _tmp17_;
+	if (_tmp18_ < 0) {
 		result = 2;
 		_SDL_DestroyRenderer0 (renderer);
 		_SDL_DestroyWindow0 (window);
 		return result;
 	}
-	_tmp3_ = renderer;
-	_tmp4_ = sprite_new ("assets/images/background.png", _tmp3_);
-	sprite = _tmp4_;
-	_tmp5_ = sprite;
-	_tmp6_ = _tmp5_->texture;
-	if (_tmp6_ == NULL) {
+	_tmp19_ = renderer;
+	_tmp20_ = sprite_new ("assets/images/background.png", _tmp19_);
+	sprite = _tmp20_;
+	_tmp21_ = sprite;
+	_tmp22_ = _tmp21_->texture;
+	if (_tmp22_ == NULL) {
 		result = 2;
 		_sprite_release0 (sprite);
 		_SDL_DestroyRenderer0 (renderer);
 		_SDL_DestroyWindow0 (window);
 		return result;
 	}
-	_tmp7_ = renderer;
-	_tmp8_ = text_new ("Dude!", _tmp7_);
-	text = _tmp8_;
+	_tmp23_ = renderer;
+	_tmp24_ = text_new ("Dude!", _tmp23_);
+	text = _tmp24_;
 	done = FALSE;
 	while (TRUE) {
-		gboolean _tmp9_ = FALSE;
-		SDL_Event _tmp10_ = {0};
-		Text* _tmp22_ = NULL;
-		SDL_Texture* _tmp23_ = NULL;
-		SDL_Renderer* _tmp30_ = NULL;
-		SDL_Renderer* _tmp31_ = NULL;
-		_tmp9_ = done;
-		if (!(!_tmp9_)) {
+		gboolean _tmp25_ = FALSE;
+		SDL_Event _tmp26_ = {0};
+		Text* _tmp38_ = NULL;
+		SDL_Texture* _tmp39_ = NULL;
+		SDL_Renderer* _tmp46_ = NULL;
+		SDL_Renderer* _tmp47_ = NULL;
+		Text* _tmp48_ = NULL;
+		SDL_Texture* _tmp49_ = NULL;
+		Text* _tmp50_ = NULL;
+		guint16 _tmp51_ = 0U;
+		Text* _tmp52_ = NULL;
+		guint16 _tmp53_ = 0U;
+		SDL_Rect _tmp54_ = {0};
+		SDL_Renderer* _tmp55_ = NULL;
+		_tmp25_ = done;
+		if (!(!_tmp25_)) {
 			break;
 		}
-		SDL_WaitEvent (&_tmp10_);
+		SDL_WaitEvent (&_tmp26_);
 		 (event);
-		event = _tmp10_;
+		event = _tmp26_;
 		{
-			gboolean _tmp11_ = FALSE;
-			_tmp11_ = TRUE;
+			gboolean _tmp27_ = FALSE;
+			_tmp27_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp14_ = FALSE;
-				gboolean _tmp15_ = FALSE;
-				SDL_Event _tmp16_ = {0};
-				SDL_EventType _tmp17_ = 0;
-				if (!_tmp11_) {
-					SDL_Event _tmp12_ = {0};
-					gint _tmp13_ = 0;
-					_tmp13_ = SDL_PollEvent (&_tmp12_);
+				gboolean _tmp30_ = FALSE;
+				gboolean _tmp31_ = FALSE;
+				SDL_Event _tmp32_ = {0};
+				SDL_EventType _tmp33_ = 0;
+				if (!_tmp27_) {
+					SDL_Event _tmp28_ = {0};
+					gint _tmp29_ = 0;
+					_tmp29_ = SDL_PollEvent (&_tmp28_);
 					 (event);
-					event = _tmp12_;
-					if (!(_tmp13_ > 0)) {
+					event = _tmp28_;
+					if (!(_tmp29_ > 0)) {
 						break;
 					}
 				}
-				_tmp11_ = FALSE;
-				_tmp16_ = event;
-				_tmp17_ = _tmp16_.type;
-				if (_tmp17_ == SDL_QUIT) {
-					_tmp15_ = TRUE;
+				_tmp27_ = FALSE;
+				_tmp32_ = event;
+				_tmp33_ = _tmp32_.type;
+				if (_tmp33_ == SDL_QUIT) {
+					_tmp31_ = TRUE;
 				} else {
-					SDL_Event _tmp18_ = {0};
-					SDL_EventType _tmp19_ = 0;
-					_tmp18_ = event;
-					_tmp19_ = _tmp18_.type;
-					_tmp15_ = _tmp19_ == SDL_KEYDOWN;
+					SDL_Event _tmp34_ = {0};
+					SDL_EventType _tmp35_ = 0;
+					_tmp34_ = event;
+					_tmp35_ = _tmp34_.type;
+					_tmp31_ = _tmp35_ == SDL_KEYDOWN;
 				}
-				if (_tmp15_) {
-					_tmp14_ = TRUE;
+				if (_tmp31_) {
+					_tmp30_ = TRUE;
 				} else {
-					SDL_Event _tmp20_ = {0};
-					SDL_EventType _tmp21_ = 0;
-					_tmp20_ = event;
-					_tmp21_ = _tmp20_.type;
-					_tmp14_ = _tmp21_ == SDL_FINGERDOWN;
+					SDL_Event _tmp36_ = {0};
+					SDL_EventType _tmp37_ = 0;
+					_tmp36_ = event;
+					_tmp37_ = _tmp36_.type;
+					_tmp30_ = _tmp37_ == SDL_FINGERDOWN;
 				}
-				if (_tmp14_) {
+				if (_tmp30_) {
 					done = TRUE;
 				}
 			}
 		}
-		_tmp22_ = text;
-		_tmp23_ = _tmp22_->texture;
-		if (_tmp23_ == NULL) {
-			SDL_Renderer* _tmp24_ = NULL;
-			_tmp24_ = renderer;
-			SDL_SetRenderDrawColor (_tmp24_, (guint8) 0x00, (guint8) 0x00, (guint8) 0xff, (guint8) 0xFF);
+		_tmp38_ = text;
+		_tmp39_ = _tmp38_->texture;
+		if (_tmp39_ == NULL) {
+			SDL_Renderer* _tmp40_ = NULL;
+			_tmp40_ = renderer;
+			SDL_SetRenderDrawColor (_tmp40_, (guint8) 0x00, (guint8) 0x00, (guint8) 0xff, (guint8) 0xFF);
 		} else {
-			SDL_Renderer* _tmp25_ = NULL;
-			guint8 _tmp26_ = 0U;
-			guint8 _tmp27_ = 0U;
-			guint8 _tmp28_ = 0U;
-			guint8 _tmp29_ = 0U;
-			_tmp25_ = renderer;
-			_tmp26_ = SDX_COLOR_LightSteelBlue.r;
-			_tmp27_ = SDX_COLOR_LightSteelBlue.g;
-			_tmp28_ = SDX_COLOR_LightSteelBlue.b;
-			_tmp29_ = SDX_COLOR_LightSteelBlue.a;
-			SDL_SetRenderDrawColor (_tmp25_, _tmp26_, _tmp27_, _tmp28_, _tmp29_);
+			SDL_Renderer* _tmp41_ = NULL;
+			guint8 _tmp42_ = 0U;
+			guint8 _tmp43_ = 0U;
+			guint8 _tmp44_ = 0U;
+			guint8 _tmp45_ = 0U;
+			_tmp41_ = renderer;
+			_tmp42_ = SDX_COLOR_LightSteelBlue.r;
+			_tmp43_ = SDX_COLOR_LightSteelBlue.g;
+			_tmp44_ = SDX_COLOR_LightSteelBlue.b;
+			_tmp45_ = SDX_COLOR_LightSteelBlue.a;
+			SDL_SetRenderDrawColor (_tmp41_, _tmp42_, _tmp43_, _tmp44_, _tmp45_);
 		}
-		_tmp30_ = renderer;
-		SDL_RenderClear (_tmp30_);
-		_tmp31_ = renderer;
-		SDL_RenderPresent (_tmp31_);
+		_tmp46_ = renderer;
+		SDL_RenderClear (_tmp46_);
+		_tmp47_ = renderer;
+		_tmp48_ = text;
+		_tmp49_ = _tmp48_->texture;
+		_tmp50_ = text;
+		_tmp51_ = _tmp50_->w;
+		_tmp52_ = text;
+		_tmp53_ = _tmp52_->h;
+		_tmp54_.x = 100;
+		_tmp54_.y = 100;
+		_tmp54_.w = (guint) _tmp51_;
+		_tmp54_.h = (guint) _tmp53_;
+		SDL_RenderCopy (_tmp47_, _tmp49_, NULL, &_tmp54_);
+		_tmp55_ = renderer;
+		SDL_RenderPresent (_tmp55_);
 	}
 	result = 0;
 	 (event);

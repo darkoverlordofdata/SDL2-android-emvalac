@@ -1,5 +1,28 @@
+public errordomain SdlException {
+    Initialization,
+    ImageInitialization,
+    TtfInitialization,
+    TextureFilteringNotEnabled,
+    OpenWindow,
+    CreateRenderer
+}
 
 public int main(string args[]) {
+    
+
+
+    if (SDL.init(SDL.InitFlag.VIDEO | SDL.InitFlag.TIMER | SDL.InitFlag.EVENTS) < 0)
+        throw new SdlException.Initialization(SDL.get_error());
+
+
+    if (SDLImage.init(SDLImage.InitFlags.PNG) < 0)
+        throw new SdlException.ImageInitialization(SDL.get_error());
+
+    if (!SDL.Hint.set_hint(SDL.Hint.RENDER_SCALE_QUALITY, "1"))	
+        throw new SdlException.TextureFilteringNotEnabled(SDL.get_error());
+
+    if (SDLTTF.init() == -1)
+        throw new SdlException.TtfInitialization(SDL.get_error());
     
     SDL.Video.Window window;
     SDL.Video.Renderer renderer;
@@ -41,7 +64,7 @@ public int main(string args[]) {
         
         //renderer.copy(sprite.texture, null, null);
 
-        //  renderer.copy(texture, null, { 100, 100, h, w } );
+        renderer.copy(text.texture, null, { 100, 100, text.w, text.h } );
     
         /* Update the screen! */
         renderer.present();

@@ -13,6 +13,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_pixels.h>
 #include <android/log.h>
+#include <SDL2/SDL_video.h>
 
 typedef struct _Sprite Sprite;
 #define _SDL_DestroyTexture0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyTexture (var), NULL)))
@@ -51,7 +52,7 @@ void text_release (Text* self);
 void text_free (Text* self);
 Text* text_new (const gchar* text, SDL_Renderer* renderer);
 
-extern const SDL_Color SDX_COLOR_LimeGreen;
+extern const SDL_Color SDX_COLOR_Black;
 
 Sprite* sprite_retain (Sprite* self) {
 	Sprite* result = NULL;
@@ -163,15 +164,19 @@ Text* text_new (const gchar* text, SDL_Renderer* renderer) {
 	gint _tmp6_ = 0;
 	SDL_Surface* _tmp7_ = NULL;
 	gint _tmp8_ = 0;
+	SDL_Renderer* _tmp9_ = NULL;
+	SDL_Surface* _tmp10_ = NULL;
+	SDL_Texture* _tmp11_ = NULL;
+	SDL_Texture* _tmp12_ = NULL;
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (renderer != NULL, NULL);
 	self = g_slice_new0 (Text);
 	text_instance_init (self);
-	_tmp0_ = TTF_OpenFont ("assets/fonts/OpenDyslexic-Bold.otf", 32);
+	_tmp0_ = TTF_OpenFont ("assets/fonts/OpenDyslexic-Bold.otf", 48);
 	_TTF_CloseFont0 (self->font);
 	self->font = _tmp0_;
 	_tmp1_ = self->font;
-	_tmp2_ = TTF_RenderUTF8_Solid (_tmp1_, "FRed", SDX_COLOR_LimeGreen);
+	_tmp2_ = TTF_RenderUTF8_Solid (_tmp1_, "Hello World", SDX_COLOR_Black);
 	_SDL_FreeSurface0 (self->surface);
 	self->surface = _tmp2_;
 	_tmp3_ = self->surface;
@@ -188,6 +193,13 @@ Text* text_new (const gchar* text, SDL_Renderer* renderer) {
 	_tmp7_ = self->surface;
 	_tmp8_ = _tmp7_->h;
 	self->h = (guint16) _tmp8_;
+	_tmp9_ = renderer;
+	_tmp10_ = self->surface;
+	_tmp11_ = SDL_CreateTextureFromSurface (_tmp9_, _tmp10_);
+	_SDL_DestroyTexture0 (self->texture);
+	self->texture = _tmp11_;
+	_tmp12_ = self->texture;
+	SDL_SetTextureBlendMode (_tmp12_, SDL_BLENDMODE_BLEND);
 	return self;
 }
 
