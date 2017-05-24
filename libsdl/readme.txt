@@ -1,1 +1,0 @@
-Put contents of SDL main library source in SDL/

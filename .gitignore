@@ -1,7 +1,10 @@
 .idea/
 *.iml
-android/bin
-android/gen
-android/obj
-android/libs
-libsdl/SDL
+bin
+gen
+obj
+libs
+jni/SDL
+jni/SDL2_image
+jni/SDL2_ttf
+
