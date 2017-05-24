@@ -2,12 +2,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug",
-            "type": "lldb",
+            "type": "android",
+            "name": "Android Debug",
             "request": "launch",
-            "cwd": "${workspaceRoot}/install/src",
-            "program": "${workspaceRoot}/install/src/platformer",
-            "args": []
+            "appSrcRoot": "${workspaceRoot}",
+            "apkFile": "${workspaceRoot}/bin/com.darkoverlordofdata.shmupwarz-debug.apk",
+            "adbPort": 5037
         }
     ]
 }

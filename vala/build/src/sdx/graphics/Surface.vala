@@ -5,7 +5,21 @@ namespace sdx.graphics {
 	 * prevents the surface memory from being reclaimed 
 	 * 
 	 */
-	public class Surface : Object {
+[Compact, CCode ( /** reference counting */
+	ref_function = "sdx_graphics_surface_retain", 
+	unref_function = "sdx_graphics_surface_release"
+)]
+public class Surface {
+	public int _retainCount = 1;
+	public unowned Surface retain() {
+		GLib.AtomicInt.add (ref _retainCount, 1);
+		return this;
+	}
+	public void release() { 
+		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+	}
+	public extern void free();
+		
 		public static int uniqueId = 0;
 		public SDL.Video.Surface surface;
 		public int width;

@@ -5,7 +5,21 @@ namespace entitas {
 	 * complile list of components to bit array for fast comparison
 	 *
 	 */
-	public class Matcher : Object {
+[Compact, CCode ( /** reference counting */
+	ref_function = "entitas_matcher_retain", 
+	unref_function = "entitas_matcher_release"
+)]
+public class Matcher {
+	public int _retainCount = 1;
+	public unowned Matcher retain() {
+		GLib.AtomicInt.add (ref _retainCount, 1);
+		return this;
+	}
+	public void release() { 
+		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+	}
+	public extern void free();
+		
 		/**
 		 * A unique sequential index number assigned to each match
 		 * @type number */

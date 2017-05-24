@@ -3,9 +3,21 @@
  */
 using entitas;
 using systems;
-
-
-public class Game : Object {
+[Compact, CCode ( /** reference counting */
+	ref_function = "game_retain", 
+	unref_function = "game_release"
+)]
+public class Game {
+	public int _retainCount = 1;
+	public unowned Game retain() {
+		GLib.AtomicInt.add (ref _retainCount, 1);
+		return this;
+	}
+	public void release() { 
+		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+	}
+	public extern void free();
+		
 
 	public static Game instance;
 	public int width;

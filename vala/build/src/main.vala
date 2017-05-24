@@ -6,14 +6,20 @@ public errordomain SdlException {
     OpenWindow,
     CreateRenderer
 }
+#if (ANDROID)
+const int PF = 1;
+#else
+const int PF = 2;
+#endif
+
+double getRandom() {
+    return MersenneTwister.genrand_real2();
+}
 
 public int main(string args[]) {
-    
-
 
     if (SDL.init(SDL.InitFlag.VIDEO | SDL.InitFlag.TIMER | SDL.InitFlag.EVENTS) < 0)
         throw new SdlException.Initialization(SDL.get_error());
-
 
     if (SDLImage.init(SDLImage.InitFlags.PNG) < 0)
         throw new SdlException.ImageInitialization(SDL.get_error());
@@ -27,15 +33,19 @@ public int main(string args[]) {
     SDL.Video.Window window;
     SDL.Video.Renderer renderer;
 
-    if (SDL.Video.Renderer.create_with_window(0, 0, 0, out window, out renderer) < 0)
+    if (SDL.Video.Renderer.create_with_window(380, 580, 0, out window, out renderer) < 0)
         return 2;
 
     Sprite sprite = new Sprite("assets/images/background.png", renderer);
-    //  Sprite sprite = new Sprite("sample.png", renderer);
     if(sprite.texture == null)
         return 2;
 
-    Text text = new Text("Dude!", renderer);        
+	MersenneTwister.init_genrand((ulong)SDL.Timer.get_performance_counter());
+    
+    var str = "Hey %f".printf(getRandom()); //"Hey Dude!";
+    Android.log_write(Android.LogPriority.ERROR, "Hello", str);
+
+    Text text = new Text(str, renderer);        
     //  if(text.texture == null)
     //      return 2;
 
@@ -64,7 +74,7 @@ public int main(string args[]) {
         
         //renderer.copy(sprite.texture, null, null);
 
-        renderer.copy(text.texture, null, { 100, 100, text.w, text.h } );
+        renderer.copy(text.texture, null, { 100*PF, 100*PF, text.w*PF, text.h*PF } );
     
         /* Update the screen! */
         renderer.present();
@@ -74,21 +84,7 @@ public int main(string args[]) {
 }
 
 /** compiler trick needed to force compilation */
-[Compact, CCode ( /** reference counting */
-	ref_function = "zed_retain", 
-	unref_function = "zed_release"
-)]
-public class Zed {
-	public int _retainCount = 1;
-	public unowned Zed retain() {
-		GLib.AtomicInt.add (ref _retainCount, 1);
-		return this;
-	}
-	public void release() { 
-		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
-	}
-	public extern void free();
-		
+public class Zed : Object {
     public Zed(string file, SDL.Video.Renderer renderer) {
         SDL.Video.Surface never = SDLImage.load(file);
         }

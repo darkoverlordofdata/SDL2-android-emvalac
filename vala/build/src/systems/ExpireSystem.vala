@@ -3,7 +3,21 @@ namespace systems {
 	/**
 	* game systems
 	*/
-	public class ExpireSystem : Object {
+[Compact, CCode ( /** reference counting */
+	ref_function = "systems_expire_system_retain", 
+	unref_function = "systems_expire_system_release"
+)]
+public class ExpireSystem {
+	public int _retainCount = 1;
+	public unowned ExpireSystem retain() {
+		GLib.AtomicInt.add (ref _retainCount, 1);
+		return this;
+	}
+	public void release() { 
+		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+	}
+	public extern void free();
+		
 		public ISystem _ISystem { get { return { initialize, execute }; } }
 
 		public Game game;

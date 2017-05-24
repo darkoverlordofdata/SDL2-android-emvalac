@@ -31,10 +31,12 @@ public class Text : Object {
 
     public Text(string text, SDL.Video.Renderer renderer) {
         font = new SDLTTF.Font("assets/fonts/OpenDyslexic-Bold.otf", 48);
-        surface = font.render("Hello World", sdx.Color.Black);
+        surface = font.render(text, sdx.Color.Black);
         if (surface == null) {
+#if (ANDROID)            
             Android.log_write(Android.LogPriority.ERROR, "Text", "Surface is null");
             Android.log_write(Android.LogPriority.ERROR, "Text", SDL.get_error());
+#endif
             return;
         }
         w = (uint16)surface.w;

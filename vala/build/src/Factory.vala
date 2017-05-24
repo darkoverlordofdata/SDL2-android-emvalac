@@ -23,7 +23,9 @@ enum Pool {
 /**
  * fabricate specialized entities
  */
+[Compact]
 public class Factory : World {
+	
 
 	public Factory() {
 		base();

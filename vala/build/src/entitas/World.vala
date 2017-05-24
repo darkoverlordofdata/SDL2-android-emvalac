@@ -1,6 +1,19 @@
 namespace entitas {
-	
-	public class World : Object {
+	[Compact, CCode ( /** reference counting */
+		ref_function = "entitas_world_retain", 
+		unref_function = "entitas_world_release"
+	)]
+	public class World {
+		public int _retainCount = 1;
+		public unowned World retain() {
+			GLib.AtomicInt.add (ref _retainCount, 1);
+			return this;
+		}
+		public void release() { 
+			if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+		}
+		public extern void free();
+		
 		public static World instance;
 		public List<Group> groups;
 		public Entity[] pool;

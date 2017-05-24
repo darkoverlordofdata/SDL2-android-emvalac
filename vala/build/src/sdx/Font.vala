@@ -1,6 +1,19 @@
 namespace sdx {
-	
-	public class Font : Object {
+	[Compact, CCode ( /** reference counting */
+		ref_function = "sdx_font_retain", 
+		unref_function = "sdx_font_release"
+	)]
+	public class Font {
+		public int _retainCount = 1;
+		public unowned Font retain() {
+			GLib.AtomicInt.add (ref _retainCount, 1);
+			return this;
+		}
+		public void release() { 
+			if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+		}
+		public extern void free();
+		
 		public static int uniqueId = 0;
 		public int id = ++uniqueId;
 		public string path;

@@ -158,16 +158,17 @@ Text* text_new (const gchar* text, SDL_Renderer* renderer) {
 	Text* self;
 	TTF_Font* _tmp0_ = NULL;
 	TTF_Font* _tmp1_ = NULL;
-	SDL_Surface* _tmp2_ = NULL;
+	const gchar* _tmp2_ = NULL;
 	SDL_Surface* _tmp3_ = NULL;
-	SDL_Surface* _tmp5_ = NULL;
-	gint _tmp6_ = 0;
-	SDL_Surface* _tmp7_ = NULL;
-	gint _tmp8_ = 0;
-	SDL_Renderer* _tmp9_ = NULL;
-	SDL_Surface* _tmp10_ = NULL;
-	SDL_Texture* _tmp11_ = NULL;
+	SDL_Surface* _tmp4_ = NULL;
+	SDL_Surface* _tmp6_ = NULL;
+	gint _tmp7_ = 0;
+	SDL_Surface* _tmp8_ = NULL;
+	gint _tmp9_ = 0;
+	SDL_Renderer* _tmp10_ = NULL;
+	SDL_Surface* _tmp11_ = NULL;
 	SDL_Texture* _tmp12_ = NULL;
+	SDL_Texture* _tmp13_ = NULL;
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (renderer != NULL, NULL);
 	self = g_slice_new0 (Text);
@@ -176,30 +177,31 @@ Text* text_new (const gchar* text, SDL_Renderer* renderer) {
 	_TTF_CloseFont0 (self->font);
 	self->font = _tmp0_;
 	_tmp1_ = self->font;
-	_tmp2_ = TTF_RenderUTF8_Solid (_tmp1_, "Hello World", SDX_COLOR_Black);
+	_tmp2_ = text;
+	_tmp3_ = TTF_RenderUTF8_Solid (_tmp1_, _tmp2_, SDX_COLOR_Black);
 	_SDL_FreeSurface0 (self->surface);
-	self->surface = _tmp2_;
-	_tmp3_ = self->surface;
-	if (_tmp3_ == NULL) {
-		const gchar* _tmp4_ = NULL;
+	self->surface = _tmp3_;
+	_tmp4_ = self->surface;
+	if (_tmp4_ == NULL) {
+		const gchar* _tmp5_ = NULL;
 		__android_log_write (ANDROID_LOG_ERROR, "Text", "Surface is null");
-		_tmp4_ = SDL_GetError ();
-		__android_log_write (ANDROID_LOG_ERROR, "Text", _tmp4_);
+		_tmp5_ = SDL_GetError ();
+		__android_log_write (ANDROID_LOG_ERROR, "Text", _tmp5_);
 		return self;
 	}
-	_tmp5_ = self->surface;
-	_tmp6_ = _tmp5_->w;
-	self->w = (guint16) _tmp6_;
-	_tmp7_ = self->surface;
-	_tmp8_ = _tmp7_->h;
-	self->h = (guint16) _tmp8_;
-	_tmp9_ = renderer;
-	_tmp10_ = self->surface;
-	_tmp11_ = SDL_CreateTextureFromSurface (_tmp9_, _tmp10_);
+	_tmp6_ = self->surface;
+	_tmp7_ = _tmp6_->w;
+	self->w = (guint16) _tmp7_;
+	_tmp8_ = self->surface;
+	_tmp9_ = _tmp8_->h;
+	self->h = (guint16) _tmp9_;
+	_tmp10_ = renderer;
+	_tmp11_ = self->surface;
+	_tmp12_ = SDL_CreateTextureFromSurface (_tmp10_, _tmp11_);
 	_SDL_DestroyTexture0 (self->texture);
-	self->texture = _tmp11_;
-	_tmp12_ = self->texture;
-	SDL_SetTextureBlendMode (_tmp12_, SDL_BLENDMODE_BLEND);
+	self->texture = _tmp12_;
+	_tmp13_ = self->texture;
+	SDL_SetTextureBlendMode (_tmp13_, SDL_BLENDMODE_BLEND);
 	return self;
 }
 

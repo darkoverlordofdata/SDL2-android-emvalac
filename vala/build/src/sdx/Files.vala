@@ -9,8 +9,21 @@ namespace sdx {
 		Absolute,
 		Local
 	}
-	
-	public class Files : Object {
+	[Compact, CCode ( /** reference counting */
+		ref_function = "sdx_files_retain", 
+		unref_function = "sdx_files_release"
+	)]
+	public class Files {
+		public int _retainCount = 1;
+		public unowned Files retain() {
+			GLib.AtomicInt.add (ref _retainCount, 1);
+			return this;
+		}
+		public void release() { 
+			if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+		}
+		public extern void free();
+		
 
 		public bool isResource;
 		public string resourcePath;

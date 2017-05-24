@@ -1,11 +1,5 @@
 /**
  *	profiling data
-
-find `pwd` -type f -regex ".*.vala\|.*.gs" -exec grep -Hn -E  'class|namespace' {}  \;
-
-
-find `pwd` -type f -name "*.vala" -exec grep -E  'class|namespace' {}
- \;
  */
 public int k;
 public double t;
@@ -52,7 +46,7 @@ public void gameloop(Game game) {
 	game.draw();
 }
 
-#if (DESKTOP)
+#if (DESKTOP || ANDROID)
 
 /**
  * Start the game
@@ -81,8 +75,6 @@ public int main(string args[]) {
  *
  */
 public void game() {
-	var x = new Test.MyClass();
-	print("%s\n", x.getTest());
 	var window = sdx.initialize(720, 512, "Shmupwarz");
 	var game = new Game(720, 512);
 	game.initialize();

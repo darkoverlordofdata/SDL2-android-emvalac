@@ -6,16 +6,31 @@ namespace util {
 	 * Simple File handler
 	 * 
 	 */
-	
-	public class File : Object {
+	[Compact, CCode ( /** reference counting */
+		ref_function = "util_file_retain", 
+		unref_function = "util_file_release"
+	)]
+	public class File {
+		public int _retainCount = 1;
+		public unowned File retain() {
+			GLib.AtomicInt.add (ref _retainCount, 1);
+			return this;
+		}
+		public void release() { 
+			if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+		}
+		public extern void free();
+		
 
-		public Posix.Stat? stat;
+		//  public Posix.Stat? stat;
+		public SDL.RWops file;
 		public string path;
 		public string[] files;
 		public List<String> fileList; 
 
 		public File(string path) {
-			this.path = (string)Posix.realpath(path);
+			this.path = path;
+    		file = new SDL.RWops.from_file(path, "r");
 		} 
 
 		public string getPath() {
@@ -44,28 +59,28 @@ namespace util {
 		 * check if the represented struture exists on the virtual disk
 		 */
 		public bool exists() {
-			return Posix.stat(path, out stat) == 0;
+			return file != null;
 		}
 
 		/**
 		 * is it a file?
 		 */
 		public bool isFile() {
-			return exists() ? Posix.S_ISREG(stat.st_mode) : false;
+			return file != null;
 		}
 
 		/**
 		 * is it a folder?
 		 */
 		public bool isDirectory() {
-			return exists() ? Posix.S_ISDIR(stat.st_mode) : false;
+			return false;
 		}
 
 		/**
 		 * get the length of the file
 		 */
 		public int length() {
-			return exists() ? (int)stat.st_size : 0;
+			return file != null ? (int)file.size : 0;
 		}
 		
 		/**
@@ -73,12 +88,12 @@ namespace util {
 		 */
 		public string read() {
 			if (!exists()) return "";
-			Posix.FILE hFile = Posix.FILE.open(path, "r");
-			var size = (int)stat.st_size;
-			var ioBuff = new char[size];
+			var size = (int)file.size;
+	    	var ioBuff = new char[size+2];
+    
+    		var stat = file.read((void*)ioBuff, 2, (size_t)size/2);
 			var lines = "";
-			while (lines.length < size)
-				lines += (string)hFile.gets(ioBuff);
+			lines = lines + (string)ioBuff;
 			return lines;
 		}
 		
@@ -86,25 +101,7 @@ namespace util {
 		 * return the list of files in the folder
 		 */
 		public string[] list() {
-			if (!isDirectory()) {
-				files = new string[0];
-				return files;
-			}
-			Posix.Dir? dp;
-			unowned Posix.DirEnt? ep;
-
-			fileList = new List<String>();
-			if ((dp = Posix.opendir(path)) != null) {
-				while ((ep = Posix.readdir(dp)) != null) {
-					var s = new String((string)ep.d_name);
-					fileList.append(s);
-				}
-			}
-
-			files = new string[fileList.length()];
-			var i = 0;
-			foreach (var s in fileList)
-				files[i++] = s.to_string();
+			files = new string[0];
 			return files;
 		}
 	}

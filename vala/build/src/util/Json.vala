@@ -23,7 +23,21 @@ namespace util {
     /**
      * @see https://github.com/douglascrockford/JSON-js
      */
-    public class Json : Object {
+    [Compact, CCode ( /** reference counting */
+    	ref_function = "util_json_retain", 
+    	unref_function = "util_json_release"
+    )]
+    public class Json {
+    	public int _retainCount = 1;
+    	public unowned Json retain() {
+    		GLib.AtomicInt.add (ref _retainCount, 1);
+    		return this;
+    	}
+    	public void release() { 
+    		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+    	}
+    	public extern void free();
+		
 
         public static const string HEX_DIGIT = "0123456789abcdef";
         public static const string escape0 = "\"\\/bfnrt";
@@ -368,7 +382,21 @@ namespace util {
      * Arrays are represented as List<JsVariant>
      * Objects are represented as HashTable<string, JsVariant>
      */
-    public class JsVariant : Object {
+    [Compact, CCode ( /** reference counting */
+    	ref_function = "util_js_variant_retain", 
+    	unref_function = "util_js_variant_release"
+    )]
+    public class JsVariant {
+    	public int _retainCount = 1;
+    	public unowned JsVariant retain() {
+    		GLib.AtomicInt.add (ref _retainCount, 1);
+    		return this;
+    	}
+    	public void release() { 
+    		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+    	}
+    	public extern void free();
+		
 
         public bool boolean;
         public double number;

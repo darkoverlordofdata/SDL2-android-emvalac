@@ -1,6 +1,19 @@
 namespace entitas {
-
-	public class Group : Object {
+[Compact, CCode ( /** reference counting */
+	ref_function = "entitas_group_retain", 
+	unref_function = "entitas_group_release"
+)]
+public class Group {
+	public int _retainCount = 1;
+	public unowned Group retain() {
+		GLib.AtomicInt.add (ref _retainCount, 1);
+		return this;
+	}
+	public void release() { 
+		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+	}
+	public extern void free();
+		
 		public Matcher matcher;
 		public List<Entity*> entities;
 		

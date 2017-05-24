@@ -1,19 +1,6 @@
 using SDL;
-[Compact, CCode ( /** reference counting */
-	ref_function = "sprite_retain", 
-	unref_function = "sprite_release"
-)]
-public class Sprite {
-	public int _retainCount = 1;
-	public unowned Sprite retain() {
-		GLib.AtomicInt.add (ref _retainCount, 1);
-		return this;
-	}
-	public void release() { 
-		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
-	}
-	public extern void free();
-		
+
+public class Sprite : Object {
     public SDL.Video.Texture texture;
     public uint16 w;
     public uint16 h;
@@ -34,21 +21,8 @@ public class Sprite {
         
     }
 }
-[Compact, CCode ( /** reference counting */
-	ref_function = "text_retain", 
-	unref_function = "text_release"
-)]
-public class Text {
-	public int _retainCount = 1;
-	public unowned Text retain() {
-		GLib.AtomicInt.add (ref _retainCount, 1);
-		return this;
-	}
-	public void release() { 
-		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
-	}
-	public extern void free();
-		
+
+public class Text : Object {
     public SDL.Video.Texture texture;
     public SDL.Video.Surface surface;
     public SDLTTF.Font font;
@@ -57,10 +31,12 @@ public class Text {
 
     public Text(string text, SDL.Video.Renderer renderer) {
         font = new SDLTTF.Font("assets/fonts/OpenDyslexic-Bold.otf", 48);
-        surface = font.render("Hello World", sdx.Color.Black);
+        surface = font.render(text, sdx.Color.Black);
         if (surface == null) {
+#if (ANDROID)            
             Android.log_write(Android.LogPriority.ERROR, "Text", "Surface is null");
             Android.log_write(Android.LogPriority.ERROR, "Text", SDL.get_error());
+#endif
             return;
         }
         w = (uint16)surface.w;

@@ -2,9 +2,21 @@
  * Unordered cache 
  */
 namespace entitas {
-
-	
-	public class Cache : Object {
+	[Compact, CCode ( /** reference counting */
+		ref_function = "entitas_cache_retain", 
+		unref_function = "entitas_cache_release"
+	)]
+	public class Cache {
+		public int _retainCount = 1;
+		public unowned Cache retain() {
+			GLib.AtomicInt.add (ref _retainCount, 1);
+			return this;
+		}
+		public void release() { 
+			if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+		}
+		public extern void free();
+		
 
 		public Entity*[] items;
 		public int size;

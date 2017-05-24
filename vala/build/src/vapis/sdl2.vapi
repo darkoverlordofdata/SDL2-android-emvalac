@@ -1105,6 +1105,8 @@ namespace SDL {
 	[PrintfFunction]
 	public static int set_error (string format, ...);
 
+
+
 	[CCode (cname = "SDL_GetError")]
 	public static unowned string get_error ();
 

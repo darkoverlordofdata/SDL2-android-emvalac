@@ -4,7 +4,21 @@ namespace systems {
 	/**
 	* game systems
 	*/
-	public class PhysicsSystem : Object {
+[Compact, CCode ( /** reference counting */
+	ref_function = "systems_physics_system_retain", 
+	unref_function = "systems_physics_system_release"
+)]
+public class PhysicsSystem {
+	public int _retainCount = 1;
+	public unowned PhysicsSystem retain() {
+		GLib.AtomicInt.add (ref _retainCount, 1);
+		return this;
+	}
+	public void release() { 
+		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+	}
+	public extern void free();
+		
 		public ISystem _ISystem { get { return { initialize, execute }; } }
 
 		public Game game;

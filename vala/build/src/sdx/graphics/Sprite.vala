@@ -4,8 +4,21 @@ namespace sdx.graphics {
 		double x;
 		double y;
 	}
-	
-	public class Sprite : Object {
+	[Compact, CCode ( /** reference counting */
+		ref_function = "sdx_graphics_sprite_retain", 
+		unref_function = "sdx_graphics_sprite_release"
+	)]
+	public class Sprite {
+		public int _retainCount = 1;
+		public unowned Sprite retain() {
+			GLib.AtomicInt.add (ref _retainCount, 1);
+			return this;
+		}
+		public void release() { 
+			if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+		}
+		public extern void free();
+		
 		public static sdx.graphics.Surface[] cache;
 		public static int uniqueId = 0;
 		public SDL.Video.Texture texture;

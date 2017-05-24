@@ -18,8 +18,10 @@ namespace Android {
 	[CCode (cname="__android_log_write")]
 	public int log_write(LogPriority prio, string tag, string text);
 
-	[CCode (cname="__android_log_print")]
-	public int log_print(LogPriority prio, string tag, string fmt, ...);
+	[PrintFormat, CCode (cname="__android_log_print")]
+	public int log_print(LogPriority prio, string tag, string format, ...);
 
+	[PrintFormat, CCode (cname="__android_log_vprint")]
+	public int log_vprint(LogPriority prio, string tag, string format, va_list args);
 
 }

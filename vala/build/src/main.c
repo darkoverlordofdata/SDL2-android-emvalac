@@ -4,6 +4,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <float.h>
+#include <math.h>
+#include <mt19937ar.h>
 #include <stdlib.h>
 #include <string.h>
 #include <SDL2/SDL.h>
@@ -12,6 +15,8 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
+#include <android/log.h>
+#include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_pixels.h>
@@ -23,11 +28,17 @@ void sprite_release (Sprite* self);
 void sprite_free (Sprite* self);
 Sprite* sprite_retain (Sprite* self);
 #define _sprite_release0(var) ((var == NULL) ? NULL : (var = (sprite_release (var), NULL)))
+typedef struct _utilFile utilFile;
 typedef struct _Text Text;
 void text_release (Text* self);
 void text_free (Text* self);
 Text* text_retain (Text* self);
 #define _text_release0(var) ((var == NULL) ? NULL : (var = (text_release (var), NULL)))
+#define _g_free0(var) (var = (g_free (var), NULL))
+void util_file_release (utilFile* self);
+void util_file_free (utilFile* self);
+utilFile* util_file_retain (utilFile* self);
+#define _util_file_release0(var) ((var == NULL) ? NULL : (var = (util_file_release (var), NULL)))
 typedef struct _Zed Zed;
 #define _SDL_FreeSurface0(var) ((var == NULL) ? NULL : (var = (SDL_FreeSurface (var), NULL)))
 
@@ -63,9 +74,14 @@ struct _Zed {
 
 
 GQuark sdl_exception_quark (void);
+#define PF 1
+gdouble getRandom (void);
 gint _vala_main (const gchar* args, int args_length1);
 void sprite_free (Sprite* self);
 Sprite* sprite_new (const gchar* file, SDL_Renderer* renderer);
+void util_file_free (utilFile* self);
+utilFile* util_file_new (const gchar* path);
+gchar* util_file_read (utilFile* self);
 void text_free (Text* self);
 Text* text_new (const gchar* text, SDL_Renderer* renderer);
 void zed_free (Zed* self);
@@ -79,6 +95,15 @@ extern const SDL_Color SDX_COLOR_LightSteelBlue;
 
 GQuark sdl_exception_quark (void) {
 	return g_quark_from_static_string ("sdl_exception-quark");
+}
+
+
+gdouble getRandom (void) {
+	gdouble result = 0.0;
+	gdouble _tmp0_ = 0.0;
+	_tmp0_ = genrand_real2 ();
+	result = _tmp0_;
+	return result;
 }
 
 
@@ -98,9 +123,21 @@ gint _vala_main (const gchar* args, int args_length1) {
 	Sprite* _tmp20_ = NULL;
 	Sprite* _tmp21_ = NULL;
 	SDL_Texture* _tmp22_ = NULL;
+	utilFile* file = NULL;
+	utilFile* _tmp23_ = NULL;
+	gchar* data = NULL;
+	utilFile* _tmp24_ = NULL;
+	gchar* _tmp25_ = NULL;
+	const gchar* _tmp26_ = NULL;
+	guint64 _tmp27_ = 0ULL;
+	gchar* str = NULL;
+	gdouble _tmp28_ = 0.0;
+	gchar* _tmp29_ = NULL;
+	const gchar* _tmp30_ = NULL;
 	Text* text = NULL;
-	SDL_Renderer* _tmp23_ = NULL;
-	Text* _tmp24_ = NULL;
+	const gchar* _tmp31_ = NULL;
+	SDL_Renderer* _tmp32_ = NULL;
+	Text* _tmp33_ = NULL;
 	gboolean done = FALSE;
 	SDL_Event event = {0};
 	GError * _inner_error_ = NULL;
@@ -152,7 +189,7 @@ gint _vala_main (const gchar* args, int args_length1) {
 		g_clear_error (&_inner_error_);
 		return _tmp15_;
 	}
-	_tmp18_ = SDL_CreateWindowAndRenderer (0, 0, (guint32) 0, &_tmp16_, &_tmp17_);
+	_tmp18_ = SDL_CreateWindowAndRenderer (380, 580, (guint32) 0, &_tmp16_, &_tmp17_);
 	_SDL_DestroyWindow0 (window);
 	window = _tmp16_;
 	_SDL_DestroyRenderer0 (renderer);
@@ -175,115 +212,135 @@ gint _vala_main (const gchar* args, int args_length1) {
 		_SDL_DestroyWindow0 (window);
 		return result;
 	}
-	_tmp23_ = renderer;
-	_tmp24_ = text_new ("Dude!", _tmp23_);
-	text = _tmp24_;
+	__android_log_write (ANDROID_LOG_ERROR, "frodo", "====================");
+	_tmp23_ = util_file_new ("assets/frodo.txt");
+	file = _tmp23_;
+	_tmp24_ = file;
+	_tmp25_ = util_file_read (_tmp24_);
+	data = _tmp25_;
+	_tmp26_ = data;
+	__android_log_write (ANDROID_LOG_ERROR, "frodo", _tmp26_);
+	__android_log_write (ANDROID_LOG_ERROR, "frodo", "====================");
+	_tmp27_ = SDL_GetPerformanceCounter ();
+	init_genrand ((gulong) _tmp27_);
+	_tmp28_ = getRandom ();
+	_tmp29_ = g_strdup_printf ("Hey %f", _tmp28_);
+	str = _tmp29_;
+	_tmp30_ = str;
+	__android_log_write (ANDROID_LOG_ERROR, "Hello", _tmp30_);
+	_tmp31_ = str;
+	_tmp32_ = renderer;
+	_tmp33_ = text_new (_tmp31_, _tmp32_);
+	text = _tmp33_;
 	done = FALSE;
 	while (TRUE) {
-		gboolean _tmp25_ = FALSE;
-		SDL_Event _tmp26_ = {0};
-		Text* _tmp38_ = NULL;
-		SDL_Texture* _tmp39_ = NULL;
-		SDL_Renderer* _tmp46_ = NULL;
-		SDL_Renderer* _tmp47_ = NULL;
-		Text* _tmp48_ = NULL;
-		SDL_Texture* _tmp49_ = NULL;
-		Text* _tmp50_ = NULL;
-		guint16 _tmp51_ = 0U;
-		Text* _tmp52_ = NULL;
-		guint16 _tmp53_ = 0U;
-		SDL_Rect _tmp54_ = {0};
+		gboolean _tmp34_ = FALSE;
+		SDL_Event _tmp35_ = {0};
+		Text* _tmp47_ = NULL;
+		SDL_Texture* _tmp48_ = NULL;
 		SDL_Renderer* _tmp55_ = NULL;
-		_tmp25_ = done;
-		if (!(!_tmp25_)) {
+		SDL_Renderer* _tmp56_ = NULL;
+		Text* _tmp57_ = NULL;
+		SDL_Texture* _tmp58_ = NULL;
+		Text* _tmp59_ = NULL;
+		guint16 _tmp60_ = 0U;
+		Text* _tmp61_ = NULL;
+		guint16 _tmp62_ = 0U;
+		SDL_Rect _tmp63_ = {0};
+		SDL_Renderer* _tmp64_ = NULL;
+		_tmp34_ = done;
+		if (!(!_tmp34_)) {
 			break;
 		}
-		SDL_WaitEvent (&_tmp26_);
+		SDL_WaitEvent (&_tmp35_);
 		 (event);
-		event = _tmp26_;
+		event = _tmp35_;
 		{
-			gboolean _tmp27_ = FALSE;
-			_tmp27_ = TRUE;
+			gboolean _tmp36_ = FALSE;
+			_tmp36_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp30_ = FALSE;
-				gboolean _tmp31_ = FALSE;
-				SDL_Event _tmp32_ = {0};
-				SDL_EventType _tmp33_ = 0;
-				if (!_tmp27_) {
-					SDL_Event _tmp28_ = {0};
-					gint _tmp29_ = 0;
-					_tmp29_ = SDL_PollEvent (&_tmp28_);
+				gboolean _tmp39_ = FALSE;
+				gboolean _tmp40_ = FALSE;
+				SDL_Event _tmp41_ = {0};
+				SDL_EventType _tmp42_ = 0;
+				if (!_tmp36_) {
+					SDL_Event _tmp37_ = {0};
+					gint _tmp38_ = 0;
+					_tmp38_ = SDL_PollEvent (&_tmp37_);
 					 (event);
-					event = _tmp28_;
-					if (!(_tmp29_ > 0)) {
+					event = _tmp37_;
+					if (!(_tmp38_ > 0)) {
 						break;
 					}
 				}
-				_tmp27_ = FALSE;
-				_tmp32_ = event;
-				_tmp33_ = _tmp32_.type;
-				if (_tmp33_ == SDL_QUIT) {
-					_tmp31_ = TRUE;
+				_tmp36_ = FALSE;
+				_tmp41_ = event;
+				_tmp42_ = _tmp41_.type;
+				if (_tmp42_ == SDL_QUIT) {
+					_tmp40_ = TRUE;
 				} else {
-					SDL_Event _tmp34_ = {0};
-					SDL_EventType _tmp35_ = 0;
-					_tmp34_ = event;
-					_tmp35_ = _tmp34_.type;
-					_tmp31_ = _tmp35_ == SDL_KEYDOWN;
+					SDL_Event _tmp43_ = {0};
+					SDL_EventType _tmp44_ = 0;
+					_tmp43_ = event;
+					_tmp44_ = _tmp43_.type;
+					_tmp40_ = _tmp44_ == SDL_KEYDOWN;
 				}
-				if (_tmp31_) {
-					_tmp30_ = TRUE;
+				if (_tmp40_) {
+					_tmp39_ = TRUE;
 				} else {
-					SDL_Event _tmp36_ = {0};
-					SDL_EventType _tmp37_ = 0;
-					_tmp36_ = event;
-					_tmp37_ = _tmp36_.type;
-					_tmp30_ = _tmp37_ == SDL_FINGERDOWN;
+					SDL_Event _tmp45_ = {0};
+					SDL_EventType _tmp46_ = 0;
+					_tmp45_ = event;
+					_tmp46_ = _tmp45_.type;
+					_tmp39_ = _tmp46_ == SDL_FINGERDOWN;
 				}
-				if (_tmp30_) {
+				if (_tmp39_) {
 					done = TRUE;
 				}
 			}
 		}
-		_tmp38_ = text;
-		_tmp39_ = _tmp38_->texture;
-		if (_tmp39_ == NULL) {
-			SDL_Renderer* _tmp40_ = NULL;
-			_tmp40_ = renderer;
-			SDL_SetRenderDrawColor (_tmp40_, (guint8) 0x00, (guint8) 0x00, (guint8) 0xff, (guint8) 0xFF);
+		_tmp47_ = text;
+		_tmp48_ = _tmp47_->texture;
+		if (_tmp48_ == NULL) {
+			SDL_Renderer* _tmp49_ = NULL;
+			_tmp49_ = renderer;
+			SDL_SetRenderDrawColor (_tmp49_, (guint8) 0x00, (guint8) 0x00, (guint8) 0xff, (guint8) 0xFF);
 		} else {
-			SDL_Renderer* _tmp41_ = NULL;
-			guint8 _tmp42_ = 0U;
-			guint8 _tmp43_ = 0U;
-			guint8 _tmp44_ = 0U;
-			guint8 _tmp45_ = 0U;
-			_tmp41_ = renderer;
-			_tmp42_ = SDX_COLOR_LightSteelBlue.r;
-			_tmp43_ = SDX_COLOR_LightSteelBlue.g;
-			_tmp44_ = SDX_COLOR_LightSteelBlue.b;
-			_tmp45_ = SDX_COLOR_LightSteelBlue.a;
-			SDL_SetRenderDrawColor (_tmp41_, _tmp42_, _tmp43_, _tmp44_, _tmp45_);
+			SDL_Renderer* _tmp50_ = NULL;
+			guint8 _tmp51_ = 0U;
+			guint8 _tmp52_ = 0U;
+			guint8 _tmp53_ = 0U;
+			guint8 _tmp54_ = 0U;
+			_tmp50_ = renderer;
+			_tmp51_ = SDX_COLOR_LightSteelBlue.r;
+			_tmp52_ = SDX_COLOR_LightSteelBlue.g;
+			_tmp53_ = SDX_COLOR_LightSteelBlue.b;
+			_tmp54_ = SDX_COLOR_LightSteelBlue.a;
+			SDL_SetRenderDrawColor (_tmp50_, _tmp51_, _tmp52_, _tmp53_, _tmp54_);
 		}
-		_tmp46_ = renderer;
-		SDL_RenderClear (_tmp46_);
-		_tmp47_ = renderer;
-		_tmp48_ = text;
-		_tmp49_ = _tmp48_->texture;
-		_tmp50_ = text;
-		_tmp51_ = _tmp50_->w;
-		_tmp52_ = text;
-		_tmp53_ = _tmp52_->h;
-		_tmp54_.x = 100;
-		_tmp54_.y = 100;
-		_tmp54_.w = (guint) _tmp51_;
-		_tmp54_.h = (guint) _tmp53_;
-		SDL_RenderCopy (_tmp47_, _tmp49_, NULL, &_tmp54_);
 		_tmp55_ = renderer;
-		SDL_RenderPresent (_tmp55_);
+		SDL_RenderClear (_tmp55_);
+		_tmp56_ = renderer;
+		_tmp57_ = text;
+		_tmp58_ = _tmp57_->texture;
+		_tmp59_ = text;
+		_tmp60_ = _tmp59_->w;
+		_tmp61_ = text;
+		_tmp62_ = _tmp61_->h;
+		_tmp63_.x = 100 * PF;
+		_tmp63_.y = 100 * PF;
+		_tmp63_.w = (guint) (_tmp60_ * PF);
+		_tmp63_.h = (guint) (_tmp62_ * PF);
+		SDL_RenderCopy (_tmp56_, _tmp58_, NULL, &_tmp63_);
+		_tmp64_ = renderer;
+		SDL_RenderPresent (_tmp64_);
 	}
 	result = 0;
 	 (event);
 	_text_release0 (text);
+	_g_free0 (str);
+	_g_free0 (data);
+	_util_file_release0 (file);
 	_sprite_release0 (sprite);
 	_SDL_DestroyRenderer0 (renderer);
 	_SDL_DestroyWindow0 (window);
