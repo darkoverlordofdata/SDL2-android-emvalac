@@ -7,16 +7,6 @@ public double t1;
 public double t2;
 public double t3;
 
-[Compact]
-public class TestClass {
-	public string name;
-
-	public TestClass() {
-		print("this is a test class\n");
-		name = "frodo";
-	}
-	
-}
 /**
  * gameloop
  * 
@@ -54,8 +44,10 @@ public void gameloop(Game game) {
  */
 public int main(string args[]) {
 
-	var window = sdx.initialize(720, 512, "Shmupwarz");
-	var game = new Game(720, 512);
+	var window = sdx.initialize(1184, 768, "Shmupwarz");
+	var game = new Game(1184, 768);
+	//  var window = sdx.initialize(720, 512, "Shmupwarz");
+	//  var game = new Game(720, 512);
 	game.initialize();
 	game.start();
 	while (sdx.running) {
@@ -90,3 +82,23 @@ public void mainloop(void* arg) {
 }
 #endif
 
+/** compiler trick needed to force compilation */
+[Compact, CCode ( /** reference counting */
+	ref_function = "zed_retain", 
+	unref_function = "zed_release"
+)]
+public class Zed {
+	public int _retainCount = 1;
+	public unowned Zed retain() {
+		GLib.AtomicInt.add (ref _retainCount, 1);
+		return this;
+	}
+	public void release() { 
+		if (GLib.AtomicInt.dec_and_test (ref _retainCount)) this.free ();
+	}
+	public extern void free();
+		
+    public Zed(string file, SDL.Video.Renderer renderer) {
+        SDL.Video.Surface never = SDLImage.load(file);
+        }
+}

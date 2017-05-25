@@ -6,22 +6,25 @@
 #include <glib-object.h>
 #include <float.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <SDL2/SDL_video.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_image.h>
 
-typedef struct _TestClass TestClass;
-#define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _Game Game;
 void game_release (Game* self);
 void game_free (Game* self);
 Game* game_retain (Game* self);
 #define _game_release0(var) ((var == NULL) ? NULL : (var = (game_release (var), NULL)))
 #define _SDL_DestroyWindow0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyWindow (var), NULL)))
+typedef struct _Zed Zed;
+#define _SDL_FreeSurface0(var) ((var == NULL) ? NULL : (var = (SDL_FreeSurface (var), NULL)))
 
-struct _TestClass {
-	gchar* name;
+struct _Zed {
+	gint _retainCount;
 };
 
 
@@ -37,9 +40,6 @@ extern gdouble t3;
 gdouble t3 = 0.0;
 extern gboolean sdx_running;
 
-void testclass_free (TestClass* self);
-static void testclass_instance_init (TestClass * self);
-TestClass* testclass_new (void);
 void game_free (Game* self);
 void gameloop (Game* game);
 gdouble sdx_getNow (void);
@@ -50,29 +50,12 @@ SDL_Window* sdx_initialize (gint width, gint height, const gchar* name);
 Game* game_new (gint width, gint height);
 void game_initialize (Game* self);
 void game_start (Game* self);
-
-
-TestClass* testclass_new (void) {
-	TestClass* self;
-	gchar* _tmp0_ = NULL;
-	self = g_slice_new0 (TestClass);
-	testclass_instance_init (self);
-	g_print ("this is a test class\n");
-	_tmp0_ = g_strdup ("frodo");
-	_g_free0 (self->name);
-	self->name = _tmp0_;
-	return self;
-}
-
-
-static void testclass_instance_init (TestClass * self) {
-}
-
-
-void testclass_free (TestClass* self) {
-	_g_free0 (self->name);
-	g_slice_free (TestClass, self);
-}
+void zed_free (Zed* self);
+static void zed_instance_init (Zed * self);
+Zed* zed_retain (Zed* self);
+void zed_release (Zed* self);
+void zed_free (Zed* self);
+Zed* zed_new (const gchar* file, SDL_Renderer* renderer);
 
 
 /**
@@ -139,9 +122,9 @@ gint _vala_main (const gchar* args, int args_length1) {
 	Game* _tmp1_ = NULL;
 	Game* _tmp2_ = NULL;
 	Game* _tmp3_ = NULL;
-	_tmp0_ = sdx_initialize (720, 512, "Shmupwarz");
+	_tmp0_ = sdx_initialize (1184, 768, "Shmupwarz");
 	window = _tmp0_;
-	_tmp1_ = game_new (720, 512);
+	_tmp1_ = game_new (1184, 768);
 	game = _tmp1_;
 	_tmp2_ = game;
 	game_initialize (_tmp2_);
@@ -169,6 +152,52 @@ int main (int argc, char ** argv) {
 	g_type_init ();
 #endif
 	return _vala_main (argv, argc);
+}
+
+
+Zed* zed_retain (Zed* self) {
+	Zed* result = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_atomic_int_add ((volatile gint *) (&self->_retainCount), 1);
+	result = self;
+	return result;
+}
+
+
+void zed_release (Zed* self) {
+	gboolean _tmp0_ = FALSE;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = g_atomic_int_dec_and_test ((volatile gint *) (&self->_retainCount));
+	if (_tmp0_) {
+		zed_free (self);
+	}
+}
+
+
+Zed* zed_new (const gchar* file, SDL_Renderer* renderer) {
+	Zed* self;
+	SDL_Surface* never = NULL;
+	const gchar* _tmp0_ = NULL;
+	SDL_Surface* _tmp1_ = NULL;
+	g_return_val_if_fail (file != NULL, NULL);
+	g_return_val_if_fail (renderer != NULL, NULL);
+	self = g_slice_new0 (Zed);
+	zed_instance_init (self);
+	_tmp0_ = file;
+	_tmp1_ = IMG_Load (_tmp0_);
+	never = _tmp1_;
+	_SDL_FreeSurface0 (never);
+	return self;
+}
+
+
+static void zed_instance_init (Zed * self) {
+	self->_retainCount = 1;
+}
+
+
+void zed_free (Zed* self) {
+	g_slice_free (Zed, self);
 }
 
 

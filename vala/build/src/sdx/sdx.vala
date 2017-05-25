@@ -60,8 +60,8 @@ namespace sdx {
 	 * 
 	 */
 	Window initialize(int width, int height, string name) {
-		_width = width;
-		_height = height;
+		//  _width = width;
+		//  _height = height;
 
 		keys = new uint8[256];
 		dir = new bool[5];
@@ -78,8 +78,32 @@ namespace sdx {
 
 		if (SDLTTF.init() == -1)
 			throw new SdlException.TtfInitialization(SDL.get_error());
-    
+
+		SDL.Video.Display ds = {};
+		SDL.Video.DisplayMode mode;
+		var n = ds.num_modes();
+		ds.get_mode(0, out mode);
+		_width = mode.w;
+		_height = mode.h;
+		//  float ddpi;
+		//  float hdpi;
+		//  float vdpi;
+		//  ds.get_dpi(out ddpi, out hdpi, out vdpi);
+
+		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "=========================");
+		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "height = %d".printf(_height));
+		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "width  = %d".printf(_width));
+		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "ddpi   = %f".printf(ddpi));
+		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "hdpi   = %f".printf(hdpi));
+		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "vdpi   = %f".printf(vdpi));
+		Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "=========================");
+
+
+#if (ANDROID)    
+		var window = new Window(name, Window.POS_CENTERED, Window.POS_CENTERED, 0, 0, WindowFlags.SHOWN);
+#else
 		var window = new Window(name, Window.POS_CENTERED, Window.POS_CENTERED, width, height, WindowFlags.SHOWN);
+#endif	
 		if (window == null)
 			throw new SdlException.OpenWindow(SDL.get_error());
 		
@@ -187,6 +211,7 @@ namespace sdx {
 				case SDL.EventType.MOUSEBUTTONUP:
 					mouseDown = false;
 					break;
+#if (!ANDROID)
 				case SDL.EventType.FINGERMOTION:
 #if (DESKTOP)					
 					mouseX = _evt.tfinger.x;
@@ -202,6 +227,7 @@ namespace sdx {
 				case SDL.EventType.FINGERUP:
 					mouseDown = false;
 					break;
+#endif
 			}
 		}
 	}

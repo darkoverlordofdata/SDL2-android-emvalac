@@ -5,6 +5,11 @@ using entitas;
 using systems;
 using GLib.Math;
 
+#if (ANDROID)
+const int PF = 2;
+#else
+const int PF = 1;
+#endif
 const double TAU = 2.0 * Math.PI; 
 enum Pool {
 	BACKGROUND,
@@ -50,7 +55,7 @@ public class Factory : World {
 			.addPosition(0, 0)
 			.addLayer(pool)
 			.addBounds(0, 0, sprite.width, sprite.height)
-            .addScale(scale, scale)
+            .addScale(scale*PF, scale*PF)
 			.addSprite(sprite, sprite.width, sprite.height);
 	}
 	/** 
@@ -177,7 +182,7 @@ public class Factory : World {
 			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
 			.setTween(0.006, 0.6, -3, false, true)
 			.setPosition(x, y)
-			.setScale(0.6, 0.6)
+			.setScale(0.6*PF, 0.6*PF)
 			.setExpires(0.2)
 			.setActive(true));
 		return entity;
@@ -193,7 +198,7 @@ public class Factory : World {
 			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
 			.setTween(0.003, 0.3, -3, false, true)
 			.setPosition(x, y)
-			.setScale(0.3, 0.3)
+			.setScale(0.3*PF, 0.3*PF)
 			.setExpires(0.2)
 			.setActive(true));
 		return entity;
@@ -213,7 +218,7 @@ public class Factory : World {
 		entityAdded(entity
 			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
 			.setPosition(x, y)
-			.setScale(scale, scale)
+			.setScale(scale*PF, scale*PF)
 			.setVelocity(velocityX, velocityY)
 			.setExpires(0.75)
 			.setActive(true));

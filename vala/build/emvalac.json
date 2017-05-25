@@ -5,7 +5,6 @@
   "entitas_group": "entitasGroup",
   "entitas_matcher": "entitasMatcher",
   "entitas_world": "entitasWorld",
-  "test_class": "TestClass",
   "sdx_files": "sdxFiles",
   "sdx_font": "sdxFont",
   "sdx_files_file_handle": "sdxfilesFileHandle",

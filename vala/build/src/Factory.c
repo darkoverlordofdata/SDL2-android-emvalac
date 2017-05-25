@@ -276,6 +276,7 @@ extern sdxgraphicsSurface** sdx_graphics_sprite_cache;
 extern gint sdx_graphics_sprite_cache_length1;
 extern sdxFont* sdx_smallFont;
 
+#define PF 2
 #define TAU (2.0 * G_PI)
 GType pool_get_type (void) G_GNUC_CONST;
 void entitas_world_free (entitasWorld* self);
@@ -576,7 +577,7 @@ entitasEntity* factory_createBase (Factory* self, const gchar* name, const gchar
 	_tmp12_ = entitas_entity_addBounds (_tmp9_, 0, 0, _tmp10_, _tmp11_);
 	_tmp13_ = scale;
 	_tmp14_ = scale;
-	_tmp15_ = entitas_entity_addScale (_tmp12_, _tmp13_, _tmp14_);
+	_tmp15_ = entitas_entity_addScale (_tmp12_, _tmp13_ * PF, _tmp14_ * PF);
 	_tmp16_ = sprite->width;
 	_tmp17_ = sprite->height;
 	_tmp18_ = entitas_entity_addSprite (_tmp15_, sprite, _tmp16_, _tmp17_);
@@ -993,7 +994,7 @@ entitasEntity* factory_explosion (Factory* self, gint x, gint y) {
 	_tmp17_ = x;
 	_tmp18_ = y;
 	_tmp19_ = entitas_entity_setPosition (_tmp16_, (gdouble) _tmp17_, (gdouble) _tmp18_);
-	_tmp20_ = entitas_entity_setScale (_tmp19_, 0.6, 0.6);
+	_tmp20_ = entitas_entity_setScale (_tmp19_, 0.6 * PF, 0.6 * PF);
 	_tmp21_ = entitas_entity_setExpires (_tmp20_, 0.2);
 	_tmp22_ = entitas_entity_setActive (_tmp21_, TRUE);
 	entityAdded (_tmp22_);
@@ -1061,7 +1062,7 @@ entitasEntity* factory_bang (Factory* self, gint x, gint y) {
 	_tmp17_ = x;
 	_tmp18_ = y;
 	_tmp19_ = entitas_entity_setPosition (_tmp16_, (gdouble) _tmp17_, (gdouble) _tmp18_);
-	_tmp20_ = entitas_entity_setScale (_tmp19_, 0.3, 0.3);
+	_tmp20_ = entitas_entity_setScale (_tmp19_, 0.3 * PF, 0.3 * PF);
 	_tmp21_ = entitas_entity_setExpires (_tmp20_, 0.2);
 	_tmp22_ = entitas_entity_setActive (_tmp21_, TRUE);
 	entityAdded (_tmp22_);
@@ -1162,7 +1163,7 @@ entitasEntity* factory_particle (Factory* self, gint x, gint y) {
 	_tmp27_ = entitas_entity_setPosition (_tmp24_, (gdouble) _tmp25_, (gdouble) _tmp26_);
 	_tmp28_ = scale;
 	_tmp29_ = scale;
-	_tmp30_ = entitas_entity_setScale (_tmp27_, _tmp28_, _tmp29_);
+	_tmp30_ = entitas_entity_setScale (_tmp27_, _tmp28_ * PF, _tmp29_ * PF);
 	_tmp31_ = velocityX;
 	_tmp32_ = velocityY;
 	_tmp33_ = entitas_entity_setVelocity (_tmp30_, _tmp31_, _tmp32_);

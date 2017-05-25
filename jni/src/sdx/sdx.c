@@ -17,6 +17,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_hints.h>
 #include <SDL2/SDL_ttf.h>
+#include <android/log.h>
 #include <SDL2/SDL_timer.h>
 #include <mt19937ar.h>
 #include <SDL2/SDL_surface.h>
@@ -224,130 +225,150 @@ GType sdx_direction_get_type (void) {
  */
 SDL_Window* sdx_initialize (gint width, gint height, const gchar* name) {
 	SDL_Window* result = NULL;
-	gint _tmp0_ = 0;
-	gint _tmp1_ = 0;
-	guint8* _tmp2_ = NULL;
-	gboolean* _tmp3_ = NULL;
-	gint _tmp4_ = 0;
-	gint _tmp7_ = 0;
-	gboolean _tmp10_ = FALSE;
-	gint _tmp13_ = 0;
+	guint8* _tmp0_ = NULL;
+	gboolean* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	gint _tmp5_ = 0;
+	gboolean _tmp8_ = FALSE;
+	gint _tmp11_ = 0;
+	int ds = 0;
+	int _tmp14_ = 0;
+	SDL_DisplayMode mode = {0};
+	gint n = 0;
+	int _tmp15_ = 0;
+	gint _tmp16_ = 0;
+	int _tmp17_ = 0;
+	SDL_DisplayMode _tmp18_ = {0};
+	SDL_DisplayMode _tmp19_ = {0};
+	gint _tmp20_ = 0;
+	SDL_DisplayMode _tmp21_ = {0};
+	gint _tmp22_ = 0;
 	SDL_Window* window = NULL;
-	const gchar* _tmp16_ = NULL;
-	gint _tmp17_ = 0;
-	gint _tmp18_ = 0;
-	SDL_Window* _tmp19_ = NULL;
-	SDL_Window* _tmp20_ = NULL;
-	SDL_Window* _tmp23_ = NULL;
-	SDL_Renderer* _tmp24_ = NULL;
-	SDL_Renderer* _tmp25_ = NULL;
-	guint64 _tmp28_ = 0ULL;
-	SDL_Color _tmp29_ = {0};
-	guint64 _tmp30_ = 0ULL;
+	const gchar* _tmp23_ = NULL;
+	SDL_Window* _tmp24_ = NULL;
+	SDL_Window* _tmp25_ = NULL;
+	SDL_Window* _tmp28_ = NULL;
+	SDL_Renderer* _tmp29_ = NULL;
+	SDL_Renderer* _tmp30_ = NULL;
+	guint64 _tmp33_ = 0ULL;
+	SDL_Color _tmp34_ = {0};
+	guint64 _tmp35_ = 0ULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
-	_tmp0_ = width;
-	sdx__width = _tmp0_;
-	_tmp1_ = height;
-	sdx__height = _tmp1_;
-	_tmp2_ = g_new0 (guint8, 256);
+	_tmp0_ = g_new0 (guint8, 256);
 	sdx_keys = (g_free (sdx_keys), NULL);
-	sdx_keys = _tmp2_;
+	sdx_keys = _tmp0_;
 	sdx_keys_length1 = 256;
 	_sdx_keys_size_ = sdx_keys_length1;
-	_tmp3_ = g_new0 (gboolean, 5);
+	_tmp1_ = g_new0 (gboolean, 5);
 	sdx_dir = (g_free (sdx_dir), NULL);
-	sdx_dir = _tmp3_;
+	sdx_dir = _tmp1_;
 	sdx_dir_length1 = 5;
 	_sdx_dir_size_ = sdx_dir_length1;
-	_tmp4_ = SDL_Init ((guint32) ((SDL_INIT_VIDEO | SDL_INIT_TIMER) | SDL_INIT_EVENTS));
-	if (_tmp4_ < 0) {
-		const gchar* _tmp5_ = NULL;
-		GError* _tmp6_ = NULL;
-		_tmp5_ = SDL_GetError ();
-		_tmp6_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_Initialization, _tmp5_);
-		_inner_error_ = _tmp6_;
+	_tmp2_ = SDL_Init ((guint32) ((SDL_INIT_VIDEO | SDL_INIT_TIMER) | SDL_INIT_EVENTS));
+	if (_tmp2_ < 0) {
+		const gchar* _tmp3_ = NULL;
+		GError* _tmp4_ = NULL;
+		_tmp3_ = SDL_GetError ();
+		_tmp4_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_Initialization, _tmp3_);
+		_inner_error_ = _tmp4_;
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp7_ = IMG_Init ((gint) IMG_INIT_PNG);
-	if (_tmp7_ < 0) {
-		const gchar* _tmp8_ = NULL;
-		GError* _tmp9_ = NULL;
-		_tmp8_ = SDL_GetError ();
-		_tmp9_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_ImageInitialization, _tmp8_);
-		_inner_error_ = _tmp9_;
+	_tmp5_ = IMG_Init ((gint) IMG_INIT_PNG);
+	if (_tmp5_ < 0) {
+		const gchar* _tmp6_ = NULL;
+		GError* _tmp7_ = NULL;
+		_tmp6_ = SDL_GetError ();
+		_tmp7_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_ImageInitialization, _tmp6_);
+		_inner_error_ = _tmp7_;
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp10_ = SDL_SetHint (SDL_HINT_RENDER_SCALE_QUALITY, "1");
-	if (!_tmp10_) {
-		const gchar* _tmp11_ = NULL;
-		GError* _tmp12_ = NULL;
-		_tmp11_ = SDL_GetError ();
-		_tmp12_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_TextureFilteringNotEnabled, _tmp11_);
-		_inner_error_ = _tmp12_;
+	_tmp8_ = SDL_SetHint (SDL_HINT_RENDER_SCALE_QUALITY, "1");
+	if (!_tmp8_) {
+		const gchar* _tmp9_ = NULL;
+		GError* _tmp10_ = NULL;
+		_tmp9_ = SDL_GetError ();
+		_tmp10_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_TextureFilteringNotEnabled, _tmp9_);
+		_inner_error_ = _tmp10_;
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp13_ = TTF_Init ();
-	if (_tmp13_ == -1) {
-		const gchar* _tmp14_ = NULL;
-		GError* _tmp15_ = NULL;
-		_tmp14_ = SDL_GetError ();
-		_tmp15_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_TtfInitialization, _tmp14_);
-		_inner_error_ = _tmp15_;
+	_tmp11_ = TTF_Init ();
+	if (_tmp11_ == -1) {
+		const gchar* _tmp12_ = NULL;
+		GError* _tmp13_ = NULL;
+		_tmp12_ = SDL_GetError ();
+		_tmp13_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_TtfInitialization, _tmp12_);
+		_inner_error_ = _tmp13_;
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp16_ = name;
-	_tmp17_ = width;
-	_tmp18_ = height;
-	_tmp19_ = SDL_CreateWindow (_tmp16_, (gint) SDL_WINDOWPOS_CENTERED_MASK, (gint) SDL_WINDOWPOS_CENTERED_MASK, _tmp17_, _tmp18_, (guint32) SDL_WINDOW_SHOWN);
-	window = _tmp19_;
-	_tmp20_ = window;
-	if (_tmp20_ == NULL) {
-		const gchar* _tmp21_ = NULL;
-		GError* _tmp22_ = NULL;
-		_tmp21_ = SDL_GetError ();
-		_tmp22_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_OpenWindow, _tmp21_);
-		_inner_error_ = _tmp22_;
-		_SDL_DestroyWindow0 (window);
-		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-		g_clear_error (&_inner_error_);
-		return NULL;
-	}
-	_tmp23_ = window;
-	_tmp24_ = SDL_CreateRenderer (_tmp23_, -1, (guint32) (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
-	_SDL_DestroyRenderer0 (sdx_renderer);
-	sdx_renderer = _tmp24_;
-	_tmp25_ = sdx_renderer;
+	ds = _tmp14_;
+	_tmp15_ = ds;
+	_tmp16_ = SDL_GetNumDisplayModes (_tmp15_);
+	n = _tmp16_;
+	_tmp17_ = ds;
+	SDL_GetDisplayMode (_tmp17_, 0, &_tmp18_);
+	 (&mode);
+	mode = _tmp18_;
+	_tmp19_ = mode;
+	_tmp20_ = _tmp19_.w;
+	sdx__width = _tmp20_;
+	_tmp21_ = mode;
+	_tmp22_ = _tmp21_.h;
+	sdx__height = _tmp22_;
+	__android_log_write (ANDROID_LOG_ERROR, "DISPLAY", "=========================");
+	_tmp23_ = name;
+	_tmp24_ = SDL_CreateWindow (_tmp23_, (gint) SDL_WINDOWPOS_CENTERED_MASK, (gint) SDL_WINDOWPOS_CENTERED_MASK, 0, 0, (guint32) SDL_WINDOW_SHOWN);
+	window = _tmp24_;
+	_tmp25_ = window;
 	if (_tmp25_ == NULL) {
 		const gchar* _tmp26_ = NULL;
 		GError* _tmp27_ = NULL;
 		_tmp26_ = SDL_GetError ();
-		_tmp27_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_CreateRenderer, _tmp26_);
+		_tmp27_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_OpenWindow, _tmp26_);
 		_inner_error_ = _tmp27_;
 		_SDL_DestroyWindow0 (window);
+		 (&mode);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp28_ = SDL_GetPerformanceFrequency ();
-	sdx__freq = (gdouble) _tmp28_;
+	_tmp28_ = window;
+	_tmp29_ = SDL_CreateRenderer (_tmp28_, -1, (guint32) (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+	_SDL_DestroyRenderer0 (sdx_renderer);
+	sdx_renderer = _tmp29_;
+	_tmp30_ = sdx_renderer;
+	if (_tmp30_ == NULL) {
+		const gchar* _tmp31_ = NULL;
+		GError* _tmp32_ = NULL;
+		_tmp31_ = SDL_GetError ();
+		_tmp32_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_CreateRenderer, _tmp31_);
+		_inner_error_ = _tmp32_;
+		_SDL_DestroyWindow0 (window);
+		 (&mode);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	}
+	_tmp33_ = SDL_GetPerformanceFrequency ();
+	sdx__freq = (gdouble) _tmp33_;
 	sdx_fpsColor = SDX_COLOR_AntiqueWhite;
-	_tmp29_.r = (guint8) 0;
-	_tmp29_.g = (guint8) 0;
-	_tmp29_.b = (guint8) 0;
-	_tmp29_.a = (guint8) 0;
-	sdx_bgdColor = _tmp29_;
-	_tmp30_ = SDL_GetPerformanceCounter ();
-	init_genrand ((gulong) _tmp30_);
+	_tmp34_.r = (guint8) 0;
+	_tmp34_.g = (guint8) 0;
+	_tmp34_.b = (guint8) 0;
+	_tmp34_.a = (guint8) 0;
+	sdx_bgdColor = _tmp34_;
+	_tmp35_ = SDL_GetPerformanceCounter ();
+	init_genrand ((gulong) _tmp35_);
 	result = window;
+	 (&mode);
 	return result;
 }
 
@@ -756,38 +777,6 @@ void sdx_processEvents (void) {
 				break;
 			}
 			case SDL_MOUSEBUTTONUP:
-			{
-				sdx_mouseDown = FALSE;
-				break;
-			}
-			case SDL_FINGERMOTION:
-			{
-				SDL_Event _tmp64_ = {0};
-				SDL_TouchFingerEvent _tmp65_ = {0};
-				gfloat _tmp66_ = 0.0F;
-				gint _tmp67_ = 0;
-				SDL_Event _tmp68_ = {0};
-				SDL_TouchFingerEvent _tmp69_ = {0};
-				gfloat _tmp70_ = 0.0F;
-				gint _tmp71_ = 0;
-				_tmp64_ = sdx__evt;
-				_tmp65_ = _tmp64_.tfinger;
-				_tmp66_ = _tmp65_.x;
-				_tmp67_ = sdx__width;
-				sdx_mouseX = _tmp66_ * ((gdouble) _tmp67_);
-				_tmp68_ = sdx__evt;
-				_tmp69_ = _tmp68_.tfinger;
-				_tmp70_ = _tmp69_.y;
-				_tmp71_ = sdx__height;
-				sdx_mouseY = _tmp70_ * ((gdouble) _tmp71_);
-				break;
-			}
-			case SDL_FINGERDOWN:
-			{
-				sdx_mouseDown = TRUE;
-				break;
-			}
-			case SDL_FINGERUP:
 			{
 				sdx_mouseDown = FALSE;
 				break;

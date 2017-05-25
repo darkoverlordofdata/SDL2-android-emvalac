@@ -23,7 +23,7 @@ emvalac --builddir build \
     build/src/entitas/Matcher.vala \
     build/src/entitas/World.vala \
     build/src/entitas/entitas.vala \
-    build/src/main_save.vala \
+    build/src/main.vala \
     build/src/sdx/Color.gs \
     build/src/sdx/Files.vala \
     build/src/sdx/Font.vala \
@@ -50,6 +50,9 @@ emvalac --builddir build \
 
 
 ## copy ir output to jni folder
+## makes sure main.c inclues sdl2.h
+sed  "s/#include <SDL2/#include <SDL2\/SDL.h>\n#include <SDL2/g"  ./build/src/main.c >  ../jni/src/main.c
+
 cp -f ./build/src/Factory.c ../jni/src
 cp -f ./build/src/Game.c ../jni/src
 cp -f ./build/src/components.c ../jni/src
@@ -58,7 +61,6 @@ cp -f ./build/src/entitas/Group.c ../jni/src/entitas
 cp -f ./build/src/entitas/Matcher.c ../jni/src/entitas
 cp -f ./build/src/entitas/World.c ../jni/src/entitas
 cp -f ./build/src/entitas/entitas.c ../jni/src/entitas
-cp -f ./build/src/main_save.c ../jni/src
 cp -f ./build/src/sdx/Color.gs ../jni/src/sdx
 cp -f ./build/src/sdx/Files.c ../jni/src/sdx
 cp -f ./build/src/sdx/Font.c ../jni/src/sdx
