@@ -27,6 +27,4 @@ src/systems/ScoreSystem.vala
 src/systems/SpawnSystem.vala
 src/util/Cache.vala
 src/util/File.vala
-src/util/JsVariant.vala
 src/util/Json.vala
-src/util/String.vala

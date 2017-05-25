@@ -3,15 +3,18 @@ autovala_version: 24
 project_name: shmupwarz
 *vala_version: 0.34
 
-*define: ANDROID
-*define: PROFILING
-*define: DESKTOP
+define: ANDROID
+define: PROFILING
+define: DESKTOP
+
+gresource: resources_gresource_xml data/resources.gresource.xml
 
 vapidir: src/vapis
 
 vala_binary: src/shmupwarz
 compile_options: --disable-warnings --cc=clang
 compile_c_options: -g -Og
+use_gresource: resources_gresource_xml
 vala_vapi: vapis/mt19937ar.vapi
 vala_check_package: SDL2_image
 vala_check_package: SDL2_mixer
@@ -19,6 +22,7 @@ vala_check_package: SDL2_ttf
 vala_check_package: glib-2.0
 vala_check_package: gobject-2.0
 vala_check_package: sdl2
+vala_check_package: gio-2.0
 c_library: m
 *vala_source: Factory.vala
 *vala_source: Game.vala
@@ -49,9 +53,7 @@ c_library: m
 *vala_source: systems/SpawnSystem.vala
 *vala_source: util/Cache.vala
 *vala_source: util/File.vala
-*vala_source: util/JsVariant.vala
 *vala_source: util/Json.vala
-*vala_source: util/String.vala
 
 
 *po: po
@@ -85,11 +87,11 @@ c_library: m
 *translate: vala src/systems/SpawnSystem.vala
 *translate: vala src/util/Cache.vala
 *translate: vala src/util/File.vala
-*translate: vala src/util/JsVariant.vala
 *translate: vala src/util/Json.vala
-*translate: vala src/util/String.vala
 
 *data: data/local
 
 *doc: doc
+
+desktop: data/shmupwarz.desktop
 

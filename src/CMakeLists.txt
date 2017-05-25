@@ -28,6 +28,7 @@ set (VALA_PACKAGES ${VALA_PACKAGES} SDL2_ttf)
 set (VALA_PACKAGES ${VALA_PACKAGES} glib-2.0)
 set (VALA_PACKAGES ${VALA_PACKAGES} gobject-2.0)
 set (VALA_PACKAGES ${VALA_PACKAGES} sdl2)
+set (VALA_PACKAGES ${VALA_PACKAGES} gio-2.0)
 
 set (APP_SOURCES ${APP_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/Config.vala)
 set (APP_SOURCES ${APP_SOURCES} Factory.vala)
@@ -59,9 +60,7 @@ set (APP_SOURCES ${APP_SOURCES} systems/ScoreSystem.vala)
 set (APP_SOURCES ${APP_SOURCES} systems/SpawnSystem.vala)
 set (APP_SOURCES ${APP_SOURCES} util/Cache.vala)
 set (APP_SOURCES ${APP_SOURCES} util/File.vala)
-set (APP_SOURCES ${APP_SOURCES} util/JsVariant.vala)
 set (APP_SOURCES ${APP_SOURCES} util/Json.vala)
-set (APP_SOURCES ${APP_SOURCES} util/String.vala)
 
 set (CUSTOM_VAPIS_LIST ${CUSTOM_VAPIS_LIST} ${CMAKE_SOURCE_DIR}/src/vapis/mt19937ar.vapi)
 
@@ -87,6 +86,7 @@ if ((${CMAKE_BUILD_TYPE} STREQUAL "Debug") OR (${CMAKE_BUILD_TYPE} STREQUAL "Rel
 endif()
 
 set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --disable-warnings --cc=clang )
+set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --gresources=${CMAKE_SOURCE_DIR}/data/resources.gresource.xml )
 
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Og" )
 
@@ -100,7 +100,9 @@ OPTIONS
 	${COMPILE_OPTIONS}
 )
 
+SET (VALA_C ${VALA_C} ${resources_gresource_xml_C_FILE})
 add_executable(shmupwarz ${VALA_C})
+add_dependencies (shmupwarz resources_gresource_xml)
 target_link_libraries( shmupwarz m )
 
 

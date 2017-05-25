@@ -2,7 +2,6 @@
 
 vala-entitas running on android, emscripten and linux desktop.
 
-just worked. now it needs to be cleaned up.
 
 ## build
 
@@ -23,6 +22,8 @@ results in ./web
 ### android
 ./android.sh
 
-## requirements
-emscripten and android require emvalac (https://github.com/darkoverlordofdata/emvalac)
-android requires SDL2.0.5, SDL_image and SDL_ttf linked or copied to the jni folder
+## build requirements
+* autovala for desktop
+* emscripten and android require emvalac (https://github.com/darkoverlordofdata/emvalac)
+* emvalac requires nodejs
+* android requires SDL2.0.5, SDL_image and SDL_ttf linked or copied to the jni folder
