@@ -1,0 +1,4 @@
+*.gs linguist-language=Genie
+*.vala linguist-language=Vala
+*.c linguist-language=C
+*.java linguist-language=Java
