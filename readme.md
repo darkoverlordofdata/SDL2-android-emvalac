@@ -1,4 +1,5 @@
-# sdl2-android-emvalac
+# ShmupWarz II - The Wrath of Duane Dibbley 
+
 
 vala-entitas running on android, emscripten and linux desktop.
 
