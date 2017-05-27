@@ -19,10 +19,10 @@ vala_vapi: vapis/mt19937ar.vapi
 vala_check_package: SDL2_image
 vala_check_package: SDL2_mixer
 vala_check_package: SDL2_ttf
+vala_check_package: gio-2.0
 vala_check_package: glib-2.0
 vala_check_package: gobject-2.0
 vala_check_package: sdl2
-vala_check_package: gio-2.0
 c_library: m
 *vala_source: Factory.vala
 *vala_source: Game.vala
@@ -36,11 +36,21 @@ c_library: m
 *vala_source: sdx/Color.gs
 *vala_source: sdx/Files.vala
 *vala_source: sdx/Font.vala
+*vala_source: sdx/audio/Sound.vala
+*vala_source: sdx/audio/audio.vala
+*vala_source: sdx/exceptions.gs
 *vala_source: sdx/files/FileHandle.vala
+*vala_source: sdx/files/files.vala
 *vala_source: sdx/graphics/Sprite.vala
 *vala_source: sdx/graphics/Surface.vala
 *vala_source: sdx/graphics/TextureAtlas.vala
+*vala_source: sdx/graphics/graphics.vala
 *vala_source: sdx/sdx.vala
+*vala_source: sdx/utils/Cache.vala
+*vala_source: sdx/utils/File.vala
+*vala_source: sdx/utils/Json.vala
+*vala_source: sdx/utils/StringTokenizer.vala
+*vala_source: sdx/utils/utils.vala
 *vala_source: shmupwarz.vala
 *vala_source: systems/AnimationSystem.vala
 *vala_source: systems/CollisionSystem.vala
@@ -51,9 +61,6 @@ c_library: m
 *vala_source: systems/RemoveSystem.vala
 *vala_source: systems/ScoreSystem.vala
 *vala_source: systems/SpawnSystem.vala
-*vala_source: util/Cache.vala
-*vala_source: util/File.vala
-*vala_source: util/Json.vala
 
 
 *po: po
@@ -70,11 +77,21 @@ c_library: m
 *translate: genie src/sdx/Color.gs
 *translate: vala src/sdx/Files.vala
 *translate: vala src/sdx/Font.vala
+*translate: vala src/sdx/audio/Sound.vala
+*translate: vala src/sdx/audio/audio.vala
+*translate: genie src/sdx/exceptions.gs
 *translate: vala src/sdx/files/FileHandle.vala
+*translate: vala src/sdx/files/files.vala
 *translate: vala src/sdx/graphics/Sprite.vala
 *translate: vala src/sdx/graphics/Surface.vala
 *translate: vala src/sdx/graphics/TextureAtlas.vala
+*translate: vala src/sdx/graphics/graphics.vala
 *translate: vala src/sdx/sdx.vala
+*translate: vala src/sdx/utils/Cache.vala
+*translate: vala src/sdx/utils/File.vala
+*translate: vala src/sdx/utils/Json.vala
+*translate: vala src/sdx/utils/StringTokenizer.vala
+*translate: vala src/sdx/utils/utils.vala
 *translate: vala src/shmupwarz.vala
 *translate: vala src/systems/AnimationSystem.vala
 *translate: vala src/systems/CollisionSystem.vala
@@ -85,13 +102,12 @@ c_library: m
 *translate: vala src/systems/RemoveSystem.vala
 *translate: vala src/systems/ScoreSystem.vala
 *translate: vala src/systems/SpawnSystem.vala
-*translate: vala src/util/Cache.vala
-*translate: vala src/util/File.vala
-*translate: vala src/util/Json.vala
 
 *data: data/local
 
 *doc: doc
 
 desktop: data/shmupwarz.desktop
+
+*full_icon: Hicolor Applications data/icons/shmupwarz.png
 

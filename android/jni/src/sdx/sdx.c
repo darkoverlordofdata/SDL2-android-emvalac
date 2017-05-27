@@ -10,8 +10,8 @@
 #include <SDL2/SDL_pixels.h>
 #include <float.h>
 #include <math.h>
-#include <SDL2/SDL_events.h>
 #include <stdlib.h>
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -32,6 +32,7 @@ typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
 #define SDX_TYPE_DIRECTION (sdx_direction_get_type ())
 #define _SDL_DestroyWindow0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyWindow (var), NULL)))
 #define _SDL_DestroyRenderer0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyRenderer (var), NULL)))
+#define _g_free0(var) (var = (g_free (var), NULL))
 void sdx_font_release (sdxFont* self);
 void sdx_font_free (sdxFont* self);
 sdxFont* sdx_font_retain (sdxFont* self);
@@ -40,20 +41,10 @@ void sdx_graphics_sprite_release (sdxgraphicsSprite* self);
 void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
 sdxgraphicsSprite* sdx_graphics_sprite_retain (sdxgraphicsSprite* self);
 #define _sdx_graphics_sprite_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_sprite_release (var), NULL)))
-#define _g_free0(var) (var = (g_free (var), NULL))
 
 #define SDX_GRAPHICS_TYPE_SCALE (sdx_graphics_scale_get_type ())
 typedef struct _sdxgraphicsScale sdxgraphicsScale;
 
-typedef enum  {
-	SDX_SDL_EXCEPTION_Initialization,
-	SDX_SDL_EXCEPTION_ImageInitialization,
-	SDX_SDL_EXCEPTION_TtfInitialization,
-	SDX_SDL_EXCEPTION_TextureFilteringNotEnabled,
-	SDX_SDL_EXCEPTION_OpenWindow,
-	SDX_SDL_EXCEPTION_CreateRenderer
-} sdxSdlException;
-#define SDX_SDL_EXCEPTION sdx_sdl_exception_quark ()
 struct _sdxBlit {
 	SDL_Rect source;
 	SDL_Rect dest;
@@ -69,6 +60,19 @@ typedef enum  {
 	SDX_DIRECTION_DOWN
 } sdxDirection;
 
+typedef enum  {
+	SDX_SDL_EXCEPTION_Initialization,
+	SDX_SDL_EXCEPTION_ImageInitialization,
+	SDX_SDL_EXCEPTION_TtfInitialization,
+	SDX_SDL_EXCEPTION_TextureFilteringNotEnabled,
+	SDX_SDL_EXCEPTION_OpenWindow,
+	SDX_SDL_EXCEPTION_CreateRenderer,
+	SDX_SDL_EXCEPTION_InvalidForPlatform,
+	SDX_SDL_EXCEPTION_UnableToLoadResource,
+	SDX_SDL_EXCEPTION_NullPointer,
+	SDX_SDL_EXCEPTION_NoSuchElement
+} sdxSdlException;
+#define SDX_SDL_EXCEPTION sdx_sdl_exception_quark ()
 struct _sdxgraphicsScale {
 	gdouble x;
 	gdouble y;
@@ -130,6 +134,8 @@ extern gint sdx_dir_length1;
 gboolean* sdx_dir = NULL;
 gint sdx_dir_length1 = 0;
 static gint _sdx_dir_size_ = 0;
+extern gchar* sdx_resourceBase;
+gchar* sdx_resourceBase = NULL;
 extern gint sdx__frames;
 gint sdx__frames = 0;
 extern SDL_Event sdx__evt;
@@ -147,7 +153,6 @@ gint sdx__width = 0;
 extern gint sdx__height;
 gint sdx__height = 0;
 
-GQuark sdx_sdl_exception_quark (void);
 GType sdx_blit_get_type (void) G_GNUC_CONST;
 sdxBlit* sdx_blit_dup (const sdxBlit* self);
 void sdx_blit_free (sdxBlit* self);
@@ -155,7 +160,9 @@ void sdx_font_free (sdxFont* self);
 void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
 GType sdx_direction_get_type (void) G_GNUC_CONST;
 SDL_Window* sdx_initialize (gint width, gint height, const gchar* name);
+GQuark sdx_sdl_exception_quark (void);
 gdouble sdx_getRandom (void);
+void sdx_setResource (const gchar* path);
 void sdx_setDefaultFont (const gchar* path, gint size);
 sdxFont* sdx_font_new (const gchar* path, gint size);
 void sdx_setSmallFont (const gchar* path, gint size);
@@ -176,11 +183,6 @@ void sdx_begin (void);
 void sdx_end (void);
 
 extern const SDL_Color SDX_COLOR_AntiqueWhite;
-
-GQuark sdx_sdl_exception_quark (void) {
-	return g_quark_from_static_string ("sdx_sdl_exception-quark");
-}
-
 
 sdxBlit* sdx_blit_dup (const sdxBlit* self) {
 	sdxBlit* dup;
@@ -377,6 +379,17 @@ gdouble sdx_getRandom (void) {
 	_tmp0_ = genrand_real2 ();
 	result = _tmp0_;
 	return result;
+}
+
+
+void sdx_setResource (const gchar* path) {
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	g_return_if_fail (path != NULL);
+	_tmp0_ = path;
+	_tmp1_ = g_strdup (_tmp0_);
+	_g_free0 (sdx_resourceBase);
+	sdx_resourceBase = _tmp1_;
 }
 
 

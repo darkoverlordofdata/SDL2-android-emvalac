@@ -1,4 +1,4 @@
-namespace util {
+namespace sdx.utils {
 
     public errordomain JsonException {
         SyntaxError,

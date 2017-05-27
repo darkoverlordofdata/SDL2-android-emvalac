@@ -31,6 +31,7 @@ public class Game : Object {
 
 	public void initialize() {
 
+		sdx.setResource("/darkoverlordofdata/shmupwarz");
 		sdx.setSmallFont("assets/fonts/OpenDyslexic-Bold.otf", 16);
 		sdx.setDefaultFont("assets/fonts/OpenDyslexic-Bold.otf", 24);
 		sdx.setShowFps(true);

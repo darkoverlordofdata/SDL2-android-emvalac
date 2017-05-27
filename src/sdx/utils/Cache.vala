@@ -1,7 +1,7 @@
 /**
  * Unordered cache 
  */
-namespace util {
+namespace sdx.utils {
 
 	
 	public class Cache<T> : Object {

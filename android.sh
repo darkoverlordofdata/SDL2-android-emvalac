@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 ## build vala
+
 emvalac --builddir build \
     --cc=jni \
     --define ANDROID \
@@ -8,6 +9,7 @@ emvalac --builddir build \
     --vapidir src/vapis \
     --pkg sdl2 \
     --pkg SDL2_image \
+    --pkg SDL2_mixer \
     --pkg SDL2_ttf \
     --pkg android \
     --pkg posix \
@@ -25,11 +27,22 @@ emvalac --builddir build \
     build/src/sdx/Color.gs \
     build/src/sdx/Files.vala \
     build/src/sdx/Font.vala \
+    build/src/sdx/audio/Sound.vala \
+    build/src/sdx/audio/audio.vala \
+    build/src/sdx/exceptions.gs \
     build/src/sdx/files/FileHandle.vala \
+    build/src/sdx/files/files.vala \
     build/src/sdx/graphics/Sprite.vala \
     build/src/sdx/graphics/Surface.vala \
     build/src/sdx/graphics/TextureAtlas.vala \
+    build/src/sdx/graphics/graphics.vala \
     build/src/sdx/sdx.vala \
+    build/src/sdx/utils/Cache.vala \
+    build/src/sdx/utils/File.vala \
+    build/src/sdx/utils/Json.vala \
+    build/src/sdx/utils/StringTokenizer.vala \
+    build/src/sdx/utils/utils.vala \
+    build/src/shmupwarz.vala \
     build/src/systems/AnimationSystem.vala \
     build/src/systems/CollisionSystem.vala \
     build/src/systems/DisplaySystem.vala \
@@ -39,16 +52,13 @@ emvalac --builddir build \
     build/src/systems/RemoveSystem.vala \
     build/src/systems/ScoreSystem.vala \
     build/src/systems/SpawnSystem.vala \
-    build/src/util/Cache.vala \
-    build/src/util/File.vala \
-    build/src/util/Json.vala \
-    build/src/util/JsVariant.vala \
-    build/src/util/String.vala 
 
 
-
+###
 ## copy ir output to jni folder
-## makes sure main.c inclues sdl2.h
+## makes sure main.c includes sdl.h
+###
+
 sed  "s/#include <SDL2/#include <SDL2\/SDL.h>\n#include <SDL2/g"  ./build/src/main.c >  ./android/jni/src/main.c
 
 cp -f ./build/src/Factory.c ./android/jni/src
@@ -62,11 +72,22 @@ cp -f ./build/src/entitas/entitas.c ./android/jni/src/entitas
 cp -f ./build/src/sdx/Color.c ./android/jni/src/sdx
 cp -f ./build/src/sdx/Files.c ./android/jni/src/sdx
 cp -f ./build/src/sdx/Font.c ./android/jni/src/sdx
+cp -f ./build/src/sdx/audio/Sound.c ./android/jni/src/sdx/audio
+cp -f ./build/src/sdx/audio/audio.c ./android/jni/src/sdx/audio
+cp -f ./build/src/sdx/exceptions.c ./android/jni/src/sdx
 cp -f ./build/src/sdx/files/FileHandle.c ./android/jni/src/sdx/files
+cp -f ./build/src/sdx/files/files.c ./android/jni/src/sdx/files
 cp -f ./build/src/sdx/graphics/Sprite.c ./android/jni/src/sdx/graphics
 cp -f ./build/src/sdx/graphics/Surface.c ./android/jni/src/sdx/graphics
 cp -f ./build/src/sdx/graphics/TextureAtlas.c ./android/jni/src/sdx/graphics
+cp -f ./build/src/sdx/graphics/graphics.c ./android/jni/src/sdx/graphics
 cp -f ./build/src/sdx/sdx.c ./android/jni/src/sdx
+cp -f ./build/src/sdx/utils/Cache.c ./android/jni/src/sdx/utils
+cp -f ./build/src/sdx/utils/File.c ./android/jni/src/sdx/utils
+cp -f ./build/src/sdx/utils/Json.c ./android/jni/src/sdx/utils
+cp -f ./build/src/sdx/utils/StringTokenizer.c ./android/jni/src/sdx/utils
+cp -f ./build/src/sdx/utils/utils.c ./android/jni/src/sdx/utils
+cp -f ./build/src/shmupwarz.c ./android/jni/src
 cp -f ./build/src/systems/AnimationSystem.c ./android/jni/src/systems
 cp -f ./build/src/systems/CollisionSystem.c ./android/jni/src/systems
 cp -f ./build/src/systems/DisplaySystem.c ./android/jni/src/systems
@@ -76,11 +97,6 @@ cp -f ./build/src/systems/PhysicsSystem.c ./android/jni/src/systems
 cp -f ./build/src/systems/RemoveSystem.c ./android/jni/src/systems
 cp -f ./build/src/systems/ScoreSystem.c ./android/jni/src/systems
 cp -f ./build/src/systems/SpawnSystem.c ./android/jni/src/systems
-cp -f ./build/src/util/Cache.c ./android/jni/src/util
-cp -f ./build/src/util/File.c ./android/jni/src/util
-cp -f ./build/src/util/Json.c ./android/jni/src/util
-cp -f ./build/src/util/JsVariant.c ./android/jni/src/util
-cp -f ./build/src/util/String.c ./android/jni/src/util
 
 
 cd ./android/jni
@@ -91,5 +107,5 @@ ndk-build
 cd ..
 
 ## build the apk
-ant debug #install
+ant debug install
 

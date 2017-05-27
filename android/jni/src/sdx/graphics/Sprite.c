@@ -15,6 +15,7 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_rwops.h>
 
 
 #define SDX_GRAPHICS_TYPE_SCALE (sdx_graphics_scale_get_type ())
@@ -81,6 +82,7 @@ struct _sdxFont {
 	gchar* path;
 	gint size;
 	TTF_Font* innerFont;
+	SDL_RWops* raw;
 };
 
 

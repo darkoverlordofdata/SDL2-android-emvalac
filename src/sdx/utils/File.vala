@@ -1,4 +1,4 @@
-namespace util {
+namespace sdx.utils {
 
 	public const string pathSeparator  = "/";
 	public const char pathSeparatorChar  = '/';

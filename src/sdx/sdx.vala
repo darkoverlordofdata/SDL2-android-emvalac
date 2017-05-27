@@ -4,15 +4,6 @@ using SDLImage;
 
 namespace sdx {
 
-	public errordomain SdlException {
-		Initialization,
-		ImageInitialization,
-		TtfInitialization,
-		TextureFilteringNotEnabled,
-		OpenWindow,
-		CreateRenderer
-	}
-
 	public struct Blit {
 		SDL.Video.Rect source;
 		SDL.Video.Rect dest;
@@ -41,6 +32,7 @@ namespace sdx {
 	bool running;
 	uint8[] keys;
 	bool[] dir;
+	string resourceBase;
 
 	int _frames;
 	Event _evt;
@@ -79,27 +71,14 @@ namespace sdx {
 		if (SDLTTF.init() == -1)
 			throw new SdlException.TtfInitialization(SDL.get_error());
 
+
+#if (ANDROID)    
 		SDL.Video.Display ds = {};
 		SDL.Video.DisplayMode mode;
 		var n = ds.num_modes();
 		ds.get_mode(0, out mode);
 		_width = mode.w;
 		_height = mode.h;
-		//  float ddpi;
-		//  float hdpi;
-		//  float vdpi;
-		//  ds.get_dpi(out ddpi, out hdpi, out vdpi);
-
-		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "=========================");
-		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "height = %d".printf(_height));
-		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "width  = %d".printf(_width));
-		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "ddpi   = %f".printf(ddpi));
-		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "hdpi   = %f".printf(hdpi));
-		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "vdpi   = %f".printf(vdpi));
-		//  Android.log_write(Android.LogPriority.ERROR, "DISPLAY", "=========================");
-
-
-#if (ANDROID)    
 		var window = new Window(name, Window.POS_CENTERED, Window.POS_CENTERED, 0, 0, WindowFlags.SHOWN);
 #else
 		var window = new Window(name, Window.POS_CENTERED, Window.POS_CENTERED, width, height, WindowFlags.SHOWN);
@@ -121,6 +100,10 @@ namespace sdx {
 
 	double getRandom() {
 		return MersenneTwister.genrand_real2();
+	}
+
+	void setResource(string path) {
+		sdx.resourceBase = path;
 	}
 
 	void setDefaultFont(string path, int size) {

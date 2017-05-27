@@ -13,7 +13,12 @@
 typedef struct _sdxgraphicsSurface sdxgraphicsSurface;
 #define _SDL_FreeSurface0(var) ((var == NULL) ? NULL : (var = (SDL_FreeSurface (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
+typedef struct _sdxfilesFileHandle sdxfilesFileHandle;
 #define _SDL_FreeRW0(var) ((var == NULL) ? NULL : (var = (SDL_FreeRW (var), NULL)))
+void sdx_files_file_handle_release (sdxfilesFileHandle* self);
+void sdx_files_file_handle_free (sdxfilesFileHandle* self);
+sdxfilesFileHandle* sdx_files_file_handle_retain (sdxfilesFileHandle* self);
+#define _sdx_files_file_handle_release0(var) ((var == NULL) ? NULL : (var = (sdx_files_file_handle_release (var), NULL)))
 
 struct _sdxgraphicsSurface {
 	gint _retainCount;
@@ -34,6 +39,9 @@ sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self);
 void sdx_graphics_surface_release (sdxgraphicsSurface* self);
 void sdx_graphics_surface_free (sdxgraphicsSurface* self);
 sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path);
+void sdx_files_file_handle_free (sdxfilesFileHandle* self);
+sdxfilesFileHandle* sdx_files_asset (const gchar* path);
+SDL_RWops* sdx_files_file_handle_getRWops (sdxfilesFileHandle* self);
 
 
 sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self) {
@@ -59,14 +67,16 @@ sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path) {
 	sdxgraphicsSurface* self;
 	const gchar* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
+	sdxfilesFileHandle* file = NULL;
 	const gchar* _tmp2_ = NULL;
-	SDL_RWops* _tmp3_ = NULL;
+	sdxfilesFileHandle* _tmp3_ = NULL;
 	SDL_RWops* _tmp4_ = NULL;
-	SDL_Surface* _tmp5_ = NULL;
+	SDL_RWops* _tmp5_ = NULL;
 	SDL_Surface* _tmp6_ = NULL;
-	gint _tmp7_ = 0;
-	SDL_Surface* _tmp8_ = NULL;
-	gint _tmp9_ = 0;
+	SDL_Surface* _tmp7_ = NULL;
+	gint _tmp8_ = 0;
+	SDL_Surface* _tmp9_ = NULL;
+	gint _tmp10_ = 0;
 	g_return_val_if_fail (path != NULL, NULL);
 	self = g_slice_new0 (sdxgraphicsSurface);
 	sdx_graphics_surface_instance_init (self);
@@ -75,18 +85,21 @@ sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path) {
 	_g_free0 (self->path);
 	self->path = _tmp1_;
 	_tmp2_ = path;
-	_tmp3_ = SDL_RWFromFile (_tmp2_, "r");
-	_tmp4_ = _tmp3_;
-	_tmp5_ = IMG_LoadPNG_RW (_tmp4_);
+	_tmp3_ = sdx_files_asset (_tmp2_);
+	file = _tmp3_;
+	_tmp4_ = sdx_files_file_handle_getRWops (file);
+	_tmp5_ = _tmp4_;
+	_tmp6_ = IMG_LoadPNG_RW (_tmp5_);
 	_SDL_FreeSurface0 (self->surface);
-	self->surface = _tmp5_;
-	_SDL_FreeRW0 (_tmp4_);
-	_tmp6_ = self->surface;
-	_tmp7_ = _tmp6_->w;
-	self->width = _tmp7_;
-	_tmp8_ = self->surface;
-	_tmp9_ = _tmp8_->h;
-	self->height = _tmp9_;
+	self->surface = _tmp6_;
+	_SDL_FreeRW0 (_tmp5_);
+	_tmp7_ = self->surface;
+	_tmp8_ = _tmp7_->w;
+	self->width = _tmp8_;
+	_tmp9_ = self->surface;
+	_tmp10_ = _tmp9_->h;
+	self->height = _tmp10_;
+	_sdx_files_file_handle_release0 (file);
 	return self;
 }
 

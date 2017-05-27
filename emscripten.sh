@@ -27,11 +27,22 @@ emvalac --builddir build \
     build/src/sdx/Color.gs \
     build/src/sdx/Files.vala \
     build/src/sdx/Font.vala \
+    build/src/sdx/audio/Sound.vala \
+    build/src/sdx/audio/audio.vala \
+    build/src/sdx/exceptions.gs \
     build/src/sdx/files/FileHandle.vala \
+    build/src/sdx/files/files.vala \
     build/src/sdx/graphics/Sprite.vala \
     build/src/sdx/graphics/Surface.vala \
     build/src/sdx/graphics/TextureAtlas.vala \
+    build/src/sdx/graphics/graphics.vala \
     build/src/sdx/sdx.vala \
+    build/src/sdx/utils/Cache.vala \
+    build/src/sdx/utils/File.vala \
+    build/src/sdx/utils/Json.vala \
+    build/src/sdx/utils/StringTokenizer.vala \
+    build/src/sdx/utils/utils.vala \
+    build/src/shmupwarz.vala \
     build/src/systems/AnimationSystem.vala \
     build/src/systems/CollisionSystem.vala \
     build/src/systems/DisplaySystem.vala \
@@ -40,9 +51,6 @@ emvalac --builddir build \
     build/src/systems/PhysicsSystem.vala \
     build/src/systems/RemoveSystem.vala \
     build/src/systems/ScoreSystem.vala \
-    build/src/systems/SpawnSystem.vala \
-    build/src/util/Cache.vala \
-    build/src/util/File.vala \
-    build/src/util/Json.vala 
-
-
+    build/src/systems/SpawnSystem.vala 
+    
+    

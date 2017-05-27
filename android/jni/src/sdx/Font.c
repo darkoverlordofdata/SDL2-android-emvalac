@@ -7,12 +7,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_rwops.h>
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_surface.h>
 
 typedef struct _sdxFont sdxFont;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _TTF_CloseFont0(var) ((var == NULL) ? NULL : (var = (TTF_CloseFont (var), NULL)))
+#define _SDL_FreeRW0(var) ((var == NULL) ? NULL : (var = (SDL_FreeRW (var), NULL)))
+typedef struct _sdxfilesFileHandle sdxfilesFileHandle;
+void sdx_files_file_handle_release (sdxfilesFileHandle* self);
+void sdx_files_file_handle_free (sdxfilesFileHandle* self);
+sdxfilesFileHandle* sdx_files_file_handle_retain (sdxfilesFileHandle* self);
+#define _sdx_files_file_handle_release0(var) ((var == NULL) ? NULL : (var = (sdx_files_file_handle_release (var), NULL)))
 
 struct _sdxFont {
 	gint _retainCount;
@@ -20,6 +27,7 @@ struct _sdxFont {
 	gchar* path;
 	gint size;
 	TTF_Font* innerFont;
+	SDL_RWops* raw;
 };
 
 
@@ -32,6 +40,9 @@ sdxFont* sdx_font_retain (sdxFont* self);
 void sdx_font_release (sdxFont* self);
 void sdx_font_free (sdxFont* self);
 sdxFont* sdx_font_new (const gchar* path, gint size);
+void sdx_files_file_handle_free (sdxfilesFileHandle* self);
+sdxfilesFileHandle* sdx_files_asset (const gchar* path);
+SDL_RWops* sdx_files_file_handle_getRWops (sdxfilesFileHandle* self);
 SDL_Surface* sdx_font_render (sdxFont* self, const gchar* text, SDL_Color color);
 
 
@@ -56,26 +67,37 @@ void sdx_font_release (sdxFont* self) {
 
 sdxFont* sdx_font_new (const gchar* path, gint size) {
 	sdxFont* self;
+	sdxfilesFileHandle* file = NULL;
 	const gchar* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
-	TTF_Font* _tmp2_ = NULL;
-	const gchar* _tmp3_ = NULL;
-	gchar* _tmp4_ = NULL;
-	gint _tmp5_ = 0;
+	sdxfilesFileHandle* _tmp1_ = NULL;
+	SDL_RWops* _tmp2_ = NULL;
+	SDL_RWops* _tmp3_ = NULL;
+	gint _tmp4_ = 0;
+	TTF_Font* _tmp5_ = NULL;
+	const gchar* _tmp6_ = NULL;
+	gchar* _tmp7_ = NULL;
+	gint _tmp8_ = 0;
 	g_return_val_if_fail (path != NULL, NULL);
 	self = g_slice_new0 (sdxFont);
 	sdx_font_instance_init (self);
 	_tmp0_ = path;
-	_tmp1_ = size;
-	_tmp2_ = TTF_OpenFont (_tmp0_, _tmp1_);
+	_tmp1_ = sdx_files_asset (_tmp0_);
+	file = _tmp1_;
+	_tmp2_ = sdx_files_file_handle_getRWops (file);
+	_SDL_FreeRW0 (self->raw);
+	self->raw = _tmp2_;
+	_tmp3_ = self->raw;
+	_tmp4_ = size;
+	_tmp5_ = TTF_OpenFontRW (_tmp3_, 0, _tmp4_);
 	_TTF_CloseFont0 (self->innerFont);
-	self->innerFont = _tmp2_;
-	_tmp3_ = path;
-	_tmp4_ = g_strdup (_tmp3_);
+	self->innerFont = _tmp5_;
+	_tmp6_ = path;
+	_tmp7_ = g_strdup (_tmp6_);
 	_g_free0 (self->path);
-	self->path = _tmp4_;
-	_tmp5_ = size;
-	self->size = _tmp5_;
+	self->path = _tmp7_;
+	_tmp8_ = size;
+	self->size = _tmp8_;
+	_sdx_files_file_handle_release0 (file);
 	return self;
 }
 
@@ -118,6 +140,7 @@ static void sdx_font_instance_init (sdxFont * self) {
 void sdx_font_free (sdxFont* self) {
 	_g_free0 (self->path);
 	_TTF_CloseFont0 (self->innerFont);
+	_SDL_FreeRW0 (self->raw);
 	g_slice_free (sdxFont, self);
 }
 

@@ -11,14 +11,13 @@
 #define SDX_TYPE_FILE_TYPE (sdx_file_type_get_type ())
 typedef struct _sdxFiles sdxFiles;
 #define _g_free0(var) (var = (g_free (var), NULL))
-typedef struct _sdxfilesFileHandle sdxfilesFileHandle;
 
 typedef enum  {
-	SDX_FILE_TYPE_Internal,
+	SDX_FILE_TYPE_Parent,
 	SDX_FILE_TYPE_Resource,
-	SDX_FILE_TYPE_External,
+	SDX_FILE_TYPE_Asset,
 	SDX_FILE_TYPE_Absolute,
-	SDX_FILE_TYPE_Local
+	SDX_FILE_TYPE_Relative
 } sdxFileType;
 
 struct _sdxFiles {
@@ -36,20 +35,12 @@ sdxFiles* sdx_files_retain (sdxFiles* self);
 void sdx_files_release (sdxFiles* self);
 void sdx_files_free (sdxFiles* self);
 sdxFiles* sdx_files_new (const gchar* resourcePath);
-void sdx_files_file_handle_free (sdxfilesFileHandle* self);
-sdxfilesFileHandle* sdx_files_getHandle (sdxFiles* self, const gchar* path, sdxFileType type);
-sdxfilesFileHandle* sdx_files_file_handle_new (const gchar* path, sdxFileType type);
-sdxfilesFileHandle* sdx_files_internal (sdxFiles* self, const gchar* path);
-sdxfilesFileHandle* sdx_files_resource (sdxFiles* self, const gchar* path);
-sdxfilesFileHandle* sdx_files_external (sdxFiles* self, const gchar* path);
-sdxfilesFileHandle* sdx_files_absolute (sdxFiles* self, const gchar* path);
-sdxfilesFileHandle* sdx_files_local (sdxFiles* self, const gchar* path);
 
 
 GType sdx_file_type_get_type (void) {
 	static volatile gsize sdx_file_type_type_id__volatile = 0;
 	if (g_once_init_enter (&sdx_file_type_type_id__volatile)) {
-		static const GEnumValue values[] = {{SDX_FILE_TYPE_Internal, "SDX_FILE_TYPE_Internal", "internal"}, {SDX_FILE_TYPE_Resource, "SDX_FILE_TYPE_Resource", "resource"}, {SDX_FILE_TYPE_External, "SDX_FILE_TYPE_External", "external"}, {SDX_FILE_TYPE_Absolute, "SDX_FILE_TYPE_Absolute", "absolute"}, {SDX_FILE_TYPE_Local, "SDX_FILE_TYPE_Local", "local"}, {0, NULL, NULL}};
+		static const GEnumValue values[] = {{SDX_FILE_TYPE_Parent, "SDX_FILE_TYPE_Parent", "parent"}, {SDX_FILE_TYPE_Resource, "SDX_FILE_TYPE_Resource", "resource"}, {SDX_FILE_TYPE_Asset, "SDX_FILE_TYPE_Asset", "asset"}, {SDX_FILE_TYPE_Absolute, "SDX_FILE_TYPE_Absolute", "absolute"}, {SDX_FILE_TYPE_Relative, "SDX_FILE_TYPE_Relative", "relative"}, {0, NULL, NULL}};
 		GType sdx_file_type_type_id;
 		sdx_file_type_type_id = g_enum_register_static ("sdxFileType", values);
 		g_once_init_leave (&sdx_file_type_type_id__volatile, sdx_file_type_type_id);
@@ -89,86 +80,6 @@ sdxFiles* sdx_files_new (const gchar* resourcePath) {
 	_g_free0 (self->resourcePath);
 	self->resourcePath = _tmp1_;
 	return self;
-}
-
-
-sdxfilesFileHandle* sdx_files_getHandle (sdxFiles* self, const gchar* path, sdxFileType type) {
-	sdxfilesFileHandle* result = NULL;
-	const gchar* _tmp0_ = NULL;
-	sdxFileType _tmp1_ = 0;
-	sdxfilesFileHandle* _tmp2_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-	_tmp0_ = path;
-	_tmp1_ = type;
-	_tmp2_ = sdx_files_file_handle_new (_tmp0_, _tmp1_);
-	result = _tmp2_;
-	return result;
-}
-
-
-sdxfilesFileHandle* sdx_files_internal (sdxFiles* self, const gchar* path) {
-	sdxfilesFileHandle* result = NULL;
-	const gchar* _tmp0_ = NULL;
-	sdxfilesFileHandle* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-	_tmp0_ = path;
-	_tmp1_ = sdx_files_file_handle_new (_tmp0_, SDX_FILE_TYPE_Internal);
-	result = _tmp1_;
-	return result;
-}
-
-
-sdxfilesFileHandle* sdx_files_resource (sdxFiles* self, const gchar* path) {
-	sdxfilesFileHandle* result = NULL;
-	const gchar* _tmp0_ = NULL;
-	sdxfilesFileHandle* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-	_tmp0_ = path;
-	_tmp1_ = sdx_files_file_handle_new (_tmp0_, SDX_FILE_TYPE_Resource);
-	result = _tmp1_;
-	return result;
-}
-
-
-sdxfilesFileHandle* sdx_files_external (sdxFiles* self, const gchar* path) {
-	sdxfilesFileHandle* result = NULL;
-	const gchar* _tmp0_ = NULL;
-	sdxfilesFileHandle* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-	_tmp0_ = path;
-	_tmp1_ = sdx_files_file_handle_new (_tmp0_, SDX_FILE_TYPE_External);
-	result = _tmp1_;
-	return result;
-}
-
-
-sdxfilesFileHandle* sdx_files_absolute (sdxFiles* self, const gchar* path) {
-	sdxfilesFileHandle* result = NULL;
-	const gchar* _tmp0_ = NULL;
-	sdxfilesFileHandle* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-	_tmp0_ = path;
-	_tmp1_ = sdx_files_file_handle_new (_tmp0_, SDX_FILE_TYPE_Absolute);
-	result = _tmp1_;
-	return result;
-}
-
-
-sdxfilesFileHandle* sdx_files_local (sdxFiles* self, const gchar* path) {
-	sdxfilesFileHandle* result = NULL;
-	const gchar* _tmp0_ = NULL;
-	sdxfilesFileHandle* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-	_tmp0_ = path;
-	_tmp1_ = sdx_files_file_handle_new (_tmp0_, SDX_FILE_TYPE_Local);
-	result = _tmp1_;
-	return result;
 }
 
 

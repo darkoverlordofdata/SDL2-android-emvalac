@@ -10,129 +10,129 @@
 #include <math.h>
 
 
-#define UTIL_TYPE_JS_TYPE (util_js_type_get_type ())
-typedef struct _utilJsVariant utilJsVariant;
-typedef struct _utilJson utilJson;
+#define SDX_UTILS_TYPE_JS_TYPE (sdx_utils_js_type_get_type ())
+typedef struct _sdxutilsJsVariant sdxutilsJsVariant;
+typedef struct _sdxutilsJson sdxutilsJson;
 #define _g_free0(var) (var = (g_free (var), NULL))
-void util_json_release (utilJson* self);
-void util_json_free (utilJson* self);
-utilJson* util_json_retain (utilJson* self);
-#define _util_json_release0(var) ((var == NULL) ? NULL : (var = (util_json_release (var), NULL)))
-void util_js_variant_release (utilJsVariant* self);
-void util_js_variant_free (utilJsVariant* self);
-utilJsVariant* util_js_variant_retain (utilJsVariant* self);
-#define _util_js_variant_release0(var) ((var == NULL) ? NULL : (var = (util_js_variant_release (var), NULL)))
+void sdx_utils_json_release (sdxutilsJson* self);
+void sdx_utils_json_free (sdxutilsJson* self);
+sdxutilsJson* sdx_utils_json_retain (sdxutilsJson* self);
+#define _sdx_utils_json_release0(var) ((var == NULL) ? NULL : (var = (sdx_utils_json_release (var), NULL)))
+void sdx_utils_js_variant_release (sdxutilsJsVariant* self);
+void sdx_utils_js_variant_free (sdxutilsJsVariant* self);
+sdxutilsJsVariant* sdx_utils_js_variant_retain (sdxutilsJsVariant* self);
+#define _sdx_utils_js_variant_release0(var) ((var == NULL) ? NULL : (var = (sdx_utils_js_variant_release (var), NULL)))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
-#define __g_list_free__util_js_variant_release0_0(var) ((var == NULL) ? NULL : (var = (_g_list_free__util_js_variant_release0_ (var), NULL)))
+#define __g_list_free__sdx_utils_js_variant_release0_0(var) ((var == NULL) ? NULL : (var = (_g_list_free__sdx_utils_js_variant_release0_ (var), NULL)))
 
 typedef enum  {
-	UTIL_JSON_EXCEPTION_SyntaxError,
-	UTIL_JSON_EXCEPTION_UnexpectedCharacter,
-	UTIL_JSON_EXCEPTION_InvalidString,
-	UTIL_JSON_EXCEPTION_InvalidArray,
-	UTIL_JSON_EXCEPTION_InvalidObject,
-	UTIL_JSON_EXCEPTION_DuplicateKey
-} utilJsonException;
-#define UTIL_JSON_EXCEPTION util_json_exception_quark ()
+	SDX_UTILS_JSON_EXCEPTION_SyntaxError,
+	SDX_UTILS_JSON_EXCEPTION_UnexpectedCharacter,
+	SDX_UTILS_JSON_EXCEPTION_InvalidString,
+	SDX_UTILS_JSON_EXCEPTION_InvalidArray,
+	SDX_UTILS_JSON_EXCEPTION_InvalidObject,
+	SDX_UTILS_JSON_EXCEPTION_DuplicateKey
+} sdxutilsJsonException;
+#define SDX_UTILS_JSON_EXCEPTION sdx_utils_json_exception_quark ()
 typedef enum  {
-	UTIL_JS_TYPE_JS_INVALID,
-	UTIL_JS_TYPE_JS_BOOLEAN,
-	UTIL_JS_TYPE_JS_NUMBER,
-	UTIL_JS_TYPE_JS_STRING,
-	UTIL_JS_TYPE_JS_OBJECT,
-	UTIL_JS_TYPE_JS_ARRAY
-} utilJsType;
+	SDX_UTILS_JS_TYPE_JS_INVALID,
+	SDX_UTILS_JS_TYPE_JS_BOOLEAN,
+	SDX_UTILS_JS_TYPE_JS_NUMBER,
+	SDX_UTILS_JS_TYPE_JS_STRING,
+	SDX_UTILS_JS_TYPE_JS_OBJECT,
+	SDX_UTILS_JS_TYPE_JS_ARRAY
+} sdxutilsJsType;
 
-typedef utilJsVariant* (*utilJsDelegate) (utilJsVariant* holder, const gchar* key, utilJsVariant* value, void* user_data);
-struct _utilJson {
+typedef sdxutilsJsVariant* (*sdxutilsJsDelegate) (sdxutilsJsVariant* holder, const gchar* key, sdxutilsJsVariant* value, void* user_data);
+struct _sdxutilsJson {
 	gint _retainCount;
 	gint at;
 	gchar ch;
 	gchar* text;
-	utilJsDelegate replacer;
+	sdxutilsJsDelegate replacer;
 	gpointer replacer_target;
 	GDestroyNotify replacer_target_destroy_notify;
 };
 
-struct _utilJsVariant {
+struct _sdxutilsJsVariant {
 	gint _retainCount;
 	gboolean boolean;
 	gdouble number;
 	gchar* string;
 	GHashTable* object;
 	GList* array;
-	utilJsType type;
+	sdxutilsJsType type;
 };
 
 
-extern gchar* util_json_gap;
-gchar* util_json_gap = NULL;
-extern gchar* util_json_indent;
-gchar* util_json_indent = NULL;
+extern gchar* sdx_utils_json_gap;
+gchar* sdx_utils_json_gap = NULL;
+extern gchar* sdx_utils_json_indent;
+gchar* sdx_utils_json_indent = NULL;
 
-GQuark util_json_exception_quark (void);
-GType util_js_type_get_type (void) G_GNUC_CONST;
-void util_js_variant_free (utilJsVariant* self);
-void util_json_free (utilJson* self);
-static void util_json_instance_init (utilJson * self);
-#define UTIL_JSON_HEX_DIGIT "0123456789abcdef"
-#define UTIL_JSON_escape0 "\"\\/bfnrt"
-utilJson* util_json_retain (utilJson* self);
-void util_json_release (utilJson* self);
-void util_json_free (utilJson* self);
-utilJson* util_json_new (utilJsDelegate replacer, void* replacer_target);
-utilJsVariant* util_json_parse (const gchar* source);
-utilJsVariant* util_json_parseJson (utilJson* self, const gchar* source);
-gchar* util_json_stringify (utilJsVariant* value, utilJsDelegate replacer, void* replacer_target, const gchar* space);
-utilJsVariant* util_js_variant_new (utilJsType type, gboolean isNull);
-gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder);
-gchar* util_json_quote (utilJson* self, const gchar* str);
-utilJsVariant* util_json_getItem (utilJson* self, utilJsVariant* holder, const gchar* key);
-utilJsVariant* util_json_getValue (utilJson* self);
-void util_json_skipWhite (utilJson* self);
-gchar util_json_next (utilJson* self, gchar* c);
+GQuark sdx_utils_json_exception_quark (void);
+GType sdx_utils_js_type_get_type (void) G_GNUC_CONST;
+void sdx_utils_js_variant_free (sdxutilsJsVariant* self);
+void sdx_utils_json_free (sdxutilsJson* self);
+static void sdx_utils_json_instance_init (sdxutilsJson * self);
+#define SDX_UTILS_JSON_HEX_DIGIT "0123456789abcdef"
+#define SDX_UTILS_JSON_escape0 "\"\\/bfnrt"
+sdxutilsJson* sdx_utils_json_retain (sdxutilsJson* self);
+void sdx_utils_json_release (sdxutilsJson* self);
+void sdx_utils_json_free (sdxutilsJson* self);
+sdxutilsJson* sdx_utils_json_new (sdxutilsJsDelegate replacer, void* replacer_target);
+sdxutilsJsVariant* sdx_utils_json_parse (const gchar* source);
+sdxutilsJsVariant* sdx_utils_json_parseJson (sdxutilsJson* self, const gchar* source);
+gchar* sdx_utils_json_stringify (sdxutilsJsVariant* value, sdxutilsJsDelegate replacer, void* replacer_target, const gchar* space);
+sdxutilsJsVariant* sdx_utils_js_variant_new (sdxutilsJsType type, gboolean isNull);
+gchar* sdx_utils_json_str (sdxutilsJson* self, const gchar* key, sdxutilsJsVariant* holder);
+gchar* sdx_utils_json_quote (sdxutilsJson* self, const gchar* str);
+sdxutilsJsVariant* sdx_utils_json_getItem (sdxutilsJson* self, sdxutilsJsVariant* holder, const gchar* key);
+sdxutilsJsVariant* sdx_utils_json_getValue (sdxutilsJson* self);
+void sdx_utils_json_skipWhite (sdxutilsJson* self);
+gchar sdx_utils_json_next (sdxutilsJson* self, gchar* c);
 static gboolean _g_ascii_equal (const gchar* s1, const gchar* s2);
-utilJsVariant* util_json_getObject (utilJson* self);
-utilJsVariant* util_json_getArray (utilJson* self);
-utilJsVariant* util_json_getString (utilJson* self);
-utilJsVariant* util_json_getNumber (utilJson* self);
-utilJsVariant* util_json_getWord (utilJson* self);
-utilJsVariant* util_js_variant_Number (gdouble value);
-utilJsVariant* util_js_variant_String (const gchar* value);
-utilJsVariant* util_js_variant_Boolean (gboolean value);
-static void util_js_variant_instance_init (utilJsVariant * self);
-static void _util_js_variant_release0_ (gpointer var);
-static void _g_list_free__util_js_variant_release0_ (GList* self);
-utilJsVariant* util_js_variant_retain (utilJsVariant* self);
-void util_js_variant_release (utilJsVariant* self);
-void util_js_variant_free (utilJsVariant* self);
+sdxutilsJsVariant* sdx_utils_json_getObject (sdxutilsJson* self);
+sdxutilsJsVariant* sdx_utils_json_getArray (sdxutilsJson* self);
+sdxutilsJsVariant* sdx_utils_json_getString (sdxutilsJson* self);
+sdxutilsJsVariant* sdx_utils_json_getNumber (sdxutilsJson* self);
+sdxutilsJsVariant* sdx_utils_json_getWord (sdxutilsJson* self);
+sdxutilsJsVariant* sdx_utils_js_variant_Number (gdouble value);
+sdxutilsJsVariant* sdx_utils_js_variant_String (const gchar* value);
+sdxutilsJsVariant* sdx_utils_js_variant_Boolean (gboolean value);
+static void sdx_utils_js_variant_instance_init (sdxutilsJsVariant * self);
+static void _sdx_utils_js_variant_release0_ (gpointer var);
+static void _g_list_free__sdx_utils_js_variant_release0_ (GList* self);
+sdxutilsJsVariant* sdx_utils_js_variant_retain (sdxutilsJsVariant* self);
+void sdx_utils_js_variant_release (sdxutilsJsVariant* self);
+void sdx_utils_js_variant_free (sdxutilsJsVariant* self);
 static void _g_free0_ (gpointer var);
-utilJsVariant* util_js_variant_at (utilJsVariant* self, gint index);
-utilJsVariant* util_js_variant_member (utilJsVariant* self, const gchar* key);
+sdxutilsJsVariant* sdx_utils_js_variant_at (sdxutilsJsVariant* self, gint index);
+sdxutilsJsVariant* sdx_utils_js_variant_member (sdxutilsJsVariant* self, const gchar* key);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
-const gchar* UTIL_JSON_escape1[8] = {"\"", "\\", "/", "\b", "\f", "\n", "\r", "\t"};
+const gchar* SDX_UTILS_JSON_escape1[8] = {"\"", "\\", "/", "\b", "\f", "\n", "\r", "\t"};
 
-GQuark util_json_exception_quark (void) {
-	return g_quark_from_static_string ("util_json_exception-quark");
+GQuark sdx_utils_json_exception_quark (void) {
+	return g_quark_from_static_string ("sdx_utils_json_exception-quark");
 }
 
 
-GType util_js_type_get_type (void) {
-	static volatile gsize util_js_type_type_id__volatile = 0;
-	if (g_once_init_enter (&util_js_type_type_id__volatile)) {
-		static const GEnumValue values[] = {{UTIL_JS_TYPE_JS_INVALID, "UTIL_JS_TYPE_JS_INVALID", "js-invalid"}, {UTIL_JS_TYPE_JS_BOOLEAN, "UTIL_JS_TYPE_JS_BOOLEAN", "js-boolean"}, {UTIL_JS_TYPE_JS_NUMBER, "UTIL_JS_TYPE_JS_NUMBER", "js-number"}, {UTIL_JS_TYPE_JS_STRING, "UTIL_JS_TYPE_JS_STRING", "js-string"}, {UTIL_JS_TYPE_JS_OBJECT, "UTIL_JS_TYPE_JS_OBJECT", "js-object"}, {UTIL_JS_TYPE_JS_ARRAY, "UTIL_JS_TYPE_JS_ARRAY", "js-array"}, {0, NULL, NULL}};
-		GType util_js_type_type_id;
-		util_js_type_type_id = g_enum_register_static ("utilJsType", values);
-		g_once_init_leave (&util_js_type_type_id__volatile, util_js_type_type_id);
+GType sdx_utils_js_type_get_type (void) {
+	static volatile gsize sdx_utils_js_type_type_id__volatile = 0;
+	if (g_once_init_enter (&sdx_utils_js_type_type_id__volatile)) {
+		static const GEnumValue values[] = {{SDX_UTILS_JS_TYPE_JS_INVALID, "SDX_UTILS_JS_TYPE_JS_INVALID", "js-invalid"}, {SDX_UTILS_JS_TYPE_JS_BOOLEAN, "SDX_UTILS_JS_TYPE_JS_BOOLEAN", "js-boolean"}, {SDX_UTILS_JS_TYPE_JS_NUMBER, "SDX_UTILS_JS_TYPE_JS_NUMBER", "js-number"}, {SDX_UTILS_JS_TYPE_JS_STRING, "SDX_UTILS_JS_TYPE_JS_STRING", "js-string"}, {SDX_UTILS_JS_TYPE_JS_OBJECT, "SDX_UTILS_JS_TYPE_JS_OBJECT", "js-object"}, {SDX_UTILS_JS_TYPE_JS_ARRAY, "SDX_UTILS_JS_TYPE_JS_ARRAY", "js-array"}, {0, NULL, NULL}};
+		GType sdx_utils_js_type_type_id;
+		sdx_utils_js_type_type_id = g_enum_register_static ("sdxutilsJsType", values);
+		g_once_init_leave (&sdx_utils_js_type_type_id__volatile, sdx_utils_js_type_type_id);
 	}
-	return util_js_type_type_id__volatile;
+	return sdx_utils_js_type_type_id__volatile;
 }
 
 
-utilJson* util_json_retain (utilJson* self) {
-	utilJson* result = NULL;
+sdxutilsJson* sdx_utils_json_retain (sdxutilsJson* self) {
+	sdxutilsJson* result = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_atomic_int_add ((volatile gint *) (&self->_retainCount), 1);
 	result = self;
@@ -140,22 +140,22 @@ utilJson* util_json_retain (utilJson* self) {
 }
 
 
-void util_json_release (utilJson* self) {
+void sdx_utils_json_release (sdxutilsJson* self) {
 	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = g_atomic_int_dec_and_test ((volatile gint *) (&self->_retainCount));
 	if (_tmp0_) {
-		util_json_free (self);
+		sdx_utils_json_free (self);
 	}
 }
 
 
-utilJson* util_json_new (utilJsDelegate replacer, void* replacer_target) {
-	utilJson* self;
-	utilJsDelegate _tmp0_ = NULL;
+sdxutilsJson* sdx_utils_json_new (sdxutilsJsDelegate replacer, void* replacer_target) {
+	sdxutilsJson* self;
+	sdxutilsJsDelegate _tmp0_ = NULL;
 	void* _tmp0__target = NULL;
-	self = g_slice_new0 (utilJson);
-	util_json_instance_init (self);
+	self = g_slice_new0 (sdxutilsJson);
+	sdx_utils_json_instance_init (self);
 	_tmp0_ = replacer;
 	_tmp0__target = replacer_target;
 	(self->replacer_target_destroy_notify == NULL) ? NULL : (self->replacer_target_destroy_notify (self->replacer_target), NULL);
@@ -169,77 +169,77 @@ utilJson* util_json_new (utilJsDelegate replacer, void* replacer_target) {
 }
 
 
-utilJsVariant* util_json_parse (const gchar* source) {
-	utilJsVariant* result = NULL;
-	utilJson* _tmp0_ = NULL;
-	utilJson* _tmp1_ = NULL;
+sdxutilsJsVariant* sdx_utils_json_parse (const gchar* source) {
+	sdxutilsJsVariant* result = NULL;
+	sdxutilsJson* _tmp0_ = NULL;
+	sdxutilsJson* _tmp1_ = NULL;
 	const gchar* _tmp2_ = NULL;
-	utilJsVariant* _tmp3_ = NULL;
-	utilJsVariant* _tmp4_ = NULL;
+	sdxutilsJsVariant* _tmp3_ = NULL;
+	sdxutilsJsVariant* _tmp4_ = NULL;
 	g_return_val_if_fail (source != NULL, NULL);
-	_tmp0_ = util_json_new (NULL, NULL);
+	_tmp0_ = sdx_utils_json_new (NULL, NULL);
 	_tmp1_ = _tmp0_;
 	_tmp2_ = source;
-	_tmp3_ = util_json_parseJson (_tmp1_, _tmp2_);
+	_tmp3_ = sdx_utils_json_parseJson (_tmp1_, _tmp2_);
 	_tmp4_ = _tmp3_;
-	_util_json_release0 (_tmp1_);
+	_sdx_utils_json_release0 (_tmp1_);
 	result = _tmp4_;
 	return result;
 }
 
 
-static gpointer _util_js_variant_retain0 (gpointer self) {
-	return self ? util_js_variant_retain (self) : NULL;
+static gpointer _sdx_utils_js_variant_retain0 (gpointer self) {
+	return self ? sdx_utils_js_variant_retain (self) : NULL;
 }
 
 
-gchar* util_json_stringify (utilJsVariant* value, utilJsDelegate replacer, void* replacer_target, const gchar* space) {
+gchar* sdx_utils_json_stringify (sdxutilsJsVariant* value, sdxutilsJsDelegate replacer, void* replacer_target, const gchar* space) {
 	gchar* result = NULL;
 	gchar* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
 	gchar* _tmp2_ = NULL;
-	utilJsVariant* holder = NULL;
-	utilJsVariant* _tmp3_ = NULL;
+	sdxutilsJsVariant* holder = NULL;
+	sdxutilsJsVariant* _tmp3_ = NULL;
 	GHashTable* _tmp4_ = NULL;
 	gchar* _tmp5_ = NULL;
-	utilJsVariant* _tmp6_ = NULL;
-	utilJsVariant* _tmp7_ = NULL;
-	utilJsDelegate _tmp8_ = NULL;
+	sdxutilsJsVariant* _tmp6_ = NULL;
+	sdxutilsJsVariant* _tmp7_ = NULL;
+	sdxutilsJsDelegate _tmp8_ = NULL;
 	void* _tmp8__target = NULL;
-	utilJson* _tmp9_ = NULL;
-	utilJson* _tmp10_ = NULL;
+	sdxutilsJson* _tmp9_ = NULL;
+	sdxutilsJson* _tmp10_ = NULL;
 	gchar* _tmp11_ = NULL;
 	gchar* _tmp12_ = NULL;
 	g_return_val_if_fail (value != NULL, NULL);
 	g_return_val_if_fail (space != NULL, NULL);
 	_tmp0_ = g_strdup ("");
-	_g_free0 (util_json_gap);
-	util_json_gap = _tmp0_;
+	_g_free0 (sdx_utils_json_gap);
+	sdx_utils_json_gap = _tmp0_;
 	_tmp1_ = space;
 	_tmp2_ = g_strdup (_tmp1_);
-	_g_free0 (util_json_indent);
-	util_json_indent = _tmp2_;
-	_tmp3_ = util_js_variant_new (UTIL_JS_TYPE_JS_OBJECT, FALSE);
+	_g_free0 (sdx_utils_json_indent);
+	sdx_utils_json_indent = _tmp2_;
+	_tmp3_ = sdx_utils_js_variant_new (SDX_UTILS_JS_TYPE_JS_OBJECT, FALSE);
 	holder = _tmp3_;
 	_tmp4_ = holder->object;
 	_tmp5_ = g_strdup ("");
 	_tmp6_ = value;
-	_tmp7_ = _util_js_variant_retain0 (_tmp6_);
+	_tmp7_ = _sdx_utils_js_variant_retain0 (_tmp6_);
 	g_hash_table_insert (_tmp4_, _tmp5_, _tmp7_);
 	_tmp8_ = replacer;
 	_tmp8__target = replacer_target;
-	_tmp9_ = util_json_new (_tmp8_, _tmp8__target);
+	_tmp9_ = sdx_utils_json_new (_tmp8_, _tmp8__target);
 	_tmp10_ = _tmp9_;
-	_tmp11_ = util_json_str (_tmp10_, "", holder);
+	_tmp11_ = sdx_utils_json_str (_tmp10_, "", holder);
 	_tmp12_ = _tmp11_;
-	_util_json_release0 (_tmp10_);
+	_sdx_utils_json_release0 (_tmp10_);
 	result = _tmp12_;
-	_util_js_variant_release0 (holder);
+	_sdx_utils_js_variant_release0 (holder);
 	return result;
 }
 
 
-gchar* util_json_quote (utilJson* self, const gchar* str) {
+gchar* sdx_utils_json_quote (sdxutilsJson* self, const gchar* str) {
 	gchar* result = NULL;
 	const gchar* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
@@ -259,45 +259,45 @@ gchar* util_json_quote (utilJson* self, const gchar* str) {
 }
 
 
-utilJsVariant* util_json_getItem (utilJson* self, utilJsVariant* holder, const gchar* key) {
-	utilJsVariant* result = NULL;
-	utilJsVariant* _tmp0_ = NULL;
-	utilJsType _tmp1_ = 0;
+sdxutilsJsVariant* sdx_utils_json_getItem (sdxutilsJson* self, sdxutilsJsVariant* holder, const gchar* key) {
+	sdxutilsJsVariant* result = NULL;
+	sdxutilsJsVariant* _tmp0_ = NULL;
+	sdxutilsJsType _tmp1_ = 0;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (holder != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 	_tmp0_ = holder;
 	_tmp1_ = _tmp0_->type;
 	switch (_tmp1_) {
-		case UTIL_JS_TYPE_JS_ARRAY:
+		case SDX_UTILS_JS_TYPE_JS_ARRAY:
 		{
-			utilJsVariant* _tmp2_ = NULL;
+			sdxutilsJsVariant* _tmp2_ = NULL;
 			GList* _tmp3_ = NULL;
 			const gchar* _tmp4_ = NULL;
 			gint _tmp5_ = 0;
 			gconstpointer _tmp6_ = NULL;
-			utilJsVariant* _tmp7_ = NULL;
+			sdxutilsJsVariant* _tmp7_ = NULL;
 			_tmp2_ = holder;
 			_tmp3_ = _tmp2_->array;
 			_tmp4_ = key;
 			_tmp5_ = atoi (_tmp4_);
 			_tmp6_ = g_list_nth_data (_tmp3_, (guint) _tmp5_);
-			_tmp7_ = _util_js_variant_retain0 ((utilJsVariant*) _tmp6_);
+			_tmp7_ = _sdx_utils_js_variant_retain0 ((sdxutilsJsVariant*) _tmp6_);
 			result = _tmp7_;
 			return result;
 		}
-		case UTIL_JS_TYPE_JS_OBJECT:
+		case SDX_UTILS_JS_TYPE_JS_OBJECT:
 		{
-			utilJsVariant* _tmp8_ = NULL;
+			sdxutilsJsVariant* _tmp8_ = NULL;
 			GHashTable* _tmp9_ = NULL;
 			const gchar* _tmp10_ = NULL;
 			gconstpointer _tmp11_ = NULL;
-			utilJsVariant* _tmp12_ = NULL;
+			sdxutilsJsVariant* _tmp12_ = NULL;
 			_tmp8_ = holder;
 			_tmp9_ = _tmp8_->object;
 			_tmp10_ = key;
 			_tmp11_ = g_hash_table_lookup (_tmp9_, _tmp10_);
-			_tmp12_ = _util_js_variant_retain0 ((utilJsVariant*) _tmp11_);
+			_tmp12_ = _sdx_utils_js_variant_retain0 ((sdxutilsJsVariant*) _tmp11_);
 			result = _tmp12_;
 			return result;
 		}
@@ -590,100 +590,100 @@ static gchar* _vala_g_strjoinv (const gchar* separator, gchar** str_array, int s
 }
 
 
-gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
+gchar* sdx_utils_json_str (sdxutilsJson* self, const gchar* key, sdxutilsJsVariant* holder) {
 	gchar* result = NULL;
 	gint length = 0;
 	gchar* mind = NULL;
 	const gchar* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	utilJsVariant* value = NULL;
-	utilJsVariant* _tmp2_ = NULL;
+	sdxutilsJsVariant* value = NULL;
+	sdxutilsJsVariant* _tmp2_ = NULL;
 	const gchar* _tmp3_ = NULL;
-	utilJsVariant* _tmp4_ = NULL;
-	utilJsDelegate _tmp5_ = NULL;
+	sdxutilsJsVariant* _tmp4_ = NULL;
+	sdxutilsJsDelegate _tmp5_ = NULL;
 	void* _tmp5__target = NULL;
-	utilJsVariant* _tmp11_ = NULL;
-	utilJsType _tmp12_ = 0;
+	sdxutilsJsVariant* _tmp11_ = NULL;
+	sdxutilsJsType _tmp12_ = 0;
 	gchar* _tmp147_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 	g_return_val_if_fail (holder != NULL, NULL);
 	length = 0;
-	_tmp0_ = util_json_gap;
+	_tmp0_ = sdx_utils_json_gap;
 	_tmp1_ = g_strdup (_tmp0_);
 	mind = _tmp1_;
 	_tmp2_ = holder;
 	_tmp3_ = key;
-	_tmp4_ = util_json_getItem (self, _tmp2_, _tmp3_);
+	_tmp4_ = sdx_utils_json_getItem (self, _tmp2_, _tmp3_);
 	value = _tmp4_;
 	_tmp5_ = self->replacer;
 	_tmp5__target = self->replacer_target;
 	if (_tmp5_ != NULL) {
-		utilJsDelegate _tmp6_ = NULL;
+		sdxutilsJsDelegate _tmp6_ = NULL;
 		void* _tmp6__target = NULL;
-		utilJsVariant* _tmp7_ = NULL;
+		sdxutilsJsVariant* _tmp7_ = NULL;
 		const gchar* _tmp8_ = NULL;
-		utilJsVariant* _tmp9_ = NULL;
-		utilJsVariant* _tmp10_ = NULL;
+		sdxutilsJsVariant* _tmp9_ = NULL;
+		sdxutilsJsVariant* _tmp10_ = NULL;
 		_tmp6_ = self->replacer;
 		_tmp6__target = self->replacer_target;
 		_tmp7_ = holder;
 		_tmp8_ = key;
 		_tmp9_ = value;
 		_tmp10_ = _tmp6_ (_tmp7_, _tmp8_, _tmp9_, _tmp6__target);
-		_util_js_variant_release0 (value);
+		_sdx_utils_js_variant_release0 (value);
 		value = _tmp10_;
 	}
 	_tmp11_ = value;
 	_tmp12_ = _tmp11_->type;
 	switch (_tmp12_) {
-		case UTIL_JS_TYPE_JS_STRING:
+		case SDX_UTILS_JS_TYPE_JS_STRING:
 		{
-			utilJsVariant* _tmp13_ = NULL;
+			sdxutilsJsVariant* _tmp13_ = NULL;
 			const gchar* _tmp14_ = NULL;
 			gchar* _tmp15_ = NULL;
 			_tmp13_ = value;
 			_tmp14_ = _tmp13_->string;
-			_tmp15_ = util_json_quote (self, _tmp14_);
+			_tmp15_ = sdx_utils_json_quote (self, _tmp14_);
 			result = _tmp15_;
-			_util_js_variant_release0 (value);
+			_sdx_utils_js_variant_release0 (value);
 			_g_free0 (mind);
 			return result;
 		}
-		case UTIL_JS_TYPE_JS_NUMBER:
+		case SDX_UTILS_JS_TYPE_JS_NUMBER:
 		{
-			utilJsVariant* _tmp16_ = NULL;
+			sdxutilsJsVariant* _tmp16_ = NULL;
 			gdouble _tmp17_ = 0.0;
 			gchar* _tmp18_ = NULL;
 			_tmp16_ = value;
 			_tmp17_ = _tmp16_->number;
 			_tmp18_ = double_to_string (_tmp17_);
 			result = _tmp18_;
-			_util_js_variant_release0 (value);
+			_sdx_utils_js_variant_release0 (value);
 			_g_free0 (mind);
 			return result;
 		}
-		case UTIL_JS_TYPE_JS_BOOLEAN:
+		case SDX_UTILS_JS_TYPE_JS_BOOLEAN:
 		{
-			utilJsVariant* _tmp19_ = NULL;
+			sdxutilsJsVariant* _tmp19_ = NULL;
 			gboolean _tmp20_ = FALSE;
 			gchar* _tmp21_ = NULL;
 			_tmp19_ = value;
 			_tmp20_ = _tmp19_->boolean;
 			_tmp21_ = bool_to_string (_tmp20_);
 			result = _tmp21_;
-			_util_js_variant_release0 (value);
+			_sdx_utils_js_variant_release0 (value);
 			_g_free0 (mind);
 			return result;
 		}
-		case UTIL_JS_TYPE_JS_OBJECT:
+		case SDX_UTILS_JS_TYPE_JS_OBJECT:
 		{
-			utilJsVariant* _tmp22_ = NULL;
+			sdxutilsJsVariant* _tmp22_ = NULL;
 			GHashTable* _tmp23_ = NULL;
 			const gchar* _tmp25_ = NULL;
 			const gchar* _tmp26_ = NULL;
 			gchar* _tmp27_ = NULL;
-			utilJsVariant* _tmp28_ = NULL;
+			sdxutilsJsVariant* _tmp28_ = NULL;
 			GHashTable* _tmp29_ = NULL;
 			guint _tmp30_ = 0U;
 			gchar** partial = NULL;
@@ -692,7 +692,7 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 			gint partial_length1 = 0;
 			gint _partial_size_ = 0;
 			const gchar** keys = NULL;
-			utilJsVariant* _tmp33_ = NULL;
+			sdxutilsJsVariant* _tmp33_ = NULL;
 			GHashTable* _tmp34_ = NULL;
 			gint _tmp35_ = 0;
 			gconstpointer* _tmp36_ = NULL;
@@ -710,15 +710,15 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 				gchar* _tmp24_ = NULL;
 				_tmp24_ = g_strdup ("null");
 				result = _tmp24_;
-				_util_js_variant_release0 (value);
+				_sdx_utils_js_variant_release0 (value);
 				_g_free0 (mind);
 				return result;
 			}
-			_tmp25_ = util_json_gap;
-			_tmp26_ = util_json_indent;
+			_tmp25_ = sdx_utils_json_gap;
+			_tmp26_ = sdx_utils_json_indent;
 			_tmp27_ = g_strconcat (_tmp25_, _tmp26_, NULL);
-			_g_free0 (util_json_gap);
-			util_json_gap = _tmp27_;
+			_g_free0 (sdx_utils_json_gap);
+			sdx_utils_json_gap = _tmp27_;
 			_tmp28_ = value;
 			_tmp29_ = _tmp28_->object;
 			_tmp30_ = g_hash_table_size (_tmp29_);
@@ -763,7 +763,7 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 						gchar* _tmp54_ = NULL;
 						gchar* _tmp55_ = NULL;
 						const gchar* _tmp56_ = NULL;
-						utilJsVariant* _tmp57_ = NULL;
+						sdxutilsJsVariant* _tmp57_ = NULL;
 						gchar* _tmp58_ = NULL;
 						gchar* _tmp59_ = NULL;
 						gchar* _tmp60_ = NULL;
@@ -786,7 +786,7 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 						_tmp43_ = _tmp41_[_tmp42_];
 						_tmp44_ = g_strdup (_tmp43_);
 						k = _tmp44_;
-						_tmp46_ = util_json_gap;
+						_tmp46_ = sdx_utils_json_gap;
 						_tmp47_ = strlen (_tmp46_);
 						_tmp48_ = _tmp47_;
 						if (_tmp48_ > 0) {
@@ -798,13 +798,13 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 						_tmp49__length1 = partial_length1;
 						_tmp50_ = i;
 						_tmp51_ = k;
-						_tmp52_ = util_json_quote (self, _tmp51_);
+						_tmp52_ = sdx_utils_json_quote (self, _tmp51_);
 						_tmp53_ = _tmp52_;
 						_tmp54_ = g_strconcat (_tmp53_, _tmp45_, NULL);
 						_tmp55_ = _tmp54_;
 						_tmp56_ = k;
 						_tmp57_ = value;
-						_tmp58_ = util_json_str (self, _tmp56_, _tmp57_);
+						_tmp58_ = sdx_utils_json_str (self, _tmp56_, _tmp57_);
 						_tmp59_ = _tmp58_;
 						_tmp60_ = g_strconcat (_tmp55_, _tmp59_, NULL);
 						_g_free0 (_tmp49_[_tmp50_]);
@@ -830,7 +830,7 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 				const gchar* _tmp65_ = NULL;
 				gint _tmp66_ = 0;
 				gint _tmp67_ = 0;
-				_tmp65_ = util_json_gap;
+				_tmp65_ = sdx_utils_json_gap;
 				_tmp66_ = strlen (_tmp65_);
 				_tmp67_ = _tmp66_;
 				if (_tmp67_ > 0) {
@@ -852,10 +852,10 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 					gchar* _tmp82_ = NULL;
 					gchar* _tmp83_ = NULL;
 					gchar* _tmp84_ = NULL;
-					_tmp68_ = util_json_gap;
+					_tmp68_ = sdx_utils_json_gap;
 					_tmp69_ = g_strconcat ("{\n", _tmp68_, NULL);
 					_tmp70_ = _tmp69_;
-					_tmp71_ = util_json_gap;
+					_tmp71_ = sdx_utils_json_gap;
 					_tmp72_ = g_strconcat (",\n", _tmp71_, NULL);
 					_tmp73_ = _tmp72_;
 					_tmp74_ = partial;
@@ -901,23 +901,23 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 			}
 			_tmp91_ = mind;
 			_tmp92_ = g_strdup (_tmp91_);
-			_g_free0 (util_json_gap);
-			util_json_gap = _tmp92_;
+			_g_free0 (sdx_utils_json_gap);
+			sdx_utils_json_gap = _tmp92_;
 			result = v;
 			keys = (g_free (keys), NULL);
 			partial = (_vala_array_free (partial, partial_length1, (GDestroyNotify) g_free), NULL);
-			_util_js_variant_release0 (value);
+			_sdx_utils_js_variant_release0 (value);
 			_g_free0 (mind);
 			return result;
 		}
-		case UTIL_JS_TYPE_JS_ARRAY:
+		case SDX_UTILS_JS_TYPE_JS_ARRAY:
 		{
-			utilJsVariant* _tmp93_ = NULL;
+			sdxutilsJsVariant* _tmp93_ = NULL;
 			GList* _tmp94_ = NULL;
 			const gchar* _tmp96_ = NULL;
 			const gchar* _tmp97_ = NULL;
 			gchar* _tmp98_ = NULL;
-			utilJsVariant* _tmp99_ = NULL;
+			sdxutilsJsVariant* _tmp99_ = NULL;
 			GList* _tmp100_ = NULL;
 			guint _tmp101_ = 0U;
 			gchar** partial = NULL;
@@ -937,15 +937,15 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 				gchar* _tmp95_ = NULL;
 				_tmp95_ = g_strdup ("null");
 				result = _tmp95_;
-				_util_js_variant_release0 (value);
+				_sdx_utils_js_variant_release0 (value);
 				_g_free0 (mind);
 				return result;
 			}
-			_tmp96_ = util_json_gap;
-			_tmp97_ = util_json_indent;
+			_tmp96_ = sdx_utils_json_gap;
+			_tmp97_ = sdx_utils_json_indent;
 			_tmp98_ = g_strconcat (_tmp96_, _tmp97_, NULL);
-			_g_free0 (util_json_gap);
-			util_json_gap = _tmp98_;
+			_g_free0 (sdx_utils_json_gap);
+			sdx_utils_json_gap = _tmp98_;
 			_tmp99_ = value;
 			_tmp100_ = _tmp99_->array;
 			_tmp101_ = g_list_length (_tmp100_);
@@ -970,7 +970,7 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 						gint _tmp110_ = 0;
 						gchar* _tmp111_ = NULL;
 						gchar* _tmp112_ = NULL;
-						utilJsVariant* _tmp113_ = NULL;
+						sdxutilsJsVariant* _tmp113_ = NULL;
 						gchar* _tmp114_ = NULL;
 						gchar* _tmp115_ = NULL;
 						if (!_tmp104_) {
@@ -991,7 +991,7 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 						_tmp111_ = g_strdup_printf ("%i", _tmp110_);
 						_tmp112_ = _tmp111_;
 						_tmp113_ = value;
-						_tmp114_ = util_json_str (self, _tmp112_, _tmp113_);
+						_tmp114_ = sdx_utils_json_str (self, _tmp112_, _tmp113_);
 						_g_free0 (_tmp108_[_tmp109_]);
 						_tmp108_[_tmp109_] = _tmp114_;
 						_tmp115_ = _tmp108_[_tmp109_];
@@ -1012,7 +1012,7 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 				const gchar* _tmp119_ = NULL;
 				gint _tmp120_ = 0;
 				gint _tmp121_ = 0;
-				_tmp119_ = util_json_gap;
+				_tmp119_ = sdx_utils_json_gap;
 				_tmp120_ = strlen (_tmp119_);
 				_tmp121_ = _tmp120_;
 				if (_tmp121_ > 0) {
@@ -1034,10 +1034,10 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 					gchar* _tmp136_ = NULL;
 					gchar* _tmp137_ = NULL;
 					gchar* _tmp138_ = NULL;
-					_tmp122_ = util_json_gap;
+					_tmp122_ = sdx_utils_json_gap;
 					_tmp123_ = g_strconcat ("[\n", _tmp122_, NULL);
 					_tmp124_ = _tmp123_;
-					_tmp125_ = util_json_gap;
+					_tmp125_ = sdx_utils_json_gap;
 					_tmp126_ = g_strconcat (",\n", _tmp125_, NULL);
 					_tmp127_ = _tmp126_;
 					_tmp128_ = partial;
@@ -1083,11 +1083,11 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 			}
 			_tmp145_ = mind;
 			_tmp146_ = g_strdup (_tmp145_);
-			_g_free0 (util_json_gap);
-			util_json_gap = _tmp146_;
+			_g_free0 (sdx_utils_json_gap);
+			sdx_utils_json_gap = _tmp146_;
 			result = v;
 			partial = (_vala_array_free (partial, partial_length1, (GDestroyNotify) g_free), NULL);
-			_util_js_variant_release0 (value);
+			_sdx_utils_js_variant_release0 (value);
 			_g_free0 (mind);
 			return result;
 		}
@@ -1096,18 +1096,18 @@ gchar* util_json_str (utilJson* self, const gchar* key, utilJsVariant* holder) {
 	}
 	_tmp147_ = g_strdup ("");
 	result = _tmp147_;
-	_util_js_variant_release0 (value);
+	_sdx_utils_js_variant_release0 (value);
 	_g_free0 (mind);
 	return result;
 }
 
 
-utilJsVariant* util_json_parseJson (utilJson* self, const gchar* source) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_json_parseJson (sdxutilsJson* self, const gchar* source) {
+	sdxutilsJsVariant* result = NULL;
 	const gchar* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	utilJsVariant* _result_ = NULL;
-	utilJsVariant* _tmp2_ = NULL;
+	sdxutilsJsVariant* _result_ = NULL;
+	sdxutilsJsVariant* _tmp2_ = NULL;
 	gchar _tmp3_ = '\0';
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
@@ -1118,15 +1118,15 @@ utilJsVariant* util_json_parseJson (utilJson* self, const gchar* source) {
 	self->text = _tmp1_;
 	self->at = 0;
 	self->ch = ' ';
-	_tmp2_ = util_json_getValue (self);
+	_tmp2_ = sdx_utils_json_getValue (self);
 	_result_ = _tmp2_;
-	util_json_skipWhite (self);
+	sdx_utils_json_skipWhite (self);
 	_tmp3_ = self->ch;
 	if (((gint) _tmp3_) != 0) {
 		GError* _tmp4_ = NULL;
-		_tmp4_ = g_error_new_literal (UTIL_JSON_EXCEPTION, UTIL_JSON_EXCEPTION_SyntaxError, "");
+		_tmp4_ = g_error_new_literal (SDX_UTILS_JSON_EXCEPTION, SDX_UTILS_JSON_EXCEPTION_SyntaxError, "");
 		_inner_error_ = _tmp4_;
-		_util_js_variant_release0 (_result_);
+		_sdx_utils_js_variant_release0 (_result_);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
@@ -1162,7 +1162,7 @@ static gchar string_get (const gchar* self, glong index) {
 }
 
 
-gchar util_json_next (utilJson* self, gchar* c) {
+gchar sdx_utils_json_next (sdxutilsJson* self, gchar* c) {
 	gchar result = '\0';
 	gboolean _tmp0_ = FALSE;
 	gchar* _tmp1_ = NULL;
@@ -1215,7 +1215,7 @@ gchar util_json_next (utilJson* self, gchar* c) {
 		_tmp15_ = _tmp14_;
 		_tmp16_ = g_strconcat (_tmp15_, "'", NULL);
 		_tmp17_ = _tmp16_;
-		_tmp18_ = g_error_new_literal (UTIL_JSON_EXCEPTION, UTIL_JSON_EXCEPTION_UnexpectedCharacter, _tmp17_);
+		_tmp18_ = g_error_new_literal (SDX_UTILS_JSON_EXCEPTION, SDX_UTILS_JSON_EXCEPTION_UnexpectedCharacter, _tmp17_);
 		_tmp19_ = _tmp18_;
 		_g_free0 (_tmp17_);
 		_g_free0 (_tmp15_);
@@ -1240,44 +1240,44 @@ gchar util_json_next (utilJson* self, gchar* c) {
 }
 
 
-utilJsVariant* util_json_getValue (utilJson* self) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_json_getValue (sdxutilsJson* self) {
+	sdxutilsJsVariant* result = NULL;
 	gchar _tmp0_ = '\0';
 	g_return_val_if_fail (self != NULL, NULL);
-	util_json_skipWhite (self);
+	sdx_utils_json_skipWhite (self);
 	_tmp0_ = self->ch;
 	switch (_tmp0_) {
 		case '{':
 		{
-			utilJsVariant* _tmp1_ = NULL;
-			_tmp1_ = util_json_getObject (self);
+			sdxutilsJsVariant* _tmp1_ = NULL;
+			_tmp1_ = sdx_utils_json_getObject (self);
 			result = _tmp1_;
 			return result;
 		}
 		case '[':
 		{
-			utilJsVariant* _tmp2_ = NULL;
-			_tmp2_ = util_json_getArray (self);
+			sdxutilsJsVariant* _tmp2_ = NULL;
+			_tmp2_ = sdx_utils_json_getArray (self);
 			result = _tmp2_;
 			return result;
 		}
 		case '\"':
 		{
-			utilJsVariant* _tmp3_ = NULL;
-			_tmp3_ = util_json_getString (self);
+			sdxutilsJsVariant* _tmp3_ = NULL;
+			_tmp3_ = sdx_utils_json_getString (self);
 			result = _tmp3_;
 			return result;
 		}
 		case '-':
 		{
-			utilJsVariant* _tmp4_ = NULL;
-			_tmp4_ = util_json_getNumber (self);
+			sdxutilsJsVariant* _tmp4_ = NULL;
+			_tmp4_ = sdx_utils_json_getNumber (self);
 			result = _tmp4_;
 			return result;
 		}
 		default:
 		{
-			utilJsVariant* _tmp5_ = NULL;
+			sdxutilsJsVariant* _tmp5_ = NULL;
 			gboolean _tmp6_ = FALSE;
 			gchar _tmp7_ = '\0';
 			_tmp7_ = self->ch;
@@ -1289,14 +1289,14 @@ utilJsVariant* util_json_getValue (utilJson* self) {
 				_tmp6_ = FALSE;
 			}
 			if (_tmp6_) {
-				utilJsVariant* _tmp9_ = NULL;
-				_tmp9_ = util_json_getNumber (self);
-				_util_js_variant_release0 (_tmp5_);
+				sdxutilsJsVariant* _tmp9_ = NULL;
+				_tmp9_ = sdx_utils_json_getNumber (self);
+				_sdx_utils_js_variant_release0 (_tmp5_);
 				_tmp5_ = _tmp9_;
 			} else {
-				utilJsVariant* _tmp10_ = NULL;
-				_tmp10_ = util_json_getWord (self);
-				_util_js_variant_release0 (_tmp5_);
+				sdxutilsJsVariant* _tmp10_ = NULL;
+				_tmp10_ = sdx_utils_json_getWord (self);
+				_sdx_utils_js_variant_release0 (_tmp5_);
 				_tmp5_ = _tmp10_;
 			}
 			result = _tmp5_;
@@ -1318,8 +1318,8 @@ static gdouble double_parse (const gchar* str) {
 }
 
 
-utilJsVariant* util_json_getNumber (utilJson* self) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_json_getNumber (sdxutilsJson* self) {
+	sdxutilsJsVariant* result = NULL;
 	gchar* string = NULL;
 	gchar* _tmp0_ = NULL;
 	gchar _tmp1_ = '\0';
@@ -1328,7 +1328,7 @@ utilJsVariant* util_json_getNumber (utilJson* self) {
 	gchar _tmp26_ = '\0';
 	const gchar* _tmp49_ = NULL;
 	gdouble _tmp50_ = 0.0;
-	utilJsVariant* _tmp51_ = NULL;
+	sdxutilsJsVariant* _tmp51_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_strdup ("");
 	string = _tmp0_;
@@ -1340,7 +1340,7 @@ utilJsVariant* util_json_getNumber (utilJson* self) {
 		_g_free0 (string);
 		string = _tmp2_;
 		_tmp3_ = '-';
-		util_json_next (self, &_tmp3_);
+		sdx_utils_json_next (self, &_tmp3_);
 	}
 	while (TRUE) {
 		gboolean _tmp4_ = FALSE;
@@ -1369,7 +1369,7 @@ utilJsVariant* util_json_getNumber (utilJson* self) {
 		_g_free0 (string);
 		string = _tmp11_;
 		_g_free0 (_tmp10_);
-		util_json_next (self, NULL);
+		sdx_utils_json_next (self, NULL);
 	}
 	_tmp12_ = self->ch;
 	if (_tmp12_ == '.') {
@@ -1388,7 +1388,7 @@ utilJsVariant* util_json_getNumber (utilJson* self) {
 			gchar* _tmp22_ = NULL;
 			gchar* _tmp23_ = NULL;
 			gchar* _tmp24_ = NULL;
-			_tmp17_ = util_json_next (self, NULL);
+			_tmp17_ = sdx_utils_json_next (self, NULL);
 			if (((gint) _tmp17_) != 0) {
 				gchar _tmp18_ = '\0';
 				_tmp18_ = self->ch;
@@ -1440,7 +1440,7 @@ utilJsVariant* util_json_getNumber (utilJson* self) {
 		_g_free0 (string);
 		string = _tmp32_;
 		_g_free0 (_tmp31_);
-		util_json_next (self, NULL);
+		sdx_utils_json_next (self, NULL);
 		_tmp34_ = self->ch;
 		if (_tmp34_ == '-') {
 			_tmp33_ = TRUE;
@@ -1463,7 +1463,7 @@ utilJsVariant* util_json_getNumber (utilJson* self) {
 			_g_free0 (string);
 			string = _tmp40_;
 			_g_free0 (_tmp39_);
-			util_json_next (self, NULL);
+			sdx_utils_json_next (self, NULL);
 		}
 		while (TRUE) {
 			gboolean _tmp41_ = FALSE;
@@ -1492,12 +1492,12 @@ utilJsVariant* util_json_getNumber (utilJson* self) {
 			_g_free0 (string);
 			string = _tmp48_;
 			_g_free0 (_tmp47_);
-			util_json_next (self, NULL);
+			sdx_utils_json_next (self, NULL);
 		}
 	}
 	_tmp49_ = string;
 	_tmp50_ = double_parse (_tmp49_);
-	_tmp51_ = util_js_variant_Number (_tmp50_);
+	_tmp51_ = sdx_utils_js_variant_Number (_tmp50_);
 	result = _tmp51_;
 	_g_free0 (string);
 	return result;
@@ -1530,8 +1530,8 @@ static gint string_index_of (const gchar* self, const gchar* needle, gint start_
 }
 
 
-utilJsVariant* util_json_getString (utilJson* self) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_json_getString (sdxutilsJson* self) {
+	sdxutilsJsVariant* result = NULL;
 	gint hex = 0;
 	gint i = 0;
 	gchar* string = NULL;
@@ -1552,17 +1552,17 @@ utilJsVariant* util_json_getString (utilJson* self) {
 			gchar _tmp2_ = '\0';
 			gchar _tmp3_ = '\0';
 			gchar _tmp6_ = '\0';
-			_tmp2_ = util_json_next (self, NULL);
+			_tmp2_ = sdx_utils_json_next (self, NULL);
 			if (!(((gint) _tmp2_) != 0)) {
 				break;
 			}
 			_tmp3_ = self->ch;
 			if (_tmp3_ == '\"') {
 				const gchar* _tmp4_ = NULL;
-				utilJsVariant* _tmp5_ = NULL;
-				util_json_next (self, NULL);
+				sdxutilsJsVariant* _tmp5_ = NULL;
+				sdx_utils_json_next (self, NULL);
 				_tmp4_ = string;
-				_tmp5_ = util_js_variant_String (_tmp4_);
+				_tmp5_ = sdx_utils_js_variant_String (_tmp4_);
 				result = _tmp5_;
 				_g_free0 (string);
 				return result;
@@ -1570,7 +1570,7 @@ utilJsVariant* util_json_getString (utilJson* self) {
 			_tmp6_ = self->ch;
 			if (_tmp6_ == '\\') {
 				gchar _tmp7_ = '\0';
-				util_json_next (self, NULL);
+				sdx_utils_json_next (self, NULL);
 				_tmp7_ = self->ch;
 				if (_tmp7_ == 'u') {
 					const gchar* _tmp20_ = NULL;
@@ -1604,12 +1604,12 @@ utilJsVariant* util_json_getString (utilJson* self) {
 							if (!(_tmp10_ < 4)) {
 								break;
 							}
-							_tmp11_ = util_json_next (self, NULL);
+							_tmp11_ = sdx_utils_json_next (self, NULL);
 							_tmp12_ = g_strdup_printf ("%c", _tmp11_);
 							_tmp13_ = _tmp12_;
 							_tmp14_ = g_utf8_strdown (_tmp13_, (gssize) -1);
 							_tmp15_ = _tmp14_;
-							_tmp16_ = string_index_of (UTIL_JSON_HEX_DIGIT, _tmp15_, 0);
+							_tmp16_ = string_index_of (SDX_UTILS_JSON_HEX_DIGIT, _tmp15_, 0);
 							hex = _tmp16_;
 							_g_free0 (_tmp15_);
 							_g_free0 (_tmp13_);
@@ -1640,7 +1640,7 @@ utilJsVariant* util_json_getString (utilJson* self) {
 					_tmp25_ = self->ch;
 					_tmp26_ = g_strdup_printf ("%c", _tmp25_);
 					_tmp27_ = _tmp26_;
-					_tmp28_ = string_index_of (UTIL_JSON_escape0, _tmp27_, 0);
+					_tmp28_ = string_index_of (SDX_UTILS_JSON_escape0, _tmp27_, 0);
 					i = _tmp28_;
 					_tmp29_ = i;
 					_tmp30_ = _tmp29_ >= 0;
@@ -1652,7 +1652,7 @@ utilJsVariant* util_json_getString (utilJson* self) {
 						gchar* _tmp34_ = NULL;
 						_tmp31_ = string;
 						_tmp32_ = i;
-						_tmp33_ = UTIL_JSON_escape1[_tmp32_];
+						_tmp33_ = SDX_UTILS_JSON_escape1[_tmp32_];
 						_tmp34_ = g_strconcat (_tmp31_, _tmp33_, NULL);
 						_g_free0 (string);
 						string = _tmp34_;
@@ -1677,7 +1677,7 @@ utilJsVariant* util_json_getString (utilJson* self) {
 			}
 		}
 	}
-	_tmp40_ = g_error_new_literal (UTIL_JSON_EXCEPTION, UTIL_JSON_EXCEPTION_InvalidString, "");
+	_tmp40_ = g_error_new_literal (SDX_UTILS_JSON_EXCEPTION, SDX_UTILS_JSON_EXCEPTION_InvalidString, "");
 	_inner_error_ = _tmp40_;
 	_g_free0 (string);
 	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -1686,7 +1686,7 @@ utilJsVariant* util_json_getString (utilJson* self) {
 }
 
 
-void util_json_skipWhite (utilJson* self) {
+void sdx_utils_json_skipWhite (sdxutilsJson* self) {
 	g_return_if_fail (self != NULL);
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
@@ -1702,13 +1702,13 @@ void util_json_skipWhite (utilJson* self) {
 		if (!_tmp0_) {
 			break;
 		}
-		util_json_next (self, NULL);
+		sdx_utils_json_next (self, NULL);
 	}
 }
 
 
-utilJsVariant* util_json_getWord (utilJson* self) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_json_getWord (sdxutilsJson* self) {
+	sdxutilsJsVariant* result = NULL;
 	gchar _tmp0_ = '\0';
 	gchar _tmp17_ = '\0';
 	gchar* _tmp18_ = NULL;
@@ -1729,16 +1729,16 @@ utilJsVariant* util_json_getWord (utilJson* self) {
 			gchar _tmp2_ = '\0';
 			gchar _tmp3_ = '\0';
 			gchar _tmp4_ = '\0';
-			utilJsVariant* _tmp5_ = NULL;
+			sdxutilsJsVariant* _tmp5_ = NULL;
 			_tmp1_ = 't';
-			util_json_next (self, &_tmp1_);
+			sdx_utils_json_next (self, &_tmp1_);
 			_tmp2_ = 'r';
-			util_json_next (self, &_tmp2_);
+			sdx_utils_json_next (self, &_tmp2_);
 			_tmp3_ = 'u';
-			util_json_next (self, &_tmp3_);
+			sdx_utils_json_next (self, &_tmp3_);
 			_tmp4_ = 'e';
-			util_json_next (self, &_tmp4_);
-			_tmp5_ = util_js_variant_Boolean (TRUE);
+			sdx_utils_json_next (self, &_tmp4_);
+			_tmp5_ = sdx_utils_js_variant_Boolean (TRUE);
 			result = _tmp5_;
 			return result;
 		}
@@ -1749,18 +1749,18 @@ utilJsVariant* util_json_getWord (utilJson* self) {
 			gchar _tmp8_ = '\0';
 			gchar _tmp9_ = '\0';
 			gchar _tmp10_ = '\0';
-			utilJsVariant* _tmp11_ = NULL;
+			sdxutilsJsVariant* _tmp11_ = NULL;
 			_tmp6_ = 'f';
-			util_json_next (self, &_tmp6_);
+			sdx_utils_json_next (self, &_tmp6_);
 			_tmp7_ = 'a';
-			util_json_next (self, &_tmp7_);
+			sdx_utils_json_next (self, &_tmp7_);
 			_tmp8_ = 'l';
-			util_json_next (self, &_tmp8_);
+			sdx_utils_json_next (self, &_tmp8_);
 			_tmp9_ = 's';
-			util_json_next (self, &_tmp9_);
+			sdx_utils_json_next (self, &_tmp9_);
 			_tmp10_ = 'e';
-			util_json_next (self, &_tmp10_);
-			_tmp11_ = util_js_variant_Boolean (FALSE);
+			sdx_utils_json_next (self, &_tmp10_);
+			_tmp11_ = sdx_utils_js_variant_Boolean (FALSE);
 			result = _tmp11_;
 			return result;
 		}
@@ -1770,16 +1770,16 @@ utilJsVariant* util_json_getWord (utilJson* self) {
 			gchar _tmp13_ = '\0';
 			gchar _tmp14_ = '\0';
 			gchar _tmp15_ = '\0';
-			utilJsVariant* _tmp16_ = NULL;
+			sdxutilsJsVariant* _tmp16_ = NULL;
 			_tmp12_ = 'n';
-			util_json_next (self, &_tmp12_);
+			sdx_utils_json_next (self, &_tmp12_);
 			_tmp13_ = 'u';
-			util_json_next (self, &_tmp13_);
+			sdx_utils_json_next (self, &_tmp13_);
 			_tmp14_ = 'l';
-			util_json_next (self, &_tmp14_);
+			sdx_utils_json_next (self, &_tmp14_);
 			_tmp15_ = 'l';
-			util_json_next (self, &_tmp15_);
-			_tmp16_ = util_js_variant_new (UTIL_JS_TYPE_JS_OBJECT, TRUE);
+			sdx_utils_json_next (self, &_tmp15_);
+			_tmp16_ = sdx_utils_js_variant_new (SDX_UTILS_JS_TYPE_JS_OBJECT, TRUE);
 			result = _tmp16_;
 			return result;
 		}
@@ -1793,7 +1793,7 @@ utilJsVariant* util_json_getWord (utilJson* self) {
 	_tmp21_ = _tmp20_;
 	_tmp22_ = g_strconcat (_tmp21_, "'", NULL);
 	_tmp23_ = _tmp22_;
-	_tmp24_ = g_error_new_literal (UTIL_JSON_EXCEPTION, UTIL_JSON_EXCEPTION_UnexpectedCharacter, _tmp23_);
+	_tmp24_ = g_error_new_literal (SDX_UTILS_JSON_EXCEPTION, SDX_UTILS_JSON_EXCEPTION_UnexpectedCharacter, _tmp23_);
 	_tmp25_ = _tmp24_;
 	_g_free0 (_tmp23_);
 	_g_free0 (_tmp21_);
@@ -1805,35 +1805,35 @@ utilJsVariant* util_json_getWord (utilJson* self) {
 }
 
 
-utilJsVariant* util_json_getArray (utilJson* self) {
-	utilJsVariant* result = NULL;
-	utilJsVariant* _result_ = NULL;
-	utilJsVariant* _tmp0_ = NULL;
+sdxutilsJsVariant* sdx_utils_json_getArray (sdxutilsJson* self) {
+	sdxutilsJsVariant* result = NULL;
+	sdxutilsJsVariant* _result_ = NULL;
+	sdxutilsJsVariant* _tmp0_ = NULL;
 	gchar _tmp1_ = '\0';
 	GError* _tmp11_ = NULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = util_js_variant_new (UTIL_JS_TYPE_JS_ARRAY, FALSE);
+	_tmp0_ = sdx_utils_js_variant_new (SDX_UTILS_JS_TYPE_JS_ARRAY, FALSE);
 	_result_ = _tmp0_;
 	_tmp1_ = self->ch;
 	if (_tmp1_ == '[') {
 		gchar _tmp2_ = '\0';
 		gchar _tmp3_ = '\0';
 		_tmp2_ = '[';
-		util_json_next (self, &_tmp2_);
-		util_json_skipWhite (self);
+		sdx_utils_json_next (self, &_tmp2_);
+		sdx_utils_json_skipWhite (self);
 		_tmp3_ = self->ch;
 		if (_tmp3_ == ']') {
 			gchar _tmp4_ = '\0';
 			_tmp4_ = ']';
-			util_json_next (self, &_tmp4_);
+			sdx_utils_json_next (self, &_tmp4_);
 			result = _result_;
 			return result;
 		}
 		while (TRUE) {
 			gchar _tmp5_ = '\0';
-			utilJsVariant* _tmp6_ = NULL;
-			utilJsVariant* _tmp7_ = NULL;
+			sdxutilsJsVariant* _tmp6_ = NULL;
+			sdxutilsJsVariant* _tmp7_ = NULL;
 			gchar _tmp8_ = '\0';
 			gchar _tmp10_ = '\0';
 			_tmp5_ = self->ch;
@@ -1841,102 +1841,102 @@ utilJsVariant* util_json_getArray (utilJson* self) {
 				break;
 			}
 			_tmp6_ = _result_;
-			_tmp7_ = util_json_getValue (self);
+			_tmp7_ = sdx_utils_json_getValue (self);
 			_tmp6_->array = g_list_append (_tmp6_->array, _tmp7_);
-			util_json_skipWhite (self);
+			sdx_utils_json_skipWhite (self);
 			_tmp8_ = self->ch;
 			if (_tmp8_ == ']') {
 				gchar _tmp9_ = '\0';
 				_tmp9_ = ']';
-				util_json_next (self, &_tmp9_);
+				sdx_utils_json_next (self, &_tmp9_);
 				result = _result_;
 				return result;
 			}
 			_tmp10_ = ',';
-			util_json_next (self, &_tmp10_);
-			util_json_skipWhite (self);
+			sdx_utils_json_next (self, &_tmp10_);
+			sdx_utils_json_skipWhite (self);
 		}
 	}
-	_tmp11_ = g_error_new_literal (UTIL_JSON_EXCEPTION, UTIL_JSON_EXCEPTION_InvalidArray, "");
+	_tmp11_ = g_error_new_literal (SDX_UTILS_JSON_EXCEPTION, SDX_UTILS_JSON_EXCEPTION_InvalidArray, "");
 	_inner_error_ = _tmp11_;
-	_util_js_variant_release0 (_result_);
+	_sdx_utils_js_variant_release0 (_result_);
 	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 	g_clear_error (&_inner_error_);
 	return NULL;
 }
 
 
-utilJsVariant* util_json_getObject (utilJson* self) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_json_getObject (sdxutilsJson* self) {
+	sdxutilsJsVariant* result = NULL;
 	gchar* key = NULL;
 	gchar* _tmp0_ = NULL;
-	utilJsVariant* _result_ = NULL;
-	utilJsVariant* _tmp1_ = NULL;
+	sdxutilsJsVariant* _result_ = NULL;
+	sdxutilsJsVariant* _tmp1_ = NULL;
 	gchar _tmp2_ = '\0';
 	GError* _tmp25_ = NULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_strdup ("");
 	key = _tmp0_;
-	_tmp1_ = util_js_variant_new (UTIL_JS_TYPE_JS_OBJECT, FALSE);
+	_tmp1_ = sdx_utils_js_variant_new (SDX_UTILS_JS_TYPE_JS_OBJECT, FALSE);
 	_result_ = _tmp1_;
 	_tmp2_ = self->ch;
 	if (_tmp2_ == '{') {
 		gchar _tmp3_ = '\0';
 		gchar _tmp4_ = '\0';
 		_tmp3_ = '{';
-		util_json_next (self, &_tmp3_);
-		util_json_skipWhite (self);
+		sdx_utils_json_next (self, &_tmp3_);
+		sdx_utils_json_skipWhite (self);
 		_tmp4_ = self->ch;
 		if (_tmp4_ == '}') {
 			gchar _tmp5_ = '\0';
 			_tmp5_ = '}';
-			util_json_next (self, &_tmp5_);
+			sdx_utils_json_next (self, &_tmp5_);
 			result = _result_;
 			_g_free0 (key);
 			return result;
 		}
 		while (TRUE) {
 			gchar _tmp6_ = '\0';
-			utilJsVariant* _tmp7_ = NULL;
-			utilJsVariant* _tmp8_ = NULL;
+			sdxutilsJsVariant* _tmp7_ = NULL;
+			sdxutilsJsVariant* _tmp8_ = NULL;
 			const gchar* _tmp9_ = NULL;
 			gchar* _tmp10_ = NULL;
 			gchar _tmp11_ = '\0';
-			utilJsVariant* _tmp12_ = NULL;
+			sdxutilsJsVariant* _tmp12_ = NULL;
 			GHashTable* _tmp13_ = NULL;
 			const gchar* _tmp14_ = NULL;
 			gboolean _tmp15_ = FALSE;
-			utilJsVariant* _tmp17_ = NULL;
+			sdxutilsJsVariant* _tmp17_ = NULL;
 			GHashTable* _tmp18_ = NULL;
 			const gchar* _tmp19_ = NULL;
 			gchar* _tmp20_ = NULL;
-			utilJsVariant* _tmp21_ = NULL;
+			sdxutilsJsVariant* _tmp21_ = NULL;
 			gchar _tmp22_ = '\0';
 			gchar _tmp24_ = '\0';
 			_tmp6_ = self->ch;
 			if (!(((gint) _tmp6_) != 0)) {
 				break;
 			}
-			_tmp7_ = util_json_getString (self);
+			_tmp7_ = sdx_utils_json_getString (self);
 			_tmp8_ = _tmp7_;
 			_tmp9_ = _tmp8_->string;
 			_tmp10_ = g_strdup (_tmp9_);
 			_g_free0 (key);
 			key = _tmp10_;
-			_util_js_variant_release0 (_tmp8_);
-			util_json_skipWhite (self);
+			_sdx_utils_js_variant_release0 (_tmp8_);
+			sdx_utils_json_skipWhite (self);
 			_tmp11_ = ':';
-			util_json_next (self, &_tmp11_);
+			sdx_utils_json_next (self, &_tmp11_);
 			_tmp12_ = _result_;
 			_tmp13_ = _tmp12_->object;
 			_tmp14_ = key;
 			_tmp15_ = g_hash_table_contains (_tmp13_, _tmp14_);
 			if (_tmp15_) {
 				GError* _tmp16_ = NULL;
-				_tmp16_ = g_error_new_literal (UTIL_JSON_EXCEPTION, UTIL_JSON_EXCEPTION_DuplicateKey, "");
+				_tmp16_ = g_error_new_literal (SDX_UTILS_JSON_EXCEPTION, SDX_UTILS_JSON_EXCEPTION_DuplicateKey, "");
 				_inner_error_ = _tmp16_;
-				_util_js_variant_release0 (_result_);
+				_sdx_utils_js_variant_release0 (_result_);
 				_g_free0 (key);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
@@ -1946,26 +1946,26 @@ utilJsVariant* util_json_getObject (utilJson* self) {
 			_tmp18_ = _tmp17_->object;
 			_tmp19_ = key;
 			_tmp20_ = g_strdup (_tmp19_);
-			_tmp21_ = util_json_getValue (self);
+			_tmp21_ = sdx_utils_json_getValue (self);
 			g_hash_table_insert (_tmp18_, _tmp20_, _tmp21_);
-			util_json_skipWhite (self);
+			sdx_utils_json_skipWhite (self);
 			_tmp22_ = self->ch;
 			if (_tmp22_ == '}') {
 				gchar _tmp23_ = '\0';
 				_tmp23_ = '}';
-				util_json_next (self, &_tmp23_);
+				sdx_utils_json_next (self, &_tmp23_);
 				result = _result_;
 				_g_free0 (key);
 				return result;
 			}
 			_tmp24_ = ',';
-			util_json_next (self, &_tmp24_);
-			util_json_skipWhite (self);
+			sdx_utils_json_next (self, &_tmp24_);
+			sdx_utils_json_skipWhite (self);
 		}
 	}
-	_tmp25_ = g_error_new_literal (UTIL_JSON_EXCEPTION, UTIL_JSON_EXCEPTION_InvalidObject, "");
+	_tmp25_ = g_error_new_literal (SDX_UTILS_JSON_EXCEPTION, SDX_UTILS_JSON_EXCEPTION_InvalidObject, "");
 	_inner_error_ = _tmp25_;
-	_util_js_variant_release0 (_result_);
+	_sdx_utils_js_variant_release0 (_result_);
 	_g_free0 (key);
 	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 	g_clear_error (&_inner_error_);
@@ -1973,34 +1973,34 @@ utilJsVariant* util_json_getObject (utilJson* self) {
 }
 
 
-static void util_json_instance_init (utilJson * self) {
+static void sdx_utils_json_instance_init (sdxutilsJson * self) {
 	self->_retainCount = 1;
 }
 
 
-void util_json_free (utilJson* self) {
+void sdx_utils_json_free (sdxutilsJson* self) {
 	_g_free0 (self->text);
 	(self->replacer_target_destroy_notify == NULL) ? NULL : (self->replacer_target_destroy_notify (self->replacer_target), NULL);
 	self->replacer = NULL;
 	self->replacer_target = NULL;
 	self->replacer_target_destroy_notify = NULL;
-	g_slice_free (utilJson, self);
+	g_slice_free (sdxutilsJson, self);
 }
 
 
-static void _util_js_variant_release0_ (gpointer var) {
-	(var == NULL) ? NULL : (var = (util_js_variant_release (var), NULL));
+static void _sdx_utils_js_variant_release0_ (gpointer var) {
+	(var == NULL) ? NULL : (var = (sdx_utils_js_variant_release (var), NULL));
 }
 
 
-static void _g_list_free__util_js_variant_release0_ (GList* self) {
-	g_list_foreach (self, (GFunc) _util_js_variant_release0_, NULL);
+static void _g_list_free__sdx_utils_js_variant_release0_ (GList* self) {
+	g_list_foreach (self, (GFunc) _sdx_utils_js_variant_release0_, NULL);
 	g_list_free (self);
 }
 
 
-utilJsVariant* util_js_variant_retain (utilJsVariant* self) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_js_variant_retain (sdxutilsJsVariant* self) {
+	sdxutilsJsVariant* result = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_atomic_int_add ((volatile gint *) (&self->_retainCount), 1);
 	result = self;
@@ -2008,24 +2008,24 @@ utilJsVariant* util_js_variant_retain (utilJsVariant* self) {
 }
 
 
-void util_js_variant_release (utilJsVariant* self) {
+void sdx_utils_js_variant_release (sdxutilsJsVariant* self) {
 	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = g_atomic_int_dec_and_test ((volatile gint *) (&self->_retainCount));
 	if (_tmp0_) {
-		util_js_variant_free (self);
+		sdx_utils_js_variant_free (self);
 	}
 }
 
 
-utilJsVariant* util_js_variant_String (const gchar* value) {
-	utilJsVariant* result = NULL;
-	utilJsVariant* it = NULL;
-	utilJsVariant* _tmp0_ = NULL;
+sdxutilsJsVariant* sdx_utils_js_variant_String (const gchar* value) {
+	sdxutilsJsVariant* result = NULL;
+	sdxutilsJsVariant* it = NULL;
+	sdxutilsJsVariant* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
 	gchar* _tmp2_ = NULL;
 	g_return_val_if_fail (value != NULL, NULL);
-	_tmp0_ = util_js_variant_new (UTIL_JS_TYPE_JS_STRING, FALSE);
+	_tmp0_ = sdx_utils_js_variant_new (SDX_UTILS_JS_TYPE_JS_STRING, FALSE);
 	it = _tmp0_;
 	_tmp1_ = value;
 	_tmp2_ = g_strdup (_tmp1_);
@@ -2036,12 +2036,12 @@ utilJsVariant* util_js_variant_String (const gchar* value) {
 }
 
 
-utilJsVariant* util_js_variant_Number (gdouble value) {
-	utilJsVariant* result = NULL;
-	utilJsVariant* it = NULL;
-	utilJsVariant* _tmp0_ = NULL;
+sdxutilsJsVariant* sdx_utils_js_variant_Number (gdouble value) {
+	sdxutilsJsVariant* result = NULL;
+	sdxutilsJsVariant* it = NULL;
+	sdxutilsJsVariant* _tmp0_ = NULL;
 	gdouble _tmp1_ = 0.0;
-	_tmp0_ = util_js_variant_new (UTIL_JS_TYPE_JS_NUMBER, FALSE);
+	_tmp0_ = sdx_utils_js_variant_new (SDX_UTILS_JS_TYPE_JS_NUMBER, FALSE);
 	it = _tmp0_;
 	_tmp1_ = value;
 	it->number = _tmp1_;
@@ -2050,12 +2050,12 @@ utilJsVariant* util_js_variant_Number (gdouble value) {
 }
 
 
-utilJsVariant* util_js_variant_Boolean (gboolean value) {
-	utilJsVariant* result = NULL;
-	utilJsVariant* it = NULL;
-	utilJsVariant* _tmp0_ = NULL;
+sdxutilsJsVariant* sdx_utils_js_variant_Boolean (gboolean value) {
+	sdxutilsJsVariant* result = NULL;
+	sdxutilsJsVariant* it = NULL;
+	sdxutilsJsVariant* _tmp0_ = NULL;
 	gboolean _tmp1_ = FALSE;
-	_tmp0_ = util_js_variant_new (UTIL_JS_TYPE_JS_BOOLEAN, FALSE);
+	_tmp0_ = sdx_utils_js_variant_new (SDX_UTILS_JS_TYPE_JS_BOOLEAN, FALSE);
 	it = _tmp0_;
 	_tmp1_ = value;
 	it->boolean = _tmp1_;
@@ -2074,27 +2074,27 @@ static gpointer _g_hash_table_ref0 (gpointer self) {
 }
 
 
-utilJsVariant* util_js_variant_new (utilJsType type, gboolean isNull) {
-	utilJsVariant* self;
-	utilJsType _tmp0_ = 0;
-	utilJsType _tmp1_ = 0;
-	self = g_slice_new0 (utilJsVariant);
-	util_js_variant_instance_init (self);
+sdxutilsJsVariant* sdx_utils_js_variant_new (sdxutilsJsType type, gboolean isNull) {
+	sdxutilsJsVariant* self;
+	sdxutilsJsType _tmp0_ = 0;
+	sdxutilsJsType _tmp1_ = 0;
+	self = g_slice_new0 (sdxutilsJsVariant);
+	sdx_utils_js_variant_instance_init (self);
 	_tmp0_ = type;
 	self->type = _tmp0_;
 	_tmp1_ = type;
 	switch (_tmp1_) {
-		case UTIL_JS_TYPE_JS_BOOLEAN:
+		case SDX_UTILS_JS_TYPE_JS_BOOLEAN:
 		{
 			self->boolean = FALSE;
 			break;
 		}
-		case UTIL_JS_TYPE_JS_NUMBER:
+		case SDX_UTILS_JS_TYPE_JS_NUMBER:
 		{
 			self->number = 0.0;
 			break;
 		}
-		case UTIL_JS_TYPE_JS_STRING:
+		case SDX_UTILS_JS_TYPE_JS_STRING:
 		{
 			gchar* _tmp2_ = NULL;
 			_tmp2_ = g_strdup ("");
@@ -2102,7 +2102,7 @@ utilJsVariant* util_js_variant_new (utilJsType type, gboolean isNull) {
 			self->string = _tmp2_;
 			break;
 		}
-		case UTIL_JS_TYPE_JS_OBJECT:
+		case SDX_UTILS_JS_TYPE_JS_OBJECT:
 		{
 			GHashTable* _tmp3_ = NULL;
 			gboolean _tmp4_ = FALSE;
@@ -2117,7 +2117,7 @@ utilJsVariant* util_js_variant_new (utilJsType type, gboolean isNull) {
 				GHashTable* _tmp7_ = NULL;
 				_tmp5_ = g_str_hash;
 				_tmp6_ = g_str_equal;
-				_tmp7_ = g_hash_table_new_full (_tmp5_, _tmp6_, _g_free0_, _util_js_variant_release0_);
+				_tmp7_ = g_hash_table_new_full (_tmp5_, _tmp6_, _g_free0_, _sdx_utils_js_variant_release0_);
 				_g_hash_table_unref0 (_tmp3_);
 				_tmp3_ = _tmp7_;
 			}
@@ -2127,9 +2127,9 @@ utilJsVariant* util_js_variant_new (utilJsType type, gboolean isNull) {
 			_g_hash_table_unref0 (_tmp3_);
 			break;
 		}
-		case UTIL_JS_TYPE_JS_ARRAY:
+		case SDX_UTILS_JS_TYPE_JS_ARRAY:
 		{
-			__g_list_free__util_js_variant_release0_0 (self->array);
+			__g_list_free__sdx_utils_js_variant_release0_0 (self->array);
 			self->array = NULL;
 			break;
 		}
@@ -2142,47 +2142,47 @@ utilJsVariant* util_js_variant_new (utilJsType type, gboolean isNull) {
 }
 
 
-utilJsVariant* util_js_variant_at (utilJsVariant* self, gint index) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_js_variant_at (sdxutilsJsVariant* self, gint index) {
+	sdxutilsJsVariant* result = NULL;
 	GList* _tmp0_ = NULL;
 	gconstpointer _tmp1_ = NULL;
-	utilJsVariant* _tmp2_ = NULL;
+	sdxutilsJsVariant* _tmp2_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->array;
 	_tmp1_ = g_list_nth_data (_tmp0_, (guint) 0);
-	_tmp2_ = _util_js_variant_retain0 ((utilJsVariant*) _tmp1_);
+	_tmp2_ = _sdx_utils_js_variant_retain0 ((sdxutilsJsVariant*) _tmp1_);
 	result = _tmp2_;
 	return result;
 }
 
 
-utilJsVariant* util_js_variant_member (utilJsVariant* self, const gchar* key) {
-	utilJsVariant* result = NULL;
+sdxutilsJsVariant* sdx_utils_js_variant_member (sdxutilsJsVariant* self, const gchar* key) {
+	sdxutilsJsVariant* result = NULL;
 	GHashTable* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
 	gconstpointer _tmp2_ = NULL;
-	utilJsVariant* _tmp3_ = NULL;
+	sdxutilsJsVariant* _tmp3_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 	_tmp0_ = self->object;
 	_tmp1_ = key;
 	_tmp2_ = g_hash_table_lookup (_tmp0_, _tmp1_);
-	_tmp3_ = _util_js_variant_retain0 ((utilJsVariant*) _tmp2_);
+	_tmp3_ = _sdx_utils_js_variant_retain0 ((sdxutilsJsVariant*) _tmp2_);
 	result = _tmp3_;
 	return result;
 }
 
 
-static void util_js_variant_instance_init (utilJsVariant * self) {
+static void sdx_utils_js_variant_instance_init (sdxutilsJsVariant * self) {
 	self->_retainCount = 1;
 }
 
 
-void util_js_variant_free (utilJsVariant* self) {
+void sdx_utils_js_variant_free (sdxutilsJsVariant* self) {
 	_g_free0 (self->string);
 	_g_hash_table_unref0 (self->object);
-	__g_list_free__util_js_variant_release0_0 (self->array);
-	g_slice_free (utilJsVariant, self);
+	__g_list_free__sdx_utils_js_variant_release0_0 (self->array);
+	g_slice_free (sdxutilsJsVariant, self);
 }
 
 

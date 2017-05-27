@@ -8,11 +8,11 @@
 #include <string.h>
 #include <SDL2/SDL_rwops.h>
 
-typedef struct _utilFile utilFile;
+typedef struct _sdxutilsFile sdxutilsFile;
 #define _SDL_FreeRW0(var) ((var == NULL) ? NULL : (var = (SDL_FreeRW (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 
-struct _utilFile {
+struct _sdxutilsFile {
 	gint _retainCount;
 	SDL_RWops* file;
 	gchar* path;
@@ -22,30 +22,30 @@ struct _utilFile {
 
 
 
-#define UTIL_pathSeparator "/"
-#define UTIL_pathSeparatorChar '/'
-void util_file_free (utilFile* self);
-static void util_file_instance_init (utilFile * self);
-utilFile* util_file_retain (utilFile* self);
-void util_file_release (utilFile* self);
-void util_file_free (utilFile* self);
-utilFile* util_file_new (const gchar* path);
-gchar* util_file_getPath (utilFile* self);
-gchar* util_file_getName (utilFile* self);
-gchar* util_file_getParent (utilFile* self);
-gboolean util_file_exists (utilFile* self);
-gboolean util_file_isFile (utilFile* self);
-gboolean util_file_isDirectory (utilFile* self);
-gint util_file_length (utilFile* self);
-gchar* util_file_read (utilFile* self);
-gchar** util_file_list (utilFile* self, int* result_length1);
+#define SDX_UTILS_pathSeparator "/"
+#define SDX_UTILS_pathSeparatorChar '/'
+void sdx_utils_file_free (sdxutilsFile* self);
+static void sdx_utils_file_instance_init (sdxutilsFile * self);
+sdxutilsFile* sdx_utils_file_retain (sdxutilsFile* self);
+void sdx_utils_file_release (sdxutilsFile* self);
+void sdx_utils_file_free (sdxutilsFile* self);
+sdxutilsFile* sdx_utils_file_new (const gchar* path);
+gchar* sdx_utils_file_getPath (sdxutilsFile* self);
+gchar* sdx_utils_file_getName (sdxutilsFile* self);
+gchar* sdx_utils_file_getParent (sdxutilsFile* self);
+gboolean sdx_utils_file_exists (sdxutilsFile* self);
+gboolean sdx_utils_file_isFile (sdxutilsFile* self);
+gboolean sdx_utils_file_isDirectory (sdxutilsFile* self);
+gint sdx_utils_file_length (sdxutilsFile* self);
+gchar* sdx_utils_file_read (sdxutilsFile* self);
+gchar** sdx_utils_file_list (sdxutilsFile* self, int* result_length1);
 static gchar** _vala_array_dup2 (gchar** self, int length);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
 
-utilFile* util_file_retain (utilFile* self) {
-	utilFile* result = NULL;
+sdxutilsFile* sdx_utils_file_retain (sdxutilsFile* self) {
+	sdxutilsFile* result = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_atomic_int_add ((volatile gint *) (&self->_retainCount), 1);
 	result = self;
@@ -53,25 +53,25 @@ utilFile* util_file_retain (utilFile* self) {
 }
 
 
-void util_file_release (utilFile* self) {
+void sdx_utils_file_release (sdxutilsFile* self) {
 	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = g_atomic_int_dec_and_test ((volatile gint *) (&self->_retainCount));
 	if (_tmp0_) {
-		util_file_free (self);
+		sdx_utils_file_free (self);
 	}
 }
 
 
-utilFile* util_file_new (const gchar* path) {
-	utilFile* self;
+sdxutilsFile* sdx_utils_file_new (const gchar* path) {
+	sdxutilsFile* self;
 	const gchar* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
 	const gchar* _tmp2_ = NULL;
 	SDL_RWops* _tmp3_ = NULL;
 	g_return_val_if_fail (path != NULL, NULL);
-	self = g_slice_new0 (utilFile);
-	util_file_instance_init (self);
+	self = g_slice_new0 (sdxutilsFile);
+	sdx_utils_file_instance_init (self);
 	_tmp0_ = path;
 	_tmp1_ = g_strdup (_tmp0_);
 	_g_free0 (self->path);
@@ -84,7 +84,7 @@ utilFile* util_file_new (const gchar* path) {
 }
 
 
-gchar* util_file_getPath (utilFile* self) {
+gchar* sdx_utils_file_getPath (sdxutilsFile* self) {
 	gchar* result = NULL;
 	const gchar* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
@@ -213,7 +213,7 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 }
 
 
-gchar* util_file_getName (utilFile* self) {
+gchar* sdx_utils_file_getName (sdxutilsFile* self) {
 	gchar* result = NULL;
 	const gchar* _tmp12_ = NULL;
 	gchar* _tmp13_ = NULL;
@@ -248,7 +248,7 @@ gchar* util_file_getName (utilFile* self) {
 				_tmp6_ = self->path;
 				_tmp7_ = i;
 				_tmp8_ = string_get (_tmp6_, (glong) _tmp7_);
-				if (_tmp8_ == UTIL_pathSeparatorChar) {
+				if (_tmp8_ == SDX_UTILS_pathSeparatorChar) {
 					const gchar* _tmp9_ = NULL;
 					gint _tmp10_ = 0;
 					gchar* _tmp11_ = NULL;
@@ -297,7 +297,7 @@ static gint string_last_index_of (const gchar* self, const gchar* needle, gint s
 }
 
 
-gchar* util_file_getParent (utilFile* self) {
+gchar* sdx_utils_file_getParent (sdxutilsFile* self) {
 	gchar* result = NULL;
 	gint i = 0;
 	const gchar* _tmp0_ = NULL;
@@ -306,7 +306,7 @@ gchar* util_file_getParent (utilFile* self) {
 	gint _tmp3_ = 0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->path;
-	_tmp1_ = string_last_index_of (_tmp0_, UTIL_pathSeparator, 0);
+	_tmp1_ = string_last_index_of (_tmp0_, SDX_UTILS_pathSeparator, 0);
 	i = _tmp1_;
 	_tmp3_ = i;
 	if (_tmp3_ < 0) {
@@ -332,7 +332,7 @@ gchar* util_file_getParent (utilFile* self) {
 /**
  * check if the represented struture exists on the virtual disk
  */
-gboolean util_file_exists (utilFile* self) {
+gboolean sdx_utils_file_exists (sdxutilsFile* self) {
 	gboolean result = FALSE;
 	SDL_RWops* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
@@ -345,7 +345,7 @@ gboolean util_file_exists (utilFile* self) {
 /**
  * is it a file?
  */
-gboolean util_file_isFile (utilFile* self) {
+gboolean sdx_utils_file_isFile (sdxutilsFile* self) {
 	gboolean result = FALSE;
 	SDL_RWops* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
@@ -358,7 +358,7 @@ gboolean util_file_isFile (utilFile* self) {
 /**
  * is it a folder?
  */
-gboolean util_file_isDirectory (utilFile* self) {
+gboolean sdx_utils_file_isDirectory (sdxutilsFile* self) {
 	gboolean result = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	result = FALSE;
@@ -369,7 +369,7 @@ gboolean util_file_isDirectory (utilFile* self) {
 /**
  * get the length of the file
  */
-gint util_file_length (utilFile* self) {
+gint sdx_utils_file_length (sdxutilsFile* self) {
 	gint result = 0;
 	gint _tmp0_ = 0;
 	SDL_RWops* _tmp1_ = NULL;
@@ -394,7 +394,7 @@ gint util_file_length (utilFile* self) {
 /**
  * read the contents into a string buffer
  */
-gchar* util_file_read (utilFile* self) {
+gchar* sdx_utils_file_read (sdxutilsFile* self) {
 	gchar* result = NULL;
 	gboolean _tmp0_ = FALSE;
 	gint size = 0;
@@ -419,7 +419,7 @@ gchar* util_file_read (utilFile* self) {
 	gint _tmp13__length1 = 0;
 	gchar* _tmp14_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = util_file_exists (self);
+	_tmp0_ = sdx_utils_file_exists (self);
 	if (!_tmp0_) {
 		gchar* _tmp1_ = NULL;
 		_tmp1_ = g_strdup ("");
@@ -471,7 +471,7 @@ static gchar** _vala_array_dup2 (gchar** self, int length) {
 }
 
 
-gchar** util_file_list (utilFile* self, int* result_length1) {
+gchar** sdx_utils_file_list (sdxutilsFile* self, int* result_length1) {
 	gchar** result = NULL;
 	gchar** _tmp0_ = NULL;
 	gchar** _tmp1_ = NULL;
@@ -499,16 +499,16 @@ gchar** util_file_list (utilFile* self, int* result_length1) {
 }
 
 
-static void util_file_instance_init (utilFile * self) {
+static void sdx_utils_file_instance_init (sdxutilsFile * self) {
 	self->_retainCount = 1;
 }
 
 
-void util_file_free (utilFile* self) {
+void sdx_utils_file_free (sdxutilsFile* self) {
 	_SDL_FreeRW0 (self->file);
 	_g_free0 (self->path);
 	self->files = (_vala_array_free (self->files, self->files_length1, (GDestroyNotify) g_free), NULL);
-	g_slice_free (utilFile, self);
+	g_slice_free (sdxutilsFile, self);
 }
 
 

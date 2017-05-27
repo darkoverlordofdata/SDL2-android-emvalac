@@ -289,6 +289,7 @@ void game_release (Game* self);
 void game_free (Game* self);
 Game* game_new (gint width, gint height);
 void game_initialize (Game* self);
+void sdx_setResource (const gchar* path);
 void sdx_setSmallFont (const gchar* path, gint size);
 void sdx_setDefaultFont (const gchar* path, gint size);
 void sdx_setShowFps (gboolean value);
@@ -504,6 +505,7 @@ void game_initialize (Game* self) {
 	Factory* _tmp56_ = NULL;
 	Factory* _tmp57_ = NULL;
 	g_return_if_fail (self != NULL);
+	sdx_setResource ("/darkoverlordofdata/shmupwarz");
 	sdx_setSmallFont ("assets/fonts/OpenDyslexic-Bold.otf", 16);
 	sdx_setDefaultFont ("assets/fonts/OpenDyslexic-Bold.otf", 24);
 	sdx_setShowFps (TRUE);

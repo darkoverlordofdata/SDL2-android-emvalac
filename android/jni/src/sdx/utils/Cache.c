@@ -6,10 +6,10 @@
 #include <glib-object.h>
 #include <stdio.h>
 
-typedef struct _utilCache utilCache;
+typedef struct _sdxutilsCache sdxutilsCache;
 #define _g_list_free0(var) ((var == NULL) ? NULL : (var = (g_list_free (var), NULL)))
 
-struct _utilCache {
+struct _sdxutilsCache {
 	gint _retainCount;
 	gpointer* items;
 	gint items_length1;
@@ -18,22 +18,22 @@ struct _utilCache {
 
 
 
-void util_cache_free (utilCache* self);
-static void util_cache_instance_init (utilCache * self);
-utilCache* util_cache_retain (utilCache* self);
-void util_cache_release (utilCache* self);
-void util_cache_free (utilCache* self);
-utilCache* util_cache_new (gint capacity);
-gboolean util_cache_isEmpty (utilCache* self);
-gpointer util_cache_get (utilCache* self, gint index);
-void util_cache_put (utilCache* self, gint index, gconstpointer entity);
-void util_cache_enque (utilCache* self, gconstpointer entity);
-void util_cache_grow (utilCache* self, gint newSize);
-gpointer util_cache_deque (utilCache* self);
+void sdx_utils_cache_free (sdxutilsCache* self);
+static void sdx_utils_cache_instance_init (sdxutilsCache * self);
+sdxutilsCache* sdx_utils_cache_retain (sdxutilsCache* self);
+void sdx_utils_cache_release (sdxutilsCache* self);
+void sdx_utils_cache_free (sdxutilsCache* self);
+sdxutilsCache* sdx_utils_cache_new (gint capacity);
+gboolean sdx_utils_cache_isEmpty (sdxutilsCache* self);
+gpointer sdx_utils_cache_get (sdxutilsCache* self, gint index);
+void sdx_utils_cache_put (sdxutilsCache* self, gint index, gconstpointer entity);
+void sdx_utils_cache_enque (sdxutilsCache* self, gconstpointer entity);
+void sdx_utils_cache_grow (sdxutilsCache* self, gint newSize);
+gpointer sdx_utils_cache_deque (sdxutilsCache* self);
 
 
-utilCache* util_cache_retain (utilCache* self) {
-	utilCache* result = NULL;
+sdxutilsCache* sdx_utils_cache_retain (sdxutilsCache* self) {
+	sdxutilsCache* result = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_atomic_int_add ((volatile gint *) (&self->_retainCount), 1);
 	result = self;
@@ -41,22 +41,22 @@ utilCache* util_cache_retain (utilCache* self) {
 }
 
 
-void util_cache_release (utilCache* self) {
+void sdx_utils_cache_release (sdxutilsCache* self) {
 	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = g_atomic_int_dec_and_test ((volatile gint *) (&self->_retainCount));
 	if (_tmp0_) {
-		util_cache_free (self);
+		sdx_utils_cache_free (self);
 	}
 }
 
 
-utilCache* util_cache_new (gint capacity) {
-	utilCache* self;
+sdxutilsCache* sdx_utils_cache_new (gint capacity) {
+	sdxutilsCache* self;
 	gint _tmp0_ = 0;
 	gpointer* _tmp1_ = NULL;
-	self = g_slice_new0 (utilCache);
-	util_cache_instance_init (self);
+	self = g_slice_new0 (sdxutilsCache);
+	sdx_utils_cache_instance_init (self);
 	_tmp0_ = capacity;
 	_tmp1_ = g_new0 (gpointer, _tmp0_);
 	self->items = (g_free (self->items), NULL);
@@ -67,7 +67,7 @@ utilCache* util_cache_new (gint capacity) {
 }
 
 
-gboolean util_cache_isEmpty (utilCache* self) {
+gboolean sdx_utils_cache_isEmpty (sdxutilsCache* self) {
 	gboolean result = FALSE;
 	gint _tmp0_ = 0;
 	g_return_val_if_fail (self != NULL, FALSE);
@@ -77,7 +77,7 @@ gboolean util_cache_isEmpty (utilCache* self) {
 }
 
 
-gpointer util_cache_get (utilCache* self, gint index) {
+gpointer sdx_utils_cache_get (sdxutilsCache* self, gint index) {
 	gpointer result = NULL;
 	gboolean _tmp0_ = FALSE;
 	gint _tmp1_ = 0;
@@ -114,7 +114,7 @@ gpointer util_cache_get (utilCache* self, gint index) {
 }
 
 
-void util_cache_put (utilCache* self, gint index, gconstpointer entity) {
+void sdx_utils_cache_put (sdxutilsCache* self, gint index, gconstpointer entity) {
 	gboolean _tmp0_ = FALSE;
 	gint _tmp1_ = 0;
 	gpointer* _tmp6_ = NULL;
@@ -150,7 +150,7 @@ void util_cache_put (utilCache* self, gint index, gconstpointer entity) {
 }
 
 
-void util_cache_enque (utilCache* self, gconstpointer entity) {
+void sdx_utils_cache_enque (sdxutilsCache* self, gconstpointer entity) {
 	gint _tmp0_ = 0;
 	gpointer* _tmp1_ = NULL;
 	gint _tmp1__length1 = 0;
@@ -168,7 +168,7 @@ void util_cache_enque (utilCache* self, gconstpointer entity) {
 		gint _tmp2__length1 = 0;
 		_tmp2_ = self->items;
 		_tmp2__length1 = self->items_length1;
-		util_cache_grow (self, _tmp2__length1 * 2);
+		sdx_utils_cache_grow (self, _tmp2__length1 * 2);
 	}
 	_tmp3_ = self->items;
 	_tmp3__length1 = self->items_length1;
@@ -180,7 +180,7 @@ void util_cache_enque (utilCache* self, gconstpointer entity) {
 }
 
 
-gpointer util_cache_deque (utilCache* self) {
+gpointer sdx_utils_cache_deque (sdxutilsCache* self) {
 	gpointer result = NULL;
 	gint _tmp0_ = 0;
 	gpointer* _tmp2_ = NULL;
@@ -208,7 +208,7 @@ gpointer util_cache_deque (utilCache* self) {
 }
 
 
-void util_cache_grow (utilCache* self, gint newSize) {
+void sdx_utils_cache_grow (sdxutilsCache* self, gint newSize) {
 	GList* temp = NULL;
 	gpointer* _tmp0_ = NULL;
 	gint _tmp0__length1 = 0;
@@ -271,14 +271,14 @@ void util_cache_grow (utilCache* self, gint newSize) {
 }
 
 
-static void util_cache_instance_init (utilCache * self) {
+static void sdx_utils_cache_instance_init (sdxutilsCache * self) {
 	self->_retainCount = 1;
 }
 
 
-void util_cache_free (utilCache* self) {
+void sdx_utils_cache_free (sdxutilsCache* self) {
 	self->items = (g_free (self->items), NULL);
-	g_slice_free (utilCache, self);
+	g_slice_free (sdxutilsCache, self);
 }
 
 
