@@ -7,12 +7,12 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <string.h>
+#include <SDL2/SDL_video.h>
 #include <SDL2/SDL_pixels.h>
 #include <float.h>
 #include <math.h>
 #include <stdlib.h>
 #include <SDL2/SDL_events.h>
-#include <SDL2/SDL_video.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_hints.h>
@@ -69,8 +69,12 @@ typedef enum  {
 	SDX_SDL_EXCEPTION_CreateRenderer,
 	SDX_SDL_EXCEPTION_InvalidForPlatform,
 	SDX_SDL_EXCEPTION_UnableToLoadResource,
+	SDX_SDL_EXCEPTION_UnableToLoadSurface,
 	SDX_SDL_EXCEPTION_NullPointer,
-	SDX_SDL_EXCEPTION_NoSuchElement
+	SDX_SDL_EXCEPTION_NoSuchElement,
+	SDX_SDL_EXCEPTION_IllegalStateException,
+	SDX_SDL_EXCEPTION_RuntimeException,
+	SDX_SDL_EXCEPTION_NotReached
 } sdxSdlException;
 #define SDX_SDL_EXCEPTION sdx_sdl_exception_quark ()
 struct _sdxgraphicsScale {
@@ -104,12 +108,18 @@ extern sdxFont* sdx_smallFont;
 sdxFont* sdx_smallFont = NULL;
 extern sdxFont* sdx_largeFont;
 sdxFont* sdx_largeFont = NULL;
-extern sdxgraphicsSprite* sdx_fpsSprite;
-sdxgraphicsSprite* sdx_fpsSprite = NULL;
+extern int sdx_display;
+int sdx_display = 0;
+extern SDL_DisplayMode sdx_displayMode;
+SDL_DisplayMode sdx_displayMode = {0};
 extern SDL_Color sdx_fpsColor;
 SDL_Color sdx_fpsColor = {0};
 extern SDL_Color sdx_bgdColor;
 SDL_Color sdx_bgdColor = {0};
+extern sdxgraphicsSprite* sdx_fpsSprite;
+sdxgraphicsSprite* sdx_fpsSprite = NULL;
+extern glong sdx_pixelFactor;
+glong sdx_pixelFactor = 0L;
 extern gboolean sdx_showFps;
 gboolean sdx_showFps = FALSE;
 extern gdouble sdx_fps;
@@ -129,11 +139,11 @@ extern gint sdx_keys_length1;
 guint8* sdx_keys = NULL;
 gint sdx_keys_length1 = 0;
 static gint _sdx_keys_size_ = 0;
-extern gboolean* sdx_dir;
-extern gint sdx_dir_length1;
-gboolean* sdx_dir = NULL;
-gint sdx_dir_length1 = 0;
-static gint _sdx_dir_size_ = 0;
+extern gboolean* sdx_direction;
+extern gint sdx_direction_length1;
+gboolean* sdx_direction = NULL;
+gint sdx_direction_length1 = 0;
+static gint _sdx_direction_size_ = 0;
 extern gchar* sdx_resourceBase;
 gchar* sdx_resourceBase = NULL;
 extern gint sdx__frames;
@@ -232,28 +242,24 @@ SDL_Window* sdx_initialize (gint width, gint height, const gchar* name) {
 	gint _tmp5_ = 0;
 	gboolean _tmp8_ = FALSE;
 	gint _tmp11_ = 0;
-	int ds = 0;
 	int _tmp14_ = 0;
-	SDL_DisplayMode mode = {0};
-	gint n = 0;
-	int _tmp15_ = 0;
-	gint _tmp16_ = 0;
-	int _tmp17_ = 0;
+	SDL_DisplayMode _tmp15_ = {0};
+	int _tmp16_ = 0;
+	gint _tmp17_ = 0;
 	SDL_DisplayMode _tmp18_ = {0};
-	SDL_DisplayMode _tmp19_ = {0};
-	gint _tmp20_ = 0;
-	SDL_DisplayMode _tmp21_ = {0};
-	gint _tmp22_ = 0;
+	gint _tmp19_ = 0;
+	SDL_DisplayMode _tmp20_ = {0};
+	gint _tmp21_ = 0;
 	SDL_Window* window = NULL;
-	const gchar* _tmp23_ = NULL;
+	const gchar* _tmp22_ = NULL;
+	SDL_Window* _tmp23_ = NULL;
 	SDL_Window* _tmp24_ = NULL;
-	SDL_Window* _tmp25_ = NULL;
-	SDL_Window* _tmp28_ = NULL;
+	SDL_Window* _tmp27_ = NULL;
+	SDL_Renderer* _tmp28_ = NULL;
 	SDL_Renderer* _tmp29_ = NULL;
-	SDL_Renderer* _tmp30_ = NULL;
-	guint64 _tmp33_ = 0ULL;
-	SDL_Color _tmp34_ = {0};
-	guint64 _tmp35_ = 0ULL;
+	guint64 _tmp32_ = 0ULL;
+	SDL_Color _tmp33_ = {0};
+	guint64 _tmp34_ = 0ULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = g_new0 (guint8, 256);
@@ -262,10 +268,10 @@ SDL_Window* sdx_initialize (gint width, gint height, const gchar* name) {
 	sdx_keys_length1 = 256;
 	_sdx_keys_size_ = sdx_keys_length1;
 	_tmp1_ = g_new0 (gboolean, 5);
-	sdx_dir = (g_free (sdx_dir), NULL);
-	sdx_dir = _tmp1_;
-	sdx_dir_length1 = 5;
-	_sdx_dir_size_ = sdx_dir_length1;
+	sdx_direction = (g_free (sdx_direction), NULL);
+	sdx_direction = _tmp1_;
+	sdx_direction_length1 = 5;
+	_sdx_direction_size_ = sdx_direction_length1;
 	_tmp2_ = SDL_Init ((guint32) ((SDL_INIT_VIDEO | SDL_INIT_TIMER) | SDL_INIT_EVENTS));
 	if (_tmp2_ < 0) {
 		const gchar* _tmp3_ = NULL;
@@ -310,65 +316,66 @@ SDL_Window* sdx_initialize (gint width, gint height, const gchar* name) {
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	ds = _tmp14_;
-	_tmp15_ = ds;
-	_tmp16_ = SDL_GetNumDisplayModes (_tmp15_);
-	n = _tmp16_;
-	_tmp17_ = ds;
-	SDL_GetDisplayMode (_tmp17_, 0, &_tmp18_);
-	 (&mode);
-	mode = _tmp18_;
-	_tmp19_ = mode;
-	_tmp20_ = _tmp19_.w;
-	sdx__width = _tmp20_;
-	_tmp21_ = mode;
-	_tmp22_ = _tmp21_.h;
-	sdx__height = _tmp22_;
-	_tmp23_ = name;
-	_tmp24_ = SDL_CreateWindow (_tmp23_, (gint) SDL_WINDOWPOS_CENTERED_MASK, (gint) SDL_WINDOWPOS_CENTERED_MASK, 0, 0, (guint32) SDL_WINDOW_SHOWN);
-	window = _tmp24_;
-	_tmp25_ = window;
-	if (_tmp25_ == NULL) {
-		const gchar* _tmp26_ = NULL;
-		GError* _tmp27_ = NULL;
-		_tmp26_ = SDL_GetError ();
-		_tmp27_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_OpenWindow, _tmp26_);
-		_inner_error_ = _tmp27_;
+	sdx_display = (int) 0;
+	_tmp14_ = sdx_display;
+	SDL_GetDisplayMode (_tmp14_, 0, &_tmp15_);
+	 (&sdx_displayMode);
+	sdx_displayMode = _tmp15_;
+	_tmp16_ = sdx_display;
+	_tmp17_ = SDL_GetDisplayDPI (_tmp16_, NULL, NULL, NULL);
+	if (_tmp17_ == -1) {
+		sdx_pixelFactor = (glong) 1;
+	} else {
+		sdx_pixelFactor = (glong) 1;
+	}
+	_tmp18_ = sdx_displayMode;
+	_tmp19_ = _tmp18_.w;
+	sdx__width = _tmp19_;
+	_tmp20_ = sdx_displayMode;
+	_tmp21_ = _tmp20_.h;
+	sdx__height = _tmp21_;
+	_tmp22_ = name;
+	_tmp23_ = SDL_CreateWindow (_tmp22_, (gint) SDL_WINDOWPOS_CENTERED_MASK, (gint) SDL_WINDOWPOS_CENTERED_MASK, 0, 0, (guint32) SDL_WINDOW_SHOWN);
+	window = _tmp23_;
+	_tmp24_ = window;
+	if (_tmp24_ == NULL) {
+		const gchar* _tmp25_ = NULL;
+		GError* _tmp26_ = NULL;
+		_tmp25_ = SDL_GetError ();
+		_tmp26_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_OpenWindow, _tmp25_);
+		_inner_error_ = _tmp26_;
 		_SDL_DestroyWindow0 (window);
-		 (&mode);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp28_ = window;
-	_tmp29_ = SDL_CreateRenderer (_tmp28_, -1, (guint32) (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+	_tmp27_ = window;
+	_tmp28_ = SDL_CreateRenderer (_tmp27_, -1, (guint32) (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 	_SDL_DestroyRenderer0 (sdx_renderer);
-	sdx_renderer = _tmp29_;
-	_tmp30_ = sdx_renderer;
-	if (_tmp30_ == NULL) {
-		const gchar* _tmp31_ = NULL;
-		GError* _tmp32_ = NULL;
-		_tmp31_ = SDL_GetError ();
-		_tmp32_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_CreateRenderer, _tmp31_);
-		_inner_error_ = _tmp32_;
+	sdx_renderer = _tmp28_;
+	_tmp29_ = sdx_renderer;
+	if (_tmp29_ == NULL) {
+		const gchar* _tmp30_ = NULL;
+		GError* _tmp31_ = NULL;
+		_tmp30_ = SDL_GetError ();
+		_tmp31_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_CreateRenderer, _tmp30_);
+		_inner_error_ = _tmp31_;
 		_SDL_DestroyWindow0 (window);
-		 (&mode);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp33_ = SDL_GetPerformanceFrequency ();
-	sdx__freq = (gdouble) _tmp33_;
+	_tmp32_ = SDL_GetPerformanceFrequency ();
+	sdx__freq = (gdouble) _tmp32_;
 	sdx_fpsColor = SDX_COLOR_AntiqueWhite;
-	_tmp34_.r = (guint8) 0;
-	_tmp34_.g = (guint8) 0;
-	_tmp34_.b = (guint8) 0;
-	_tmp34_.a = (guint8) 0;
-	sdx_bgdColor = _tmp34_;
-	_tmp35_ = SDL_GetPerformanceCounter ();
-	init_genrand ((gulong) _tmp35_);
+	_tmp33_.r = (guint8) 0;
+	_tmp33_.g = (guint8) 0;
+	_tmp33_.b = (guint8) 0;
+	_tmp33_.a = (guint8) 0;
+	sdx_bgdColor = _tmp33_;
+	_tmp34_ = SDL_GetPerformanceCounter ();
+	init_genrand ((gulong) _tmp34_);
 	result = window;
-	 (&mode);
 	return result;
 }
 
@@ -592,8 +599,8 @@ void sdx_processEvents (void) {
 						gboolean* _tmp8_ = NULL;
 						gint _tmp8__length1 = 0;
 						gboolean _tmp9_ = FALSE;
-						_tmp8_ = sdx_dir;
-						_tmp8__length1 = sdx_dir_length1;
+						_tmp8_ = sdx_direction;
+						_tmp8__length1 = sdx_direction_length1;
 						_tmp8_[SDX_DIRECTION_LEFT] = TRUE;
 						_tmp9_ = _tmp8_[SDX_DIRECTION_LEFT];
 						break;
@@ -603,8 +610,8 @@ void sdx_processEvents (void) {
 						gboolean* _tmp10_ = NULL;
 						gint _tmp10__length1 = 0;
 						gboolean _tmp11_ = FALSE;
-						_tmp10_ = sdx_dir;
-						_tmp10__length1 = sdx_dir_length1;
+						_tmp10_ = sdx_direction;
+						_tmp10__length1 = sdx_direction_length1;
 						_tmp10_[SDX_DIRECTION_RIGHT] = TRUE;
 						_tmp11_ = _tmp10_[SDX_DIRECTION_RIGHT];
 						break;
@@ -614,8 +621,8 @@ void sdx_processEvents (void) {
 						gboolean* _tmp12_ = NULL;
 						gint _tmp12__length1 = 0;
 						gboolean _tmp13_ = FALSE;
-						_tmp12_ = sdx_dir;
-						_tmp12__length1 = sdx_dir_length1;
+						_tmp12_ = sdx_direction;
+						_tmp12__length1 = sdx_direction_length1;
 						_tmp12_[SDX_DIRECTION_UP] = TRUE;
 						_tmp13_ = _tmp12_[SDX_DIRECTION_UP];
 						break;
@@ -625,8 +632,8 @@ void sdx_processEvents (void) {
 						gboolean* _tmp14_ = NULL;
 						gint _tmp14__length1 = 0;
 						gboolean _tmp15_ = FALSE;
-						_tmp14_ = sdx_dir;
-						_tmp14__length1 = sdx_dir_length1;
+						_tmp14_ = sdx_direction;
+						_tmp14__length1 = sdx_direction_length1;
 						_tmp14_[SDX_DIRECTION_DOWN] = TRUE;
 						_tmp15_ = _tmp14_[SDX_DIRECTION_DOWN];
 						break;
@@ -692,8 +699,8 @@ void sdx_processEvents (void) {
 						gboolean* _tmp35_ = NULL;
 						gint _tmp35__length1 = 0;
 						gboolean _tmp36_ = FALSE;
-						_tmp35_ = sdx_dir;
-						_tmp35__length1 = sdx_dir_length1;
+						_tmp35_ = sdx_direction;
+						_tmp35__length1 = sdx_direction_length1;
 						_tmp35_[SDX_DIRECTION_LEFT] = FALSE;
 						_tmp36_ = _tmp35_[SDX_DIRECTION_LEFT];
 						break;
@@ -703,8 +710,8 @@ void sdx_processEvents (void) {
 						gboolean* _tmp37_ = NULL;
 						gint _tmp37__length1 = 0;
 						gboolean _tmp38_ = FALSE;
-						_tmp37_ = sdx_dir;
-						_tmp37__length1 = sdx_dir_length1;
+						_tmp37_ = sdx_direction;
+						_tmp37__length1 = sdx_direction_length1;
 						_tmp37_[SDX_DIRECTION_RIGHT] = FALSE;
 						_tmp38_ = _tmp37_[SDX_DIRECTION_RIGHT];
 						break;
@@ -714,8 +721,8 @@ void sdx_processEvents (void) {
 						gboolean* _tmp39_ = NULL;
 						gint _tmp39__length1 = 0;
 						gboolean _tmp40_ = FALSE;
-						_tmp39_ = sdx_dir;
-						_tmp39__length1 = sdx_dir_length1;
+						_tmp39_ = sdx_direction;
+						_tmp39__length1 = sdx_direction_length1;
 						_tmp39_[SDX_DIRECTION_UP] = FALSE;
 						_tmp40_ = _tmp39_[SDX_DIRECTION_UP];
 						break;
@@ -725,8 +732,8 @@ void sdx_processEvents (void) {
 						gboolean* _tmp41_ = NULL;
 						gint _tmp41__length1 = 0;
 						gboolean _tmp42_ = FALSE;
-						_tmp41_ = sdx_dir;
-						_tmp41__length1 = sdx_dir_length1;
+						_tmp41_ = sdx_direction;
+						_tmp41__length1 = sdx_direction_length1;
 						_tmp41_[SDX_DIRECTION_DOWN] = FALSE;
 						_tmp42_ = _tmp41_[SDX_DIRECTION_DOWN];
 						break;

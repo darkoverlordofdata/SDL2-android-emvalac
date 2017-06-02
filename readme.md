@@ -28,3 +28,13 @@ results in ./web
 * emscripten and android require emvalac (https://github.com/darkoverlordofdata/emvalac)
 * emvalac requires nodejs
 * android requires SDL2.0.5, SDL_image and SDL_ttf linked or copied to the jni folder
+
+use xml2json to convert bitmap font config:
+
+npm install xml2json -g
+cat hud.fnt | xml2son > hud.json
+cat normal.fnt | xml2son > normal.json
+-s ALLOW_MEMORY_GROWTH=1 
+
+java -cp gdx.jar:gdx-tools.jar com.badlogic.gdx.tools.texturepacker.TexturePacker assets outputDir pack
+

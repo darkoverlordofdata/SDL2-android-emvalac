@@ -20,8 +20,7 @@ sdxutilsFile* sdx_utils_file_retain (sdxutilsFile* self);
 #define _SDL_FreeRW0(var) ((var == NULL) ? NULL : (var = (SDL_FreeRW (var), NULL)))
 
 typedef enum  {
-	SDX_FILE_TYPE_Parent,
-	SDX_FILE_TYPE_Resource,
+	SDX_FILE_TYPE_Resource = 1,
 	SDX_FILE_TYPE_Asset,
 	SDX_FILE_TYPE_Absolute,
 	SDX_FILE_TYPE_Relative
@@ -43,8 +42,12 @@ typedef enum  {
 	SDX_SDL_EXCEPTION_CreateRenderer,
 	SDX_SDL_EXCEPTION_InvalidForPlatform,
 	SDX_SDL_EXCEPTION_UnableToLoadResource,
+	SDX_SDL_EXCEPTION_UnableToLoadSurface,
 	SDX_SDL_EXCEPTION_NullPointer,
-	SDX_SDL_EXCEPTION_NoSuchElement
+	SDX_SDL_EXCEPTION_NoSuchElement,
+	SDX_SDL_EXCEPTION_IllegalStateException,
+	SDX_SDL_EXCEPTION_RuntimeException,
+	SDX_SDL_EXCEPTION_NotReached
 } sdxSdlException;
 #define SDX_SDL_EXCEPTION sdx_sdl_exception_quark ()
 
@@ -173,13 +176,25 @@ SDL_RWops* sdx_files_file_handle_getRWops (sdxfilesFileHandle* self) {
 
 gchar* sdx_files_file_handle_read (sdxfilesFileHandle* self) {
 	gchar* result = NULL;
-	sdxutilsFile* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
+	sdxFileType _tmp0_ = 0;
+	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = self->file;
-	_tmp1_ = sdx_utils_file_read (_tmp0_);
-	result = _tmp1_;
-	return result;
+	_tmp0_ = self->type;
+	if (_tmp0_ == SDX_FILE_TYPE_Resource) {
+		GError* _tmp1_ = NULL;
+		_tmp1_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_InvalidForPlatform, "Resource not available");
+		_inner_error_ = _tmp1_;
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	} else {
+		sdxutilsFile* _tmp2_ = NULL;
+		gchar* _tmp3_ = NULL;
+		_tmp2_ = self->file;
+		_tmp3_ = sdx_utils_file_read (_tmp2_);
+		result = _tmp3_;
+		return result;
+	}
 }
 
 
@@ -384,16 +399,18 @@ sdxfilesFileHandle* sdx_files_file_handle_getParent (sdxfilesFileHandle* self) {
 	sdxutilsFile* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
 	gchar* _tmp2_ = NULL;
-	sdxfilesFileHandle* _tmp3_ = NULL;
+	sdxFileType _tmp3_ = 0;
 	sdxfilesFileHandle* _tmp4_ = NULL;
+	sdxfilesFileHandle* _tmp5_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->file;
 	_tmp1_ = sdx_utils_file_getParent (_tmp0_);
 	_tmp2_ = _tmp1_;
-	_tmp3_ = sdx_files_file_handle_new (_tmp2_, SDX_FILE_TYPE_Parent);
-	_tmp4_ = _tmp3_;
+	_tmp3_ = self->type;
+	_tmp4_ = sdx_files_file_handle_new (_tmp2_, _tmp3_);
+	_tmp5_ = _tmp4_;
 	_g_free0 (_tmp2_);
-	result = _tmp4_;
+	result = _tmp5_;
 	return result;
 }
 

@@ -2,7 +2,7 @@ project('shmupwarz',['c','vala'])
 
 ANDROID = (get_option('ANDROID') != '')
 PROFILING = (get_option('PROFILING') != '')
-DESKTOP = (get_option('DESKTOP') != '')
+EMSCRIPTEN = (get_option('EMSCRIPTEN') != '')
 
 add_global_arguments('-DGETTEXT_PACKAGE="shmupwarz"',language: 'c')
 
@@ -63,12 +63,23 @@ shmupwarz_sources += ['src/main.vala']
 shmupwarz_sources += ['src/sdx/Color.gs']
 shmupwarz_sources += ['src/sdx/Files.vala']
 shmupwarz_sources += ['src/sdx/Font.vala']
+shmupwarz_sources += ['src/sdx/audio/Sound.vala']
+shmupwarz_sources += ['src/sdx/audio/audio.vala']
 shmupwarz_sources += ['src/sdx/exceptions.gs']
 shmupwarz_sources += ['src/sdx/files/FileHandle.vala']
+shmupwarz_sources += ['src/sdx/files/files.vala']
+shmupwarz_sources += ['src/sdx/graphics/BitmapFont.vala']
 shmupwarz_sources += ['src/sdx/graphics/Sprite.vala']
 shmupwarz_sources += ['src/sdx/graphics/Surface.vala']
-shmupwarz_sources += ['src/sdx/graphics/TextureAtlas.vala']
+shmupwarz_sources += ['src/sdx/graphics/Texture.vala']
+shmupwarz_sources += ['src/sdx/graphics/TextureRegion.vala']
+shmupwarz_sources += ['src/sdx/graphics/graphics.vala']
 shmupwarz_sources += ['src/sdx/sdx.vala']
+shmupwarz_sources += ['src/sdx/utils/Cache.vala']
+shmupwarz_sources += ['src/sdx/utils/File.vala']
+shmupwarz_sources += ['src/sdx/utils/Json.vala']
+shmupwarz_sources += ['src/sdx/utils/StringTokenizer.vala']
+shmupwarz_sources += ['src/sdx/utils/utils.vala']
 shmupwarz_sources += ['src/shmupwarz.vala']
 shmupwarz_sources += ['src/systems/AnimationSystem.vala']
 shmupwarz_sources += ['src/systems/CollisionSystem.vala']
@@ -79,9 +90,6 @@ shmupwarz_sources += ['src/systems/PhysicsSystem.vala']
 shmupwarz_sources += ['src/systems/RemoveSystem.vala']
 shmupwarz_sources += ['src/systems/ScoreSystem.vala']
 shmupwarz_sources += ['src/systems/SpawnSystem.vala']
-shmupwarz_sources += ['src/util/Cache.vala']
-shmupwarz_sources += ['src/util/File.vala']
-shmupwarz_sources += ['src/util/Json.vala']
 shmupwarz_sources += [resources_gresource_xml_file_c]
 shmupwarz_sources += [join_paths(meson.current_source_dir(),'src/vapis/mt19937ar.vapi')]
 shmupwarz_vala_args = ['--vapidir='+join_paths(meson.current_source_dir(),'src/vapis')]
@@ -96,9 +104,9 @@ if PROFILING
   shmupwarz_vala_args += ['-D', 'PROFILING']
   shmupwarz_c_args += ['-DPROFILING']
 endif
-if DESKTOP
-  shmupwarz_vala_args += ['-D', 'DESKTOP']
-  shmupwarz_c_args += ['-DDESKTOP']
+if EMSCRIPTEN
+  shmupwarz_vala_args += ['-D', 'EMSCRIPTEN']
+  shmupwarz_c_args += ['-DEMSCRIPTEN']
 endif
 shmupwarz_deps += [meson.get_compiler('c').find_library('m', required : false)]
 

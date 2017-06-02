@@ -2,7 +2,10 @@ namespace sdx.graphics {
 
 	/**
 	 * a reference counted wrapper for surface
+	 * keeps all the requires surfaced cahced in memory
 	 * prevents the surface memory from being reclaimed 
+	 * prevents loading the same surface again & again -
+	 * which causes emscripten to fail
 	 * 
 	 */
 	
@@ -17,17 +20,19 @@ namespace sdx.graphics {
 		public Surface(string path) {
 
 			this.path = path;
-#if (DESKTOP)			
-			// from GResource
-			var file = sdx.files.resource(path);
-#elif (ANDROID)				
-			// from the *.apk asset folder
-			var file = sdx.files.asset(path);
-#else					
-			// just use the path as is
-			var file = sdx.files.relative(path);
-#endif
+//  #if (EMSCRIPTEN)			
+//  			// just use the path as is
+//  			var file = sdx.files.relative(path);
+//  #elif (ANDROID)				
+//  			// from the *.apk asset folder
+//  			var file = sdx.files.asset(path);
+//  #else					
+//  			// from GResource
+//  			var file = sdx.files.resource(path);
+//  #endif
+			var file = sdx.files.@default(path);
 			surface = SDLImage.load_png(file.getRWops());
+			surface.set_alphamod(0xff);
 			width = surface.w;
 			height = surface.h;
 		}

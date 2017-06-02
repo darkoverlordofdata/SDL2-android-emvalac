@@ -1,3 +1,3 @@
 option('ANDROID',type : 'string', value: '')
 option('PROFILING',type : 'string', value: '')
-option('DESKTOP',type : 'string', value: '')
+option('EMSCRIPTEN',type : 'string', value: '')

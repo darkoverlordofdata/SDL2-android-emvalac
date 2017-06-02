@@ -40,7 +40,7 @@ void sdx_graphics_surface_release (sdxgraphicsSurface* self);
 void sdx_graphics_surface_free (sdxgraphicsSurface* self);
 sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path);
 void sdx_files_file_handle_free (sdxfilesFileHandle* self);
-sdxfilesFileHandle* sdx_files_asset (const gchar* path);
+sdxfilesFileHandle* sdx_files_default (const gchar* path);
 SDL_RWops* sdx_files_file_handle_getRWops (sdxfilesFileHandle* self);
 
 
@@ -74,9 +74,10 @@ sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path) {
 	SDL_RWops* _tmp5_ = NULL;
 	SDL_Surface* _tmp6_ = NULL;
 	SDL_Surface* _tmp7_ = NULL;
-	gint _tmp8_ = 0;
-	SDL_Surface* _tmp9_ = NULL;
-	gint _tmp10_ = 0;
+	SDL_Surface* _tmp8_ = NULL;
+	gint _tmp9_ = 0;
+	SDL_Surface* _tmp10_ = NULL;
+	gint _tmp11_ = 0;
 	g_return_val_if_fail (path != NULL, NULL);
 	self = g_slice_new0 (sdxgraphicsSurface);
 	sdx_graphics_surface_instance_init (self);
@@ -85,7 +86,7 @@ sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path) {
 	_g_free0 (self->path);
 	self->path = _tmp1_;
 	_tmp2_ = path;
-	_tmp3_ = sdx_files_asset (_tmp2_);
+	_tmp3_ = sdx_files_default (_tmp2_);
 	file = _tmp3_;
 	_tmp4_ = sdx_files_file_handle_getRWops (file);
 	_tmp5_ = _tmp4_;
@@ -94,11 +95,13 @@ sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path) {
 	self->surface = _tmp6_;
 	_SDL_FreeRW0 (_tmp5_);
 	_tmp7_ = self->surface;
-	_tmp8_ = _tmp7_->w;
-	self->width = _tmp8_;
-	_tmp9_ = self->surface;
-	_tmp10_ = _tmp9_->h;
-	self->height = _tmp10_;
+	SDL_SetSurfaceAlphaMod (_tmp7_, (guint8) 0xff);
+	_tmp8_ = self->surface;
+	_tmp9_ = _tmp8_->w;
+	self->width = _tmp9_;
+	_tmp10_ = self->surface;
+	_tmp11_ = _tmp10_->h;
+	self->height = _tmp11_;
 	_sdx_files_file_handle_release0 (file);
 	return self;
 }

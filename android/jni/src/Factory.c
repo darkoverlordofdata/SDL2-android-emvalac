@@ -78,10 +78,19 @@ typedef struct _entitasCache entitasCache;
 #define ENTITAS_TYPE_ISYSTEM (entitas_isystem_get_type ())
 typedef struct _entitasISystem entitasISystem;
 typedef entitasWorld Factory;
+typedef struct _sdxgraphicsTextureAtlas sdxgraphicsTextureAtlas;
+typedef struct _sdxfilesFileHandle sdxfilesFileHandle;
+void sdx_graphics_texture_atlas_release (sdxgraphicsTextureAtlas* self);
+void sdx_graphics_texture_atlas_free (sdxgraphicsTextureAtlas* self);
+sdxgraphicsTextureAtlas* sdx_graphics_texture_atlas_retain (sdxgraphicsTextureAtlas* self);
+#define _sdx_graphics_texture_atlas_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_texture_atlas_release (var), NULL)))
 
 #define ENTITAS_TYPE_BUFFER (entitas_buffer_get_type ())
 typedef struct _entitasBuffer entitasBuffer;
-typedef struct _sdxgraphicsSurface sdxgraphicsSurface;
+void sdx_files_file_handle_release (sdxfilesFileHandle* self);
+void sdx_files_file_handle_free (sdxfilesFileHandle* self);
+sdxfilesFileHandle* sdx_files_file_handle_retain (sdxfilesFileHandle* self);
+#define _sdx_files_file_handle_release0(var) ((var == NULL) ? NULL : (var = (sdx_files_file_handle_release (var), NULL)))
 
 #define SDX_GRAPHICS_TYPE_SCALE (sdx_graphics_scale_get_type ())
 typedef struct _sdxgraphicsScale sdxgraphicsScale;
@@ -272,11 +281,11 @@ struct _sdxgraphicsSprite {
 };
 
 
-extern sdxgraphicsSurface** sdx_graphics_sprite_cache;
-extern gint sdx_graphics_sprite_cache_length1;
+extern sdxgraphicsTextureAtlas* factory_atlas;
+sdxgraphicsTextureAtlas* factory_atlas = NULL;
+extern glong sdx_pixelFactor;
 extern sdxFont* sdx_smallFont;
 
-#define PF 2
 #define TAU (2.0 * G_PI)
 GType pool_get_type (void) G_GNUC_CONST;
 void entitas_world_free (entitasWorld* self);
@@ -346,8 +355,12 @@ void entitas_cache_free (entitasCache* self);
 GType entitas_isystem_get_type (void) G_GNUC_CONST;
 entitasISystem* entitas_isystem_dup (const entitasISystem* self);
 void entitas_isystem_free (entitasISystem* self);
+void sdx_graphics_texture_atlas_free (sdxgraphicsTextureAtlas* self);
 Factory* factory_new (void);
 entitasWorld* entitas_world_new (void);
+void sdx_files_file_handle_free (sdxfilesFileHandle* self);
+sdxfilesFileHandle* sdx_files_default (const gchar* path);
+sdxgraphicsTextureAtlas* sdx_graphics_texture_atlas_new (sdxfilesFileHandle* packFile, sdxfilesFileHandle* imageDir, gboolean flip);
 GType entitas_buffer_get_type (void) G_GNUC_CONST;
 entitasBuffer* entitas_buffer_dup (const entitasBuffer* self);
 void entitas_buffer_free (entitasBuffer* self);
@@ -371,9 +384,7 @@ entitasEntity* factory_createParticle (Factory* self);
 static entitasEntity* _factory_createParticle_entitas_factory (gpointer self);
 static void _vala_entitasBuffer_array_free (entitasBuffer* array, gint array_length);
 entitasEntity* factory_createBase (Factory* self, const gchar* name, const gchar* path, gint pool, gdouble scale, gboolean active);
-void sdx_graphics_surface_free (sdxgraphicsSurface* self);
-void sdx_graphics_sprite_initialize (gint length);
-sdxgraphicsSprite* sdx_graphics_sprite_new (const gchar* path);
+sdxgraphicsSprite* sdx_graphics_texture_atlas_createSprite (sdxgraphicsTextureAtlas* self, const gchar* name, gint index);
 entitasEntity* entitas_world_createEntity (entitasWorld* self, const gchar* name, gint pool, gboolean active);
 entitasEntity* entitas_entity_addPosition (entitasEntity *self, gdouble x, gdouble y);
 entitasEntity* entitas_entity_addLayer (entitasEntity *self, gint value);
@@ -494,36 +505,45 @@ static void _vala_entitasBuffer_array_free (entitasBuffer* array, gint array_len
 
 Factory* factory_new (void) {
 	Factory* self;
-	entitasBuffer _tmp0_ = {0};
-	entitasBuffer _tmp1_ = {0};
+	sdxfilesFileHandle* packFile = NULL;
+	sdxfilesFileHandle* _tmp0_ = NULL;
+	sdxgraphicsTextureAtlas* _tmp1_ = NULL;
 	entitasBuffer _tmp2_ = {0};
 	entitasBuffer _tmp3_ = {0};
 	entitasBuffer _tmp4_ = {0};
 	entitasBuffer _tmp5_ = {0};
 	entitasBuffer _tmp6_ = {0};
-	entitasBuffer* _tmp7_ = NULL;
-	entitasBuffer* _tmp8_ = NULL;
-	gint _tmp8__length1 = 0;
+	entitasBuffer _tmp7_ = {0};
+	entitasBuffer _tmp8_ = {0};
+	entitasBuffer* _tmp9_ = NULL;
+	entitasBuffer* _tmp10_ = NULL;
+	gint _tmp10__length1 = 0;
 	self = (Factory*) entitas_world_new ();
-	entitas_buffer_init (&_tmp0_, (gint) POOL_BULLET, 20, _factory_createBullet_entitas_factory, self);
-	entitas_buffer_init (&_tmp1_, (gint) POOL_ENEMY1, 15, _factory_createEnemy1_entitas_factory, self);
-	entitas_buffer_init (&_tmp2_, (gint) POOL_ENEMY2, 5, _factory_createEnemy2_entitas_factory, self);
-	entitas_buffer_init (&_tmp3_, (gint) POOL_ENEMY3, 4, _factory_createEnemy3_entitas_factory, self);
-	entitas_buffer_init (&_tmp4_, (gint) POOL_EXPLOSION, 10, _factory_createExplosion_entitas_factory, self);
-	entitas_buffer_init (&_tmp5_, (gint) POOL_BANG, 12, _factory_createBang_entitas_factory, self);
-	entitas_buffer_init (&_tmp6_, (gint) POOL_PARTICLE, 100, _factory_createParticle_entitas_factory, self);
-	_tmp7_ = g_new0 (entitasBuffer, 7);
-	_tmp7_[0] = _tmp0_;
-	_tmp7_[1] = _tmp1_;
-	_tmp7_[2] = _tmp2_;
-	_tmp7_[3] = _tmp3_;
-	_tmp7_[4] = _tmp4_;
-	_tmp7_[5] = _tmp5_;
-	_tmp7_[6] = _tmp6_;
-	_tmp8_ = _tmp7_;
-	_tmp8__length1 = 7;
-	entitas_world_setPool ((entitasWorld*) self, 256, (gint) POOL_Count, _tmp8_, 7);
-	_tmp8_ = (_vala_entitasBuffer_array_free (_tmp8_, _tmp8__length1), NULL);
+	_tmp0_ = sdx_files_default ("assets/assets.atlas");
+	packFile = _tmp0_;
+	_tmp1_ = sdx_graphics_texture_atlas_new (packFile, NULL, FALSE);
+	_sdx_graphics_texture_atlas_release0 (factory_atlas);
+	factory_atlas = _tmp1_;
+	entitas_buffer_init (&_tmp2_, (gint) POOL_BULLET, 20, _factory_createBullet_entitas_factory, self);
+	entitas_buffer_init (&_tmp3_, (gint) POOL_ENEMY1, 15, _factory_createEnemy1_entitas_factory, self);
+	entitas_buffer_init (&_tmp4_, (gint) POOL_ENEMY2, 5, _factory_createEnemy2_entitas_factory, self);
+	entitas_buffer_init (&_tmp5_, (gint) POOL_ENEMY3, 4, _factory_createEnemy3_entitas_factory, self);
+	entitas_buffer_init (&_tmp6_, (gint) POOL_EXPLOSION, 10, _factory_createExplosion_entitas_factory, self);
+	entitas_buffer_init (&_tmp7_, (gint) POOL_BANG, 12, _factory_createBang_entitas_factory, self);
+	entitas_buffer_init (&_tmp8_, (gint) POOL_PARTICLE, 100, _factory_createParticle_entitas_factory, self);
+	_tmp9_ = g_new0 (entitasBuffer, 7);
+	_tmp9_[0] = _tmp2_;
+	_tmp9_[1] = _tmp3_;
+	_tmp9_[2] = _tmp4_;
+	_tmp9_[3] = _tmp5_;
+	_tmp9_[4] = _tmp6_;
+	_tmp9_[5] = _tmp7_;
+	_tmp9_[6] = _tmp8_;
+	_tmp10_ = _tmp9_;
+	_tmp10__length1 = 7;
+	entitas_world_setPool ((entitasWorld*) self, 256, (gint) POOL_Count, _tmp10_, 7);
+	_tmp10_ = (_vala_entitasBuffer_array_free (_tmp10_, _tmp10__length1), NULL);
+	_sdx_files_file_handle_release0 (packFile);
 	return self;
 }
 
@@ -533,9 +553,8 @@ Factory* factory_new (void) {
  */
 entitasEntity* factory_createBase (Factory* self, const gchar* name, const gchar* path, gint pool, gdouble scale, gboolean active) {
 	entitasEntity* result = NULL;
-	sdxgraphicsSurface** _tmp0_ = NULL;
-	gint _tmp0__length1 = 0;
 	sdxgraphicsSprite* sprite = NULL;
+	sdxgraphicsTextureAtlas* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
 	sdxgraphicsSprite* _tmp2_ = NULL;
 	const gchar* _tmp3_ = NULL;
@@ -549,21 +568,19 @@ entitasEntity* factory_createBase (Factory* self, const gchar* name, const gchar
 	gint _tmp11_ = 0;
 	entitasEntity* _tmp12_ = NULL;
 	gdouble _tmp13_ = 0.0;
-	gdouble _tmp14_ = 0.0;
-	entitasEntity* _tmp15_ = NULL;
-	gint _tmp16_ = 0;
-	gint _tmp17_ = 0;
-	entitasEntity* _tmp18_ = NULL;
+	glong _tmp14_ = 0L;
+	gdouble _tmp15_ = 0.0;
+	glong _tmp16_ = 0L;
+	entitasEntity* _tmp17_ = NULL;
+	gint _tmp18_ = 0;
+	gint _tmp19_ = 0;
+	entitasEntity* _tmp20_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (path != NULL, NULL);
-	_tmp0_ = sdx_graphics_sprite_cache;
-	_tmp0__length1 = sdx_graphics_sprite_cache_length1;
-	if (_tmp0__length1 == 0) {
-		sdx_graphics_sprite_initialize ((gint) POOL_Count);
-	}
-	_tmp1_ = path;
-	_tmp2_ = sdx_graphics_sprite_new (_tmp1_);
+	_tmp0_ = factory_atlas;
+	_tmp1_ = name;
+	_tmp2_ = sdx_graphics_texture_atlas_createSprite (_tmp0_, _tmp1_, -1);
 	sprite = _tmp2_;
 	_tmp3_ = name;
 	_tmp4_ = pool;
@@ -576,12 +593,14 @@ entitasEntity* factory_createBase (Factory* self, const gchar* name, const gchar
 	_tmp11_ = sprite->height;
 	_tmp12_ = entitas_entity_addBounds (_tmp9_, 0, 0, _tmp10_, _tmp11_);
 	_tmp13_ = scale;
-	_tmp14_ = scale;
-	_tmp15_ = entitas_entity_addScale (_tmp12_, _tmp13_ * PF, _tmp14_ * PF);
-	_tmp16_ = sprite->width;
-	_tmp17_ = sprite->height;
-	_tmp18_ = entitas_entity_addSprite (_tmp15_, sprite, _tmp16_, _tmp17_);
-	result = _tmp18_;
+	_tmp14_ = sdx_pixelFactor;
+	_tmp15_ = scale;
+	_tmp16_ = sdx_pixelFactor;
+	_tmp17_ = entitas_entity_addScale (_tmp12_, _tmp13_ * _tmp14_, _tmp15_ * _tmp16_);
+	_tmp18_ = sprite->width;
+	_tmp19_ = sprite->height;
+	_tmp20_ = entitas_entity_addSprite (_tmp17_, sprite, _tmp18_, _tmp19_);
+	result = _tmp20_;
 	_sdx_graphics_sprite_release0 (sprite);
 	return result;
 }
@@ -609,7 +628,7 @@ entitasEntity* factory_createPlayer (Factory* self) {
 	entitasEntity* _tmp0_ = NULL;
 	entitasEntity* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = factory_createBase (self, "player", "assets/images/spaceshipspr.png", (gint) POOL_PLAYER, 1.0, TRUE);
+	_tmp0_ = factory_createBase (self, "spaceshipspr", "assets/images/spaceshipspr.png", (gint) POOL_PLAYER, 1.0, TRUE);
 	_tmp1_ = entityAdded (_tmp0_);
 	result = _tmp1_;
 	return result;
@@ -621,15 +640,17 @@ entitasEntity* factory_createBullet (Factory* self) {
 	entitasEntity* _tmp0_ = NULL;
 	entitasEntity* _tmp1_ = NULL;
 	entitasEntity* _tmp2_ = NULL;
-	entitasEntity* _tmp3_ = NULL;
+	glong _tmp3_ = 0L;
 	entitasEntity* _tmp4_ = NULL;
+	entitasEntity* _tmp5_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = factory_createBase (self, "bullet", "assets/images/bullet.png", (gint) POOL_BULLET, 1.0, FALSE);
 	_tmp1_ = entitas_entity_addTint (_tmp0_, 0xd2, 0xfa, 0, 0xfa);
 	_tmp2_ = entitas_entity_addHealth (_tmp1_, (gdouble) 2, (gdouble) 2);
-	_tmp3_ = entitas_entity_addVelocity (_tmp2_, (gdouble) 0, (gdouble) (-800 * PF));
-	_tmp4_ = entitas_entity_setBullet (_tmp3_, TRUE);
-	result = _tmp4_;
+	_tmp3_ = sdx_pixelFactor;
+	_tmp4_ = entitas_entity_addVelocity (_tmp2_, (gdouble) 0, (gdouble) (-800 * _tmp3_));
+	_tmp5_ = entitas_entity_setBullet (_tmp4_, TRUE);
+	result = _tmp5_;
 	return result;
 }
 
@@ -754,7 +775,7 @@ entitasEntity* factory_createParticle (Factory* self) {
 	entitasEntity* _tmp2_ = NULL;
 	entitasEntity* _tmp3_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = factory_createBase (self, "particle", "assets/images/star.png", (gint) POOL_PARTICLE, 1.0, FALSE);
+	_tmp0_ = factory_createBase (self, "star", "assets/images/star.png", (gint) POOL_PARTICLE, 1.0, FALSE);
 	_tmp1_ = entitas_entity_addTint (_tmp0_, 0xd2, 0xfa, 0xd2, 0xfa);
 	_tmp2_ = entitas_entity_addExpires (_tmp1_, 0.75);
 	_tmp3_ = entitas_entity_addVelocity (_tmp2_, (gdouble) 0, (gdouble) 0);
@@ -960,10 +981,12 @@ entitasEntity* factory_explosion (Factory* self, gint x, gint y) {
 	gint _tmp17_ = 0;
 	gint _tmp18_ = 0;
 	entitasEntity* _tmp19_ = NULL;
-	entitasEntity* _tmp20_ = NULL;
-	entitasEntity* _tmp21_ = NULL;
+	glong _tmp20_ = 0L;
+	glong _tmp21_ = 0L;
 	entitasEntity* _tmp22_ = NULL;
 	entitasEntity* _tmp23_ = NULL;
+	entitasEntity* _tmp24_ = NULL;
+	entitasEntity* _tmp25_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = ((entitasWorld*) self)->cache;
 	_tmp0__length1 = ((entitasWorld*) self)->cache_length1;
@@ -994,12 +1017,14 @@ entitasEntity* factory_explosion (Factory* self, gint x, gint y) {
 	_tmp17_ = x;
 	_tmp18_ = y;
 	_tmp19_ = entitas_entity_setPosition (_tmp16_, (gdouble) _tmp17_, (gdouble) _tmp18_);
-	_tmp20_ = entitas_entity_setScale (_tmp19_, 0.6 * PF, 0.6 * PF);
-	_tmp21_ = entitas_entity_setExpires (_tmp20_, 0.2);
-	_tmp22_ = entitas_entity_setActive (_tmp21_, TRUE);
-	entityAdded (_tmp22_);
-	_tmp23_ = entity;
-	result = _tmp23_;
+	_tmp20_ = sdx_pixelFactor;
+	_tmp21_ = sdx_pixelFactor;
+	_tmp22_ = entitas_entity_setScale (_tmp19_, 0.6 * _tmp20_, 0.6 * _tmp21_);
+	_tmp23_ = entitas_entity_setExpires (_tmp22_, 0.2);
+	_tmp24_ = entitas_entity_setActive (_tmp23_, TRUE);
+	entityAdded (_tmp24_);
+	_tmp25_ = entity;
+	result = _tmp25_;
 	return result;
 }
 
@@ -1028,10 +1053,12 @@ entitasEntity* factory_bang (Factory* self, gint x, gint y) {
 	gint _tmp17_ = 0;
 	gint _tmp18_ = 0;
 	entitasEntity* _tmp19_ = NULL;
-	entitasEntity* _tmp20_ = NULL;
-	entitasEntity* _tmp21_ = NULL;
+	glong _tmp20_ = 0L;
+	glong _tmp21_ = 0L;
 	entitasEntity* _tmp22_ = NULL;
 	entitasEntity* _tmp23_ = NULL;
+	entitasEntity* _tmp24_ = NULL;
+	entitasEntity* _tmp25_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = ((entitasWorld*) self)->cache;
 	_tmp0__length1 = ((entitasWorld*) self)->cache_length1;
@@ -1062,12 +1089,14 @@ entitasEntity* factory_bang (Factory* self, gint x, gint y) {
 	_tmp17_ = x;
 	_tmp18_ = y;
 	_tmp19_ = entitas_entity_setPosition (_tmp16_, (gdouble) _tmp17_, (gdouble) _tmp18_);
-	_tmp20_ = entitas_entity_setScale (_tmp19_, 0.3 * PF, 0.3 * PF);
-	_tmp21_ = entitas_entity_setExpires (_tmp20_, 0.2);
-	_tmp22_ = entitas_entity_setActive (_tmp21_, TRUE);
-	entityAdded (_tmp22_);
-	_tmp23_ = entity;
-	result = _tmp23_;
+	_tmp20_ = sdx_pixelFactor;
+	_tmp21_ = sdx_pixelFactor;
+	_tmp22_ = entitas_entity_setScale (_tmp19_, 0.3 * _tmp20_, 0.3 * _tmp21_);
+	_tmp23_ = entitas_entity_setExpires (_tmp22_, 0.2);
+	_tmp24_ = entitas_entity_setActive (_tmp23_, TRUE);
+	entityAdded (_tmp24_);
+	_tmp25_ = entity;
+	result = _tmp25_;
 	return result;
 }
 
@@ -1110,14 +1139,16 @@ entitasEntity* factory_particle (Factory* self, gint x, gint y) {
 	gint _tmp26_ = 0;
 	entitasEntity* _tmp27_ = NULL;
 	gdouble _tmp28_ = 0.0;
-	gdouble _tmp29_ = 0.0;
-	entitasEntity* _tmp30_ = NULL;
-	gdouble _tmp31_ = 0.0;
-	gdouble _tmp32_ = 0.0;
-	entitasEntity* _tmp33_ = NULL;
-	entitasEntity* _tmp34_ = NULL;
+	glong _tmp29_ = 0L;
+	gdouble _tmp30_ = 0.0;
+	glong _tmp31_ = 0L;
+	entitasEntity* _tmp32_ = NULL;
+	gdouble _tmp33_ = 0.0;
+	gdouble _tmp34_ = 0.0;
 	entitasEntity* _tmp35_ = NULL;
 	entitasEntity* _tmp36_ = NULL;
+	entitasEntity* _tmp37_ = NULL;
+	entitasEntity* _tmp38_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = ((entitasWorld*) self)->cache;
 	_tmp0__length1 = ((entitasWorld*) self)->cache_length1;
@@ -1162,16 +1193,18 @@ entitasEntity* factory_particle (Factory* self, gint x, gint y) {
 	_tmp26_ = y;
 	_tmp27_ = entitas_entity_setPosition (_tmp24_, (gdouble) _tmp25_, (gdouble) _tmp26_);
 	_tmp28_ = scale;
-	_tmp29_ = scale;
-	_tmp30_ = entitas_entity_setScale (_tmp27_, _tmp28_ * PF, _tmp29_ * PF);
-	_tmp31_ = velocityX;
-	_tmp32_ = velocityY;
-	_tmp33_ = entitas_entity_setVelocity (_tmp30_, _tmp31_, _tmp32_);
-	_tmp34_ = entitas_entity_setExpires (_tmp33_, 0.75);
-	_tmp35_ = entitas_entity_setActive (_tmp34_, TRUE);
-	entityAdded (_tmp35_);
-	_tmp36_ = entity;
-	result = _tmp36_;
+	_tmp29_ = sdx_pixelFactor;
+	_tmp30_ = scale;
+	_tmp31_ = sdx_pixelFactor;
+	_tmp32_ = entitas_entity_setScale (_tmp27_, _tmp28_ * _tmp29_, _tmp30_ * _tmp31_);
+	_tmp33_ = velocityX;
+	_tmp34_ = velocityY;
+	_tmp35_ = entitas_entity_setVelocity (_tmp32_, _tmp33_, _tmp34_);
+	_tmp36_ = entitas_entity_setExpires (_tmp35_, 0.75);
+	_tmp37_ = entitas_entity_setActive (_tmp36_, TRUE);
+	entityAdded (_tmp37_);
+	_tmp38_ = entity;
+	result = _tmp38_;
 	return result;
 }
 

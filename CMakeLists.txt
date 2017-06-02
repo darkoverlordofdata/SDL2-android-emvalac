@@ -10,7 +10,7 @@ option(ICON_UPDATE "Update the icon cache after installing" ON)
 option(BUILD_VALADOC "Build API documentation if Valadoc is available" OFF)
 option(ANDROID "ANDROID" OFF)
 option(PROFILING "PROFILING" OFF)
-option(DESKTOP "DESKTOP" OFF)
+option(EMSCRIPTEN "EMSCRIPTEN" OFF)
 
 if( NOT CMAKE_BUILD_TYPE )
 	set(CMAKE_BUILD_TYPE Release)

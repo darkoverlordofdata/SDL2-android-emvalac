@@ -36,30 +36,7 @@ public void gameloop(Game game) {
 	game.draw();
 }
 
-#if (DESKTOP || ANDROID)
-
-/**
- * Start the game
- *
- */
-public int main(string args[]) {
-
-#if (ANDROID)
-	var window = sdx.initialize(1184, 768, "Shmupwarz");
-	var game = new Game(1184, 768);
-#else
-	var window = sdx.initialize(720, 512, "Shmupwarz");
-	var game = new Game(720, 512);
-#endif
-	game.initialize();
-	game.start();
-	while (sdx.running) {
-		gameloop(game);
-	}
-	return 0;
-}
-
-#else
+#if (EMSCRIPTEN)
 /**
  * game
  * 
@@ -82,6 +59,28 @@ public void game() {
  */
 public void mainloop(void* arg) {
 	gameloop((Game*)arg);
+}
+
+
+#else
+/**
+ * Start the game
+ *
+ */
+public int main(string args[]) {
+#if (ANDROID)
+	var window = sdx.initialize(1184, 768, "Shmupwarz");
+	var game = new Game(1184, 768);
+#else
+	var window = sdx.initialize(720, 512, "Shmupwarz");
+	var game = new Game(720, 512);
+#endif
+	game.initialize();
+	game.start();
+	while (sdx.running) {
+		gameloop(game);
+	}
+	return 0;
 }
 #endif
 

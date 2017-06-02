@@ -5,11 +5,6 @@ using entitas;
 using systems;
 using GLib.Math;
 
-#if (ANDROID)
-const int PF = 2;
-#else
-const int PF = 1;
-#endif
 const double TAU = 2.0 * Math.PI; 
 enum Pool {
 	BACKGROUND,
@@ -25,13 +20,19 @@ enum Pool {
 	Count
 }
 
+
 /**
  * fabricate specialized entities
  */
 public class Factory : World {
 
+	public static sdx.graphics.TextureAtlas atlas;
+
 	public Factory() {
 		base();
+		
+		sdx.files.FileHandle packFile = sdx.files.@default("assets/assets.atlas");
+		atlas = new sdx.graphics.TextureAtlas(packFile);
 		setPool(256, Pool.Count, {
 			Buffer(Pool.BULLET, 	 20, createBullet),
 			Buffer(Pool.ENEMY1, 	 15, createEnemy1),
@@ -47,15 +48,13 @@ public class Factory : World {
 	 * The stuff that all entities have
 	 */
 	public Entity* createBase(string name, string path, int pool, double scale = 1.0, bool active = false) {
-		if (sdx.graphics.Sprite.cache.length == 0)
-			sdx.graphics.Sprite.initialize(Pool.Count);
-	
-		var sprite = new sdx.graphics.Sprite(path);
+
+		var sprite = atlas.createSprite(name);
 		return createEntity(name, pool, active)
 			.addPosition(0, 0)
 			.addLayer(pool)
 			.addBounds(0, 0, sprite.width, sprite.height)
-            .addScale(scale*PF, scale*PF)
+            .addScale(scale*sdx.pixelFactor, scale*sdx.pixelFactor)
 			.addSprite(sprite, sprite.width, sprite.height);
 	}
 	/** 
@@ -67,7 +66,7 @@ public class Factory : World {
 	}
 
 	public Entity* createPlayer() {
-		return entityAdded(createBase("player", "assets/images/spaceshipspr.png", Pool.PLAYER, 1.0, true));
+		return entityAdded(createBase("spaceshipspr", "assets/images/spaceshipspr.png", Pool.PLAYER, 1.0, true));
 	}
 
 	public Entity* createBullet() {
@@ -75,7 +74,7 @@ public class Factory : World {
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/pew.wav")))
 			.addTint(0xd2, 0xfa, 0, 0xfa)
 			.addHealth(2, 2)
-			.addVelocity(0, -800*PF)
+			.addVelocity(0, -800*sdx.pixelFactor)
 			.setBullet(true));
 	}
 
@@ -120,7 +119,7 @@ public class Factory : World {
 	}
 
 	public Entity* createParticle() {
-		return createBase("particle", "assets/images/star.png", Pool.PARTICLE)
+		return createBase("star", "assets/images/star.png", Pool.PARTICLE)
 			.addTint(0xd2, 0xfa, 0xd2, 0xfa)
 			.addExpires(0.75)
 			.addVelocity(0, 0);
@@ -182,7 +181,7 @@ public class Factory : World {
 			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
 			.setTween(0.006, 0.6, -3, false, true)
 			.setPosition(x, y)
-			.setScale(0.6*PF, 0.6*PF)
+			.setScale(0.6*sdx.pixelFactor, 0.6*sdx.pixelFactor)
 			.setExpires(0.2)
 			.setActive(true));
 		return entity;
@@ -198,7 +197,7 @@ public class Factory : World {
 			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
 			.setTween(0.003, 0.3, -3, false, true)
 			.setPosition(x, y)
-			.setScale(0.3*PF, 0.3*PF)
+			.setScale(0.3*sdx.pixelFactor, 0.3*sdx.pixelFactor)
 			.setExpires(0.2)
 			.setActive(true));
 		return entity;
@@ -218,7 +217,7 @@ public class Factory : World {
 		entityAdded(entity
 			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
 			.setPosition(x, y)
-			.setScale(scale*PF, scale*PF)
+			.setScale(scale*sdx.pixelFactor, scale*sdx.pixelFactor)
 			.setVelocity(velocityX, velocityY)
 			.setExpires(0.75)
 			.setActive(true));

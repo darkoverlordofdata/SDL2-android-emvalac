@@ -19,14 +19,14 @@ namespace sdx.files {
 		 */
 		public SDL.RWops getRWops() {
 			if (type == FileType.Resource) {
-#if (DESKTOP)
+#if (ANDROID || EMSCRIPTEN)
+				throw new SdlException.InvalidForPlatform("Resource not available");
+#else
                 var ptr = GLib.resources_lookup_data(sdx.resourceBase+"/"+getPath(), 0);
                 var raw = new SDL.RWops.from_mem((void*)ptr.get_data(), (int)ptr.get_size());
                 if (raw == null)
 					throw new SdlException.UnableToLoadResource(getPath());
                 return raw;
-#else
-				throw new SdlException.InvalidForPlatform("Resource not available");
 #endif				
 			} else {
                 var raw = new SDL.RWops.from_file(getPath(), "r");
@@ -38,7 +38,28 @@ namespace sdx.files {
 		}
 
 		public string read() {
-			return file.read();
+			if (type == FileType.Resource) {
+#if (ANDROID || EMSCRIPTEN)
+				throw new SdlException.InvalidForPlatform("Resource not available");
+#else
+                var st =  GLib.resources_open_stream(sdx.resourceBase+"/"+getPath(), 0);
+				var sb = new StringBuilder();
+				var ready = true;
+				var buffer = new uint8[100];
+				ssize_t size;
+				while (ready) {
+					size = st.read(buffer);
+					if (size > 0)
+						sb.append_len((string) buffer, size);
+					else
+						ready = false;
+				}
+				return sb.str;
+
+#endif
+			} else {
+				return file.read();
+			}
 		}
 		public FileType getType() {
 			return type;
@@ -60,7 +81,7 @@ namespace sdx.files {
 		}
 
 		public FileHandle getParent() {
-			return new FileHandle(file.getParent(), FileType.Parent);
+			return new FileHandle(file.getParent(), type); //FileType.Parent);
 		}
 
 		public bool exists() {
@@ -78,11 +99,6 @@ namespace sdx.files {
             return new FileHandle(file.getPath() + utils.pathSeparator + name, type);
 		}
 
-//  #if (DESKTOP)
-//          public GLib.Bytes bytes() {
-//              return GLib.resources_lookup_data(getPath(), 0);
-//  		}
-//  #endif
 	}
 }
 

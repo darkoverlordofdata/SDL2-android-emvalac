@@ -32,7 +32,12 @@ void sdx_graphics_sprite_release (sdxgraphicsSprite* self);
 void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
 sdxgraphicsSprite* sdx_graphics_sprite_retain (sdxgraphicsSprite* self);
 #define _sdx_graphics_sprite_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_sprite_release (var), NULL)))
+typedef struct _sdxgraphicsAtlasRegion sdxgraphicsAtlasRegion;
+typedef struct _sdxgraphicsTextureRegion sdxgraphicsTextureRegion;
+typedef struct _sdxgraphicsTexture sdxgraphicsTexture;
 typedef struct _sdxFont sdxFont;
+
+#define TYPE_POOL (pool_get_type ())
 void sdx_graphics_surface_release (sdxgraphicsSurface* self);
 void sdx_graphics_surface_free (sdxgraphicsSurface* self);
 sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self);
@@ -76,6 +81,45 @@ struct _sdxBlit {
 };
 
 typedef sdxBlit* (*sdxCompositor) (gint x, gint y, int* result_length1, void* user_data);
+struct _sdxgraphicsAtlasRegion {
+	gint _retainCount;
+	sdxgraphicsTextureRegion* rg;
+	gint index;
+	gchar* name;
+	gint offsetX;
+	gint offsetY;
+	gint packedWidth;
+	gint packedHeight;
+	gint originalWidth;
+	gint originalHeight;
+	gboolean rotate;
+	gint* splits;
+	gint splits_length1;
+	gint* pads;
+	gint pads_length1;
+};
+
+struct _sdxgraphicsTextureRegion {
+	gint _retainCount;
+	sdxgraphicsTexture* texture;
+	gint top;
+	gint left;
+	gint width;
+	gint height;
+	gint regionWidth;
+	gint regionHeight;
+	gdouble u;
+	gdouble v;
+	gdouble u2;
+	gdouble v2;
+};
+
+struct _sdxgraphicsTexture {
+	gint _retainCount;
+	SDL_Surface* data;
+	gchar* path;
+};
+
 struct _sdxFont {
 	gint _retainCount;
 	gint id;
@@ -84,6 +128,20 @@ struct _sdxFont {
 	TTF_Font* innerFont;
 	SDL_RWops* raw;
 };
+
+typedef enum  {
+	POOL_BACKGROUND,
+	POOL_ENEMY1,
+	POOL_ENEMY2,
+	POOL_ENEMY3,
+	POOL_PLAYER,
+	POOL_BULLET,
+	POOL_EXPLOSION,
+	POOL_BANG,
+	POOL_PARTICLE,
+	POOL_HUD,
+	POOL_Count
+} Pool;
 
 
 extern sdxgraphicsSurface** sdx_graphics_sprite_cache;
@@ -109,10 +167,15 @@ GType sdx_blit_get_type (void) G_GNUC_CONST;
 sdxBlit* sdx_blit_dup (const sdxBlit* self);
 void sdx_blit_free (sdxBlit* self);
 sdxgraphicsSprite* sdx_graphics_sprite_composite (const gchar* path, sdxCompositor builder, void* builder_target);
+void sdx_graphics_atlas_region_free (sdxgraphicsAtlasRegion* self);
+sdxgraphicsSprite* sdx_graphics_sprite_fromRegion (sdxgraphicsAtlasRegion* region);
+void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
+void sdx_graphics_texture_free (sdxgraphicsTexture* self);
 void sdx_font_free (sdxFont* self);
 sdxgraphicsSprite* sdx_graphics_sprite_fromText (const gchar* path, sdxFont* font, SDL_Color color);
 SDL_Surface* sdx_font_render (sdxFont* self, const gchar* text, SDL_Color color);
 void sdx_graphics_sprite_initialize (gint length);
+GType pool_get_type (void) G_GNUC_CONST;
 sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path);
 void sdx_graphics_sprite_setText (sdxgraphicsSprite* self, const gchar* text, sdxFont* font, SDL_Color color);
 void sdx_graphics_sprite_render (sdxgraphicsSprite* self, gint x, gint y, SDL_Rect* clip);
@@ -437,6 +500,154 @@ sdxgraphicsSprite* sdx_graphics_sprite_composite (const gchar* path, sdxComposit
 }
 
 
+sdxgraphicsSprite* sdx_graphics_sprite_fromRegion (sdxgraphicsAtlasRegion* region) {
+	sdxgraphicsSprite* result = NULL;
+	sdxgraphicsSprite* sprite = NULL;
+	sdxgraphicsSprite* _tmp0_ = NULL;
+	gchar* path = NULL;
+	sdxgraphicsAtlasRegion* _tmp1_ = NULL;
+	sdxgraphicsTextureRegion* _tmp2_ = NULL;
+	sdxgraphicsTexture* _tmp3_ = NULL;
+	const gchar* _tmp4_ = NULL;
+	gchar* _tmp5_ = NULL;
+	gint i = 0;
+	sdxgraphicsAtlasRegion* _tmp6_ = NULL;
+	sdxgraphicsTextureRegion* _tmp7_ = NULL;
+	sdxgraphicsTexture* _tmp8_ = NULL;
+	const gchar* _tmp9_ = NULL;
+	gint _tmp10_ = 0;
+	gint _tmp11_ = 0;
+	guint32 flags = 0U;
+	guint32 rmask = 0U;
+	guint32 gmask = 0U;
+	guint32 bmask = 0U;
+	guint32 amask = 0U;
+	gint x = 0;
+	sdxgraphicsAtlasRegion* _tmp13_ = NULL;
+	sdxgraphicsTextureRegion* _tmp14_ = NULL;
+	gint _tmp15_ = 0;
+	gint y = 0;
+	sdxgraphicsAtlasRegion* _tmp16_ = NULL;
+	sdxgraphicsTextureRegion* _tmp17_ = NULL;
+	gint _tmp18_ = 0;
+	gint w = 0;
+	sdxgraphicsAtlasRegion* _tmp19_ = NULL;
+	sdxgraphicsTextureRegion* _tmp20_ = NULL;
+	gint _tmp21_ = 0;
+	gint h = 0;
+	sdxgraphicsAtlasRegion* _tmp22_ = NULL;
+	sdxgraphicsTextureRegion* _tmp23_ = NULL;
+	gint _tmp24_ = 0;
+	SDL_Surface* surface = NULL;
+	sdxgraphicsAtlasRegion* _tmp25_ = NULL;
+	sdxgraphicsTextureRegion* _tmp26_ = NULL;
+	gint _tmp27_ = 0;
+	sdxgraphicsAtlasRegion* _tmp28_ = NULL;
+	sdxgraphicsTextureRegion* _tmp29_ = NULL;
+	gint _tmp30_ = 0;
+	SDL_Surface* _tmp31_ = NULL;
+	sdxgraphicsSurface** _tmp32_ = NULL;
+	gint _tmp32__length1 = 0;
+	gint _tmp33_ = 0;
+	sdxgraphicsSurface* _tmp34_ = NULL;
+	SDL_Surface* _tmp35_ = NULL;
+	SDL_Rect _tmp36_ = {0};
+	SDL_Rect _tmp37_ = {0};
+	sdxgraphicsSprite* _tmp38_ = NULL;
+	SDL_Renderer* _tmp39_ = NULL;
+	SDL_Texture* _tmp40_ = NULL;
+	sdxgraphicsSprite* _tmp41_ = NULL;
+	sdxgraphicsSprite* _tmp42_ = NULL;
+	sdxgraphicsSprite* _tmp43_ = NULL;
+	sdxgraphicsAtlasRegion* _tmp44_ = NULL;
+	const gchar* _tmp45_ = NULL;
+	gchar* _tmp46_ = NULL;
+	g_return_val_if_fail (region != NULL, NULL);
+	_tmp0_ = sdx_graphics_sprite_new (NULL);
+	sprite = _tmp0_;
+	_tmp1_ = region;
+	_tmp2_ = _tmp1_->rg;
+	_tmp3_ = _tmp2_->texture;
+	_tmp4_ = _tmp3_->path;
+	_tmp5_ = g_strdup (_tmp4_);
+	path = _tmp5_;
+	_tmp6_ = region;
+	_tmp7_ = _tmp6_->rg;
+	_tmp8_ = _tmp7_->texture;
+	_tmp9_ = _tmp8_->path;
+	_tmp10_ = sdx_graphics_sprite_indexOfPath (_tmp9_);
+	i = _tmp10_;
+	_tmp11_ = i;
+	if (_tmp11_ < 0) {
+		FILE* _tmp12_ = NULL;
+		_tmp12_ = stdout;
+		fprintf (_tmp12_, "Ran out of surface cache\n");
+	}
+	flags = (guint32) 0x00010000;
+	rmask = (guint32) 0x000000ff;
+	gmask = (guint32) 0x0000ff00;
+	bmask = (guint32) 0x00ff0000;
+	amask = (guint32) 0xff000000LL;
+	_tmp13_ = region;
+	_tmp14_ = _tmp13_->rg;
+	_tmp15_ = _tmp14_->top;
+	x = _tmp15_;
+	_tmp16_ = region;
+	_tmp17_ = _tmp16_->rg;
+	_tmp18_ = _tmp17_->left;
+	y = _tmp18_;
+	_tmp19_ = region;
+	_tmp20_ = _tmp19_->rg;
+	_tmp21_ = _tmp20_->width;
+	w = _tmp21_;
+	_tmp22_ = region;
+	_tmp23_ = _tmp22_->rg;
+	_tmp24_ = _tmp23_->height;
+	h = _tmp24_;
+	_tmp25_ = region;
+	_tmp26_ = _tmp25_->rg;
+	_tmp27_ = _tmp26_->width;
+	_tmp28_ = region;
+	_tmp29_ = _tmp28_->rg;
+	_tmp30_ = _tmp29_->height;
+	_tmp31_ = SDL_CreateRGBSurface (flags, _tmp27_, _tmp30_, 32, rmask, gmask, bmask, amask);
+	surface = _tmp31_;
+	_tmp32_ = sdx_graphics_sprite_cache;
+	_tmp32__length1 = sdx_graphics_sprite_cache_length1;
+	_tmp33_ = i;
+	_tmp34_ = _tmp32_[_tmp33_];
+	_tmp35_ = _tmp34_->surface;
+	_tmp36_.x = x;
+	_tmp36_.y = y;
+	_tmp36_.w = (guint) w;
+	_tmp36_.h = (guint) h;
+	_tmp37_.x = 0;
+	_tmp37_.y = 0;
+	_tmp37_.w = (guint) w;
+	_tmp37_.h = (guint) h;
+	SDL_BlitScaled (_tmp35_, &_tmp36_, surface, &_tmp37_);
+	_tmp38_ = sprite;
+	_tmp39_ = sdx_renderer;
+	_tmp40_ = SDL_CreateTextureFromSurface (_tmp39_, surface);
+	_SDL_DestroyTexture0 (_tmp38_->texture);
+	_tmp38_->texture = _tmp40_;
+	_tmp41_ = sprite;
+	_tmp41_->width = w;
+	_tmp42_ = sprite;
+	_tmp42_->height = h;
+	_tmp43_ = sprite;
+	_tmp44_ = region;
+	_tmp45_ = _tmp44_->name;
+	_tmp46_ = g_strdup (_tmp45_);
+	_g_free0 (_tmp43_->path);
+	_tmp43_->path = _tmp46_;
+	result = sprite;
+	_SDL_FreeSurface0 (surface);
+	_g_free0 (path);
+	return result;
+}
+
+
 sdxgraphicsSprite* sdx_graphics_sprite_fromText (const gchar* path, sdxFont* font, SDL_Color color) {
 	sdxgraphicsSprite* result = NULL;
 	sdxgraphicsSprite* sprite = NULL;
@@ -554,66 +765,79 @@ void sdx_graphics_sprite_initialize (gint length) {
 
 gint sdx_graphics_sprite_indexOfPath (const gchar* path) {
 	gint result = 0;
+	sdxgraphicsSurface** _tmp0_ = NULL;
+	gint _tmp0__length1 = 0;
 	g_return_val_if_fail (path != NULL, 0);
+	_tmp0_ = sdx_graphics_sprite_cache;
+	_tmp0__length1 = sdx_graphics_sprite_cache_length1;
+	if (_tmp0__length1 == 0) {
+		sdxgraphicsSurface** _tmp1_ = NULL;
+		_tmp1_ = g_new0 (sdxgraphicsSurface*, (POOL_Count + 1) + 1);
+		sdx_graphics_sprite_cache = (_vala_array_free (sdx_graphics_sprite_cache, sdx_graphics_sprite_cache_length1, (GDestroyNotify) sdx_graphics_surface_release), NULL);
+		sdx_graphics_sprite_cache = _tmp1_;
+		sdx_graphics_sprite_cache_length1 = POOL_Count + 1;
+	}
 	{
 		gint i = 0;
 		i = 0;
 		{
-			gboolean _tmp0_ = FALSE;
-			_tmp0_ = TRUE;
+			gboolean _tmp2_ = FALSE;
+			_tmp2_ = TRUE;
 			while (TRUE) {
-				gint _tmp2_ = 0;
-				sdxgraphicsSurface** _tmp3_ = NULL;
-				gint _tmp3__length1 = 0;
-				sdxgraphicsSurface** _tmp4_ = NULL;
-				gint _tmp4__length1 = 0;
-				gint _tmp5_ = 0;
-				sdxgraphicsSurface* _tmp6_ = NULL;
-				sdxgraphicsSurface** _tmp12_ = NULL;
-				gint _tmp12__length1 = 0;
-				gint _tmp13_ = 0;
-				sdxgraphicsSurface* _tmp14_ = NULL;
-				const gchar* _tmp15_ = NULL;
-				const gchar* _tmp16_ = NULL;
-				if (!_tmp0_) {
-					gint _tmp1_ = 0;
-					_tmp1_ = i;
-					i = _tmp1_ + 1;
+				gint _tmp4_ = 0;
+				sdxgraphicsSurface** _tmp5_ = NULL;
+				gint _tmp5__length1 = 0;
+				sdxgraphicsSurface** _tmp6_ = NULL;
+				gint _tmp6__length1 = 0;
+				gint _tmp7_ = 0;
+				sdxgraphicsSurface* _tmp8_ = NULL;
+				sdxgraphicsSurface** _tmp14_ = NULL;
+				gint _tmp14__length1 = 0;
+				gint _tmp15_ = 0;
+				sdxgraphicsSurface* _tmp16_ = NULL;
+				const gchar* _tmp17_ = NULL;
+				const gchar* _tmp18_ = NULL;
+				if (!_tmp2_) {
+					gint _tmp3_ = 0;
+					_tmp3_ = i;
+					i = _tmp3_ + 1;
 				}
-				_tmp0_ = FALSE;
-				_tmp2_ = i;
-				_tmp3_ = sdx_graphics_sprite_cache;
-				_tmp3__length1 = sdx_graphics_sprite_cache_length1;
-				if (!(_tmp2_ < _tmp3__length1)) {
+				_tmp2_ = FALSE;
+				_tmp4_ = i;
+				_tmp5_ = sdx_graphics_sprite_cache;
+				_tmp5__length1 = sdx_graphics_sprite_cache_length1;
+				if (!(_tmp4_ < _tmp5__length1)) {
 					break;
 				}
-				_tmp4_ = sdx_graphics_sprite_cache;
-				_tmp4__length1 = sdx_graphics_sprite_cache_length1;
-				_tmp5_ = i;
-				_tmp6_ = _tmp4_[_tmp5_];
-				if (_tmp6_ == NULL) {
-					sdxgraphicsSurface** _tmp7_ = NULL;
-					gint _tmp7__length1 = 0;
-					gint _tmp8_ = 0;
-					const gchar* _tmp9_ = NULL;
-					sdxgraphicsSurface* _tmp10_ = NULL;
-					sdxgraphicsSurface* _tmp11_ = NULL;
-					_tmp7_ = sdx_graphics_sprite_cache;
-					_tmp7__length1 = sdx_graphics_sprite_cache_length1;
-					_tmp8_ = i;
-					_tmp9_ = path;
-					_tmp10_ = sdx_graphics_surface_new (_tmp9_);
-					_sdx_graphics_surface_release0 (_tmp7_[_tmp8_]);
-					_tmp7_[_tmp8_] = _tmp10_;
-					_tmp11_ = _tmp7_[_tmp8_];
+				_tmp6_ = sdx_graphics_sprite_cache;
+				_tmp6__length1 = sdx_graphics_sprite_cache_length1;
+				_tmp7_ = i;
+				_tmp8_ = _tmp6_[_tmp7_];
+				if (_tmp8_ == NULL) {
+					sdxgraphicsSurface** _tmp9_ = NULL;
+					gint _tmp9__length1 = 0;
+					gint _tmp10_ = 0;
+					const gchar* _tmp11_ = NULL;
+					sdxgraphicsSurface* _tmp12_ = NULL;
+					sdxgraphicsSurface* _tmp13_ = NULL;
+					_tmp9_ = sdx_graphics_sprite_cache;
+					_tmp9__length1 = sdx_graphics_sprite_cache_length1;
+					_tmp10_ = i;
+					_tmp11_ = path;
+					_tmp12_ = sdx_graphics_surface_new (_tmp11_);
+					_sdx_graphics_surface_release0 (_tmp9_[_tmp10_]);
+					_tmp9_[_tmp10_] = _tmp12_;
+					_tmp13_ = _tmp9_[_tmp10_];
+					result = i;
+					return result;
 				}
-				_tmp12_ = sdx_graphics_sprite_cache;
-				_tmp12__length1 = sdx_graphics_sprite_cache_length1;
-				_tmp13_ = i;
-				_tmp14_ = _tmp12_[_tmp13_];
-				_tmp15_ = _tmp14_->path;
-				_tmp16_ = path;
-				if (g_strcmp0 (_tmp15_, _tmp16_) == 0) {
+				_tmp14_ = sdx_graphics_sprite_cache;
+				_tmp14__length1 = sdx_graphics_sprite_cache_length1;
+				_tmp15_ = i;
+				_tmp16_ = _tmp14_[_tmp15_];
+				_tmp17_ = _tmp16_->path;
+				_tmp18_ = path;
+				if (g_strcmp0 (_tmp17_, _tmp18_) == 0) {
 					result = i;
 					return result;
 				}
