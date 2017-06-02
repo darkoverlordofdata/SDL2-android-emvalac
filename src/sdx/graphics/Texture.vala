@@ -13,21 +13,17 @@ namespace sdx.graphics {
 
     public class Texture : Object {
         public Video.Surface data;
-        //  public int index;
         public string path;
         public int width {
             get { return data.w; }
-            //  get { return Sprite.cache[index].width; }
         }
         public int height {
             get { return data.h; }
-            //  get { return Sprite.cache[index].height; }
         }
 
         public Texture(FileHandle file) {
             path = file.getPath();
             var raw = file.getRWops();
-            print("CALL getSurface |%s|\n", file.getPath());
             data = getSurface(file.getExt(), raw);
         }
 

@@ -18,15 +18,7 @@ namespace sdx.graphics {
                 case "MipMapLinearNearest": return MipMapLinearNearest;
                 case "MipMapNearestLinear": return MipMapNearestLinear;
                 case "MipMapLinearLinear": return MipMapLinearLinear;
-                case " Nearest": return Nearest;
-                case " Linear": return Linear;
-                case " MipMap": return MipMap;
-                case " MipMapNearestNearest": return MipMapNearestNearest;
-                case " MipMapLinearNearest": return MipMapLinearNearest;
-                case " MipMapNearestLinear": return MipMapNearestLinear;
-                case " MipMapLinearLinear": return MipMapLinearLinear;
-                default: return Nearest;
-                //  default: throw new SdlException.NotReached("TextureFilter.from["+value+"]");
+                default: throw new SdlException.NotReached("TextureFilter.from["+value+"]");
             }
         }
 
@@ -86,15 +78,7 @@ namespace sdx.graphics {
                 case "RGBA4444": return RGBA4444;
                 case "RGB888": return RGB888;
                 case "RGBA8888": return RGBA8888;
-                case " Alpha": return Alpha;
-                case " Intensity": return Intensity;
-                case " LuminanceAlpha": return LuminanceAlpha;
-                case " RGB565": return RGB565;
-                case " RGBA4444": return RGBA4444;
-                case " RGB888": return RGB888;
-                case " RGBA8888": return RGBA8888;
-                default: return RGBA8888;
-                //  default: throw new SdlException.NotReached("Format.from["+value+"]");
+                default: throw new SdlException.NotReached("Format.from["+value+"]");
             }
         }
         public string to_string() {

@@ -40,8 +40,8 @@ void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
 sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* texture, gint x, gint y, gint width, gint height);
 gint sdx_graphics_texture_get_width (sdxgraphicsTexture* self);
 gint sdx_graphics_texture_get_height (sdxgraphicsTexture* self);
-void sdx_graphics_texture_region_setRegion (sdxgraphicsTextureRegion* self, gdouble u, gdouble v, gdouble u2, gdouble v2);
 void sdx_graphics_texture_region_setRegionXY (sdxgraphicsTextureRegion* self, gint x, gint y, gint width, gint height);
+void sdx_graphics_texture_region_setRegion (sdxgraphicsTextureRegion* self, gdouble u, gdouble v, gdouble u2, gdouble v2);
 void sdx_graphics_texture_region_setByRegion (sdxgraphicsTextureRegion* self, sdxgraphicsTextureRegion* region);
 void sdx_graphics_texture_region_setByRegionXY (sdxgraphicsTextureRegion* self, sdxgraphicsTextureRegion* region, gint x, gint y, gint width, gint height);
 gint sdx_graphics_texture_region_getRegionX (sdxgraphicsTextureRegion* self);
@@ -101,6 +101,10 @@ sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* t
 	gint _tmp15_ = 0;
 	gint _tmp16_ = 0;
 	gint _tmp17_ = 0;
+	gint _tmp18_ = 0;
+	gint _tmp19_ = 0;
+	gint _tmp20_ = 0;
+	gint _tmp21_ = 0;
 	g_return_val_if_fail (texture != NULL, NULL);
 	self = g_slice_new0 (sdxgraphicsTextureRegion);
 	sdx_graphics_texture_region_instance_init (self);
@@ -146,126 +150,115 @@ sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* t
 	self->width = _tmp16_;
 	_tmp17_ = height;
 	self->height = _tmp17_;
+	_tmp18_ = x;
+	_tmp19_ = y;
+	_tmp20_ = width;
+	_tmp21_ = height;
+	sdx_graphics_texture_region_setRegionXY (self, _tmp18_, _tmp19_, _tmp20_, _tmp21_);
 	return self;
 }
 
 
 void sdx_graphics_texture_region_setRegion (sdxgraphicsTextureRegion* self, gdouble u, gdouble v, gdouble u2, gdouble v2) {
 	gint texWidth = 0;
-	sdxgraphicsTexture* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
-	gint _tmp2_ = 0;
+	gint _tmp0_ = 0;
 	gint texHeight = 0;
-	sdxgraphicsTexture* _tmp3_ = NULL;
-	gint _tmp4_ = 0;
+	gint _tmp1_ = 0;
+	gdouble _tmp2_ = 0.0;
+	gdouble _tmp3_ = 0.0;
+	gdouble _tmp4_ = 0.0;
 	gint _tmp5_ = 0;
 	gdouble _tmp6_ = 0.0;
 	gdouble _tmp7_ = 0.0;
 	gdouble _tmp8_ = 0.0;
-	gint _tmp9_ = 0;
-	gdouble _tmp10_ = 0.0;
+	gdouble _tmp9_ = 0.0;
+	gint _tmp10_ = 0;
 	gdouble _tmp11_ = 0.0;
-	gdouble _tmp12_ = 0.0;
-	gdouble _tmp13_ = 0.0;
-	gint _tmp14_ = 0;
-	gdouble _tmp15_ = 0.0;
-	gboolean _tmp16_ = FALSE;
-	gint _tmp17_ = 0;
+	gboolean _tmp12_ = FALSE;
+	gint _tmp13_ = 0;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = self->texture;
-	_tmp1_ = sdx_graphics_texture_get_width (_tmp0_);
-	_tmp2_ = _tmp1_;
-	texWidth = _tmp2_;
-	_tmp3_ = self->texture;
-	_tmp4_ = sdx_graphics_texture_get_height (_tmp3_);
-	_tmp5_ = _tmp4_;
-	texHeight = _tmp5_;
-	_tmp6_ = u2;
-	_tmp7_ = u;
-	_tmp8_ = fabs (_tmp6_ - _tmp7_);
-	_tmp9_ = texWidth;
-	_tmp10_ = round (_tmp8_ * _tmp9_);
-	self->regionWidth = (gint) _tmp10_;
-	_tmp11_ = v2;
-	_tmp12_ = v;
-	_tmp13_ = fabs (_tmp11_ - _tmp12_);
-	_tmp14_ = texHeight;
-	_tmp15_ = round (_tmp13_ * _tmp14_);
-	self->regionHeight = (gint) _tmp15_;
-	_tmp17_ = self->regionWidth;
-	if (_tmp17_ == 1) {
-		gint _tmp18_ = 0;
-		_tmp18_ = self->regionHeight;
-		_tmp16_ = _tmp18_ == 1;
+	_tmp0_ = self->width;
+	texWidth = _tmp0_;
+	_tmp1_ = self->height;
+	texHeight = _tmp1_;
+	_tmp2_ = u2;
+	_tmp3_ = u;
+	_tmp4_ = fabs (_tmp2_ - _tmp3_);
+	_tmp5_ = texWidth;
+	_tmp6_ = round (_tmp4_ * _tmp5_);
+	self->regionWidth = (gint) _tmp6_;
+	_tmp7_ = v2;
+	_tmp8_ = v;
+	_tmp9_ = fabs (_tmp7_ - _tmp8_);
+	_tmp10_ = texHeight;
+	_tmp11_ = round (_tmp9_ * _tmp10_);
+	self->regionHeight = (gint) _tmp11_;
+	_tmp13_ = self->regionWidth;
+	if (_tmp13_ == 1) {
+		gint _tmp14_ = 0;
+		_tmp14_ = self->regionHeight;
+		_tmp12_ = _tmp14_ == 1;
 	} else {
-		_tmp16_ = FALSE;
+		_tmp12_ = FALSE;
 	}
-	if (_tmp16_) {
+	if (_tmp12_) {
 		gdouble adjustX = 0.0;
-		gint _tmp19_ = 0;
-		gdouble _tmp20_ = 0.0;
-		gdouble _tmp21_ = 0.0;
+		gint _tmp15_ = 0;
+		gdouble _tmp16_ = 0.0;
+		gdouble _tmp17_ = 0.0;
 		gdouble adjustY = 0.0;
-		gint _tmp22_ = 0;
-		gdouble _tmp23_ = 0.0;
-		gdouble _tmp24_ = 0.0;
-		_tmp19_ = texWidth;
-		adjustX = 0.25 / _tmp19_;
-		_tmp20_ = adjustX;
-		u = _tmp20_;
-		_tmp21_ = adjustX;
-		u2 = _tmp21_;
-		_tmp22_ = texHeight;
-		adjustY = 0.25 / _tmp22_;
-		_tmp23_ = adjustY;
-		v = _tmp23_;
-		_tmp24_ = adjustY;
-		v2 = _tmp24_;
+		gint _tmp18_ = 0;
+		gdouble _tmp19_ = 0.0;
+		gdouble _tmp20_ = 0.0;
+		_tmp15_ = texWidth;
+		adjustX = 0.25 / _tmp15_;
+		_tmp16_ = adjustX;
+		u = _tmp16_;
+		_tmp17_ = adjustX;
+		u2 = _tmp17_;
+		_tmp18_ = texHeight;
+		adjustY = 0.25 / _tmp18_;
+		_tmp19_ = adjustY;
+		v = _tmp19_;
+		_tmp20_ = adjustY;
+		v2 = _tmp20_;
 	}
 }
 
 
 void sdx_graphics_texture_region_setRegionXY (sdxgraphicsTextureRegion* self, gint x, gint y, gint width, gint height) {
 	gint invTexWidth = 0;
-	sdxgraphicsTexture* _tmp0_ = NULL;
+	gint _tmp0_ = 0;
+	gint invTexHeight = 0;
 	gint _tmp1_ = 0;
 	gint _tmp2_ = 0;
-	gint invTexHeight = 0;
-	sdxgraphicsTexture* _tmp3_ = NULL;
+	gint _tmp3_ = 0;
 	gint _tmp4_ = 0;
 	gint _tmp5_ = 0;
 	gint _tmp6_ = 0;
 	gint _tmp7_ = 0;
 	gint _tmp8_ = 0;
-	gint _tmp9_ = 0;
+	gdouble _tmp9_ = 0.0;
 	gint _tmp10_ = 0;
-	gint _tmp11_ = 0;
-	gint _tmp12_ = 0;
-	gdouble _tmp13_ = 0.0;
-	gint _tmp14_ = 0;
-	gdouble _tmp15_ = 0.0;
+	gdouble _tmp11_ = 0.0;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = self->texture;
-	_tmp1_ = sdx_graphics_texture_get_width (_tmp0_);
-	_tmp2_ = _tmp1_;
-	invTexWidth = 1 / _tmp2_;
-	_tmp3_ = self->texture;
-	_tmp4_ = sdx_graphics_texture_get_height (_tmp3_);
-	_tmp5_ = _tmp4_;
-	invTexHeight = 1 / _tmp5_;
-	_tmp6_ = x;
-	_tmp7_ = y;
-	_tmp8_ = x;
-	_tmp9_ = width;
-	_tmp10_ = y;
-	_tmp11_ = height;
-	sdx_graphics_texture_region_setRegion (self, (gdouble) (_tmp6_ * invTexWidth), (gdouble) (_tmp7_ * invTexHeight), (gdouble) ((_tmp8_ + _tmp9_) * invTexWidth), (gdouble) ((_tmp10_ + _tmp11_) * invTexHeight));
-	_tmp12_ = width;
-	_tmp13_ = fabs ((gdouble) _tmp12_);
-	self->regionWidth = (gint) _tmp13_;
-	_tmp14_ = height;
-	_tmp15_ = fabs ((gdouble) _tmp14_);
-	self->regionHeight = (gint) _tmp15_;
+	_tmp0_ = self->width;
+	invTexWidth = 1 / _tmp0_;
+	_tmp1_ = self->height;
+	invTexHeight = 1 / _tmp1_;
+	_tmp2_ = x;
+	_tmp3_ = y;
+	_tmp4_ = x;
+	_tmp5_ = width;
+	_tmp6_ = y;
+	_tmp7_ = height;
+	sdx_graphics_texture_region_setRegion (self, (gdouble) (_tmp2_ * invTexWidth), (gdouble) (_tmp3_ * invTexHeight), (gdouble) ((_tmp4_ + _tmp5_) * invTexWidth), (gdouble) ((_tmp6_ + _tmp7_) * invTexHeight));
+	_tmp8_ = width;
+	_tmp9_ = fabs ((gdouble) _tmp8_);
+	self->regionWidth = (gint) _tmp9_;
+	_tmp10_ = height;
+	_tmp11_ = fabs ((gdouble) _tmp10_);
+	self->regionHeight = (gint) _tmp11_;
 }
 
 
@@ -379,21 +372,17 @@ void sdx_graphics_texture_region_setU (sdxgraphicsTextureRegion* self, gdouble u
 	gdouble _tmp1_ = 0.0;
 	gdouble _tmp2_ = 0.0;
 	gdouble _tmp3_ = 0.0;
-	sdxgraphicsTexture* _tmp4_ = NULL;
-	gint _tmp5_ = 0;
-	gint _tmp6_ = 0;
-	gdouble _tmp7_ = 0.0;
+	gint _tmp4_ = 0;
+	gdouble _tmp5_ = 0.0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = u;
 	self->u = _tmp0_;
 	_tmp1_ = self->u2;
 	_tmp2_ = u;
 	_tmp3_ = fabs (_tmp1_ - _tmp2_);
-	_tmp4_ = self->texture;
-	_tmp5_ = sdx_graphics_texture_get_width (_tmp4_);
-	_tmp6_ = _tmp5_;
-	_tmp7_ = round (_tmp3_ * _tmp6_);
-	self->regionWidth = (gint) _tmp7_;
+	_tmp4_ = self->width;
+	_tmp5_ = round (_tmp3_ * _tmp4_);
+	self->regionWidth = (gint) _tmp5_;
 }
 
 
@@ -412,21 +401,17 @@ void sdx_graphics_texture_region_setV (sdxgraphicsTextureRegion* self, gdouble v
 	gdouble _tmp1_ = 0.0;
 	gdouble _tmp2_ = 0.0;
 	gdouble _tmp3_ = 0.0;
-	sdxgraphicsTexture* _tmp4_ = NULL;
-	gint _tmp5_ = 0;
-	gint _tmp6_ = 0;
-	gdouble _tmp7_ = 0.0;
+	gint _tmp4_ = 0;
+	gdouble _tmp5_ = 0.0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = v;
 	self->v = _tmp0_;
 	_tmp1_ = self->v2;
 	_tmp2_ = v;
 	_tmp3_ = fabs (_tmp1_ - _tmp2_);
-	_tmp4_ = self->texture;
-	_tmp5_ = sdx_graphics_texture_get_height (_tmp4_);
-	_tmp6_ = _tmp5_;
-	_tmp7_ = round (_tmp3_ * _tmp6_);
-	self->regionHeight = (gint) _tmp7_;
+	_tmp4_ = self->height;
+	_tmp5_ = round (_tmp3_ * _tmp4_);
+	self->regionHeight = (gint) _tmp5_;
 }
 
 
@@ -445,21 +430,17 @@ void sdx_graphics_texture_region_setU2 (sdxgraphicsTextureRegion* self, gdouble 
 	gdouble _tmp1_ = 0.0;
 	gdouble _tmp2_ = 0.0;
 	gdouble _tmp3_ = 0.0;
-	sdxgraphicsTexture* _tmp4_ = NULL;
-	gint _tmp5_ = 0;
-	gint _tmp6_ = 0;
-	gdouble _tmp7_ = 0.0;
+	gint _tmp4_ = 0;
+	gdouble _tmp5_ = 0.0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = u2;
 	self->u2 = _tmp0_;
 	_tmp1_ = u2;
 	_tmp2_ = self->u;
 	_tmp3_ = fabs (_tmp1_ - _tmp2_);
-	_tmp4_ = self->texture;
-	_tmp5_ = sdx_graphics_texture_get_width (_tmp4_);
-	_tmp6_ = _tmp5_;
-	_tmp7_ = round (_tmp3_ * _tmp6_);
-	self->regionWidth = (gint) _tmp7_;
+	_tmp4_ = self->width;
+	_tmp5_ = round (_tmp3_ * _tmp4_);
+	self->regionWidth = (gint) _tmp5_;
 }
 
 
@@ -478,85 +459,65 @@ void sdx_graphics_texture_region_setV2 (sdxgraphicsTextureRegion* self, gdouble 
 	gdouble _tmp1_ = 0.0;
 	gdouble _tmp2_ = 0.0;
 	gdouble _tmp3_ = 0.0;
-	sdxgraphicsTexture* _tmp4_ = NULL;
-	gint _tmp5_ = 0;
-	gint _tmp6_ = 0;
-	gdouble _tmp7_ = 0.0;
+	gint _tmp4_ = 0;
+	gdouble _tmp5_ = 0.0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = v2;
 	self->v2 = _tmp0_;
 	_tmp1_ = v2;
 	_tmp2_ = self->v;
 	_tmp3_ = fabs (_tmp1_ - _tmp2_);
-	_tmp4_ = self->texture;
-	_tmp5_ = sdx_graphics_texture_get_height (_tmp4_);
-	_tmp6_ = _tmp5_;
-	_tmp7_ = round (_tmp3_ * _tmp6_);
-	self->regionHeight = (gint) _tmp7_;
+	_tmp4_ = self->height;
+	_tmp5_ = round (_tmp3_ * _tmp4_);
+	self->regionHeight = (gint) _tmp5_;
 }
 
 
 gint sdx_graphics_texture_region_getRegionX (sdxgraphicsTextureRegion* self) {
 	gint result = 0;
 	gdouble _tmp0_ = 0.0;
-	sdxgraphicsTexture* _tmp1_ = NULL;
-	gint _tmp2_ = 0;
-	gint _tmp3_ = 0;
-	gdouble _tmp4_ = 0.0;
+	gint _tmp1_ = 0;
+	gdouble _tmp2_ = 0.0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->u;
-	_tmp1_ = self->texture;
-	_tmp2_ = sdx_graphics_texture_get_width (_tmp1_);
-	_tmp3_ = _tmp2_;
-	_tmp4_ = round (_tmp0_ * _tmp3_);
-	result = (gint) _tmp4_;
+	_tmp1_ = self->width;
+	_tmp2_ = round (_tmp0_ * _tmp1_);
+	result = (gint) _tmp2_;
 	return result;
 }
 
 
 void sdx_graphics_texture_region_setRegionX (sdxgraphicsTextureRegion* self, gint x) {
 	gint _tmp0_ = 0;
-	sdxgraphicsTexture* _tmp1_ = NULL;
-	gint _tmp2_ = 0;
-	gint _tmp3_ = 0;
+	gint _tmp1_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = x;
-	_tmp1_ = self->texture;
-	_tmp2_ = sdx_graphics_texture_get_width (_tmp1_);
-	_tmp3_ = _tmp2_;
-	sdx_graphics_texture_region_setU (self, _tmp0_ / ((gdouble) _tmp3_));
+	_tmp1_ = self->width;
+	sdx_graphics_texture_region_setU (self, _tmp0_ / ((gdouble) _tmp1_));
 }
 
 
 gint sdx_graphics_texture_region_getRegionY (sdxgraphicsTextureRegion* self) {
 	gint result = 0;
 	gdouble _tmp0_ = 0.0;
-	sdxgraphicsTexture* _tmp1_ = NULL;
-	gint _tmp2_ = 0;
-	gint _tmp3_ = 0;
-	gdouble _tmp4_ = 0.0;
+	gint _tmp1_ = 0;
+	gdouble _tmp2_ = 0.0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->v;
-	_tmp1_ = self->texture;
-	_tmp2_ = sdx_graphics_texture_get_height (_tmp1_);
-	_tmp3_ = _tmp2_;
-	_tmp4_ = round (_tmp0_ * _tmp3_);
-	result = (gint) _tmp4_;
+	_tmp1_ = self->height;
+	_tmp2_ = round (_tmp0_ * _tmp1_);
+	result = (gint) _tmp2_;
 	return result;
 }
 
 
 void sdx_graphics_texture_region_setRegionY (sdxgraphicsTextureRegion* self, gint y) {
 	gint _tmp0_ = 0;
-	sdxgraphicsTexture* _tmp1_ = NULL;
-	gint _tmp2_ = 0;
-	gint _tmp3_ = 0;
+	gint _tmp1_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = y;
-	_tmp1_ = self->texture;
-	_tmp2_ = sdx_graphics_texture_get_height (_tmp1_);
-	_tmp3_ = _tmp2_;
-	sdx_graphics_texture_region_setV (self, (gdouble) (_tmp0_ / _tmp3_));
+	_tmp1_ = self->height;
+	sdx_graphics_texture_region_setV (self, (gdouble) (_tmp0_ / _tmp1_));
 }
 
 
@@ -578,27 +539,19 @@ void sdx_graphics_texture_region_setRegionWidth (sdxgraphicsTextureRegion* self,
 	if (_tmp0_) {
 		gdouble _tmp1_ = 0.0;
 		gint _tmp2_ = 0;
-		sdxgraphicsTexture* _tmp3_ = NULL;
-		gint _tmp4_ = 0;
-		gint _tmp5_ = 0;
+		gint _tmp3_ = 0;
 		_tmp1_ = self->u2;
 		_tmp2_ = width;
-		_tmp3_ = self->texture;
-		_tmp4_ = sdx_graphics_texture_get_width (_tmp3_);
-		_tmp5_ = _tmp4_;
-		sdx_graphics_texture_region_setU (self, _tmp1_ + (_tmp2_ / ((gdouble) _tmp5_)));
+		_tmp3_ = self->width;
+		sdx_graphics_texture_region_setU (self, _tmp1_ + (_tmp2_ / ((gdouble) _tmp3_)));
 	} else {
-		gdouble _tmp6_ = 0.0;
-		gint _tmp7_ = 0;
-		sdxgraphicsTexture* _tmp8_ = NULL;
-		gint _tmp9_ = 0;
-		gint _tmp10_ = 0;
-		_tmp6_ = self->u;
-		_tmp7_ = width;
-		_tmp8_ = self->texture;
-		_tmp9_ = sdx_graphics_texture_get_width (_tmp8_);
-		_tmp10_ = _tmp9_;
-		sdx_graphics_texture_region_setU2 (self, _tmp6_ + (_tmp7_ / ((gdouble) _tmp10_)));
+		gdouble _tmp4_ = 0.0;
+		gint _tmp5_ = 0;
+		gint _tmp6_ = 0;
+		_tmp4_ = self->u;
+		_tmp5_ = width;
+		_tmp6_ = self->width;
+		sdx_graphics_texture_region_setU2 (self, _tmp4_ + (_tmp5_ / ((gdouble) _tmp6_)));
 	}
 }
 
@@ -621,27 +574,19 @@ void sdx_graphics_texture_region_setRegionHeight (sdxgraphicsTextureRegion* self
 	if (_tmp0_) {
 		gdouble _tmp1_ = 0.0;
 		gint _tmp2_ = 0;
-		sdxgraphicsTexture* _tmp3_ = NULL;
-		gint _tmp4_ = 0;
-		gint _tmp5_ = 0;
+		gint _tmp3_ = 0;
 		_tmp1_ = self->v2;
 		_tmp2_ = height;
-		_tmp3_ = self->texture;
-		_tmp4_ = sdx_graphics_texture_get_height (_tmp3_);
-		_tmp5_ = _tmp4_;
-		sdx_graphics_texture_region_setV (self, _tmp1_ + (_tmp2_ / ((gdouble) _tmp5_)));
+		_tmp3_ = self->height;
+		sdx_graphics_texture_region_setV (self, _tmp1_ + (_tmp2_ / ((gdouble) _tmp3_)));
 	} else {
-		gdouble _tmp6_ = 0.0;
-		gint _tmp7_ = 0;
-		sdxgraphicsTexture* _tmp8_ = NULL;
-		gint _tmp9_ = 0;
-		gint _tmp10_ = 0;
-		_tmp6_ = self->v;
-		_tmp7_ = height;
-		_tmp8_ = self->texture;
-		_tmp9_ = sdx_graphics_texture_get_height (_tmp8_);
-		_tmp10_ = _tmp9_;
-		sdx_graphics_texture_region_setV2 (self, _tmp6_ + (_tmp7_ / ((gdouble) _tmp10_)));
+		gdouble _tmp4_ = 0.0;
+		gint _tmp5_ = 0;
+		gint _tmp6_ = 0;
+		_tmp4_ = self->v;
+		_tmp5_ = height;
+		_tmp6_ = self->height;
+		sdx_graphics_texture_region_setV2 (self, _tmp4_ + (_tmp5_ / ((gdouble) _tmp6_)));
 	}
 }
 

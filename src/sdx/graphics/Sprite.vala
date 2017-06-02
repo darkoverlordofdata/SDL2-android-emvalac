@@ -6,7 +6,7 @@ namespace sdx.graphics {
 	}
 	
 	public class Sprite : Object {
-		public static sdx.graphics.Surface[] cache;
+		//  public static sdx.graphics.Surface[] cache;
 		public static int uniqueId = 0;
 		public SDL.Video.Texture texture;
 		public SDL.Video.Surface surface;
@@ -25,16 +25,16 @@ namespace sdx.graphics {
 		public Sprite(string? path=null) {
 			if (path != null) {
 				isText = false;
-				var i = indexOfPath(path);
+				var i = Surface.indexOfPath(path);
 				if (i<0) { 
 					stdout.printf("Ran out of surface cache\n");
 				} else {
-					texture = SDL.Video.Texture.create_from_surface(renderer, cache[i].surface);
+					texture = SDL.Video.Texture.create_from_surface(renderer, Surface.cache[i].surface);
 					if (texture == null)
 						stdout.printf("Unable to load image texture %s\n", path);
 					texture.set_blend_mode(SDL.Video.BlendMode.BLEND);
-					width = cache[i].width;
-					height = cache[i].height;
+					width = Surface.cache[i].width;
+					height = Surface.cache[i].height;
 					this.path = path;
 				}
 			}
@@ -50,19 +50,18 @@ namespace sdx.graphics {
 				if (segment.dest.w > w) w = (int)segment.dest.w;
 			}
 
-			var i = indexOfPath(path);
+			var i = Surface.indexOfPath(path);
 			if (i<0) { 
 				stdout.printf("Ran out of surface cache\n");
 			} 
 			
-			var flags = (uint32)0x00010000;
 			var rmask = (uint32)0x000000ff; 
 			var gmask = (uint32)0x0000ff00;
 			var bmask = (uint32)0x00ff0000;
 			var amask = (uint32)0xff000000;
-			var surface = new SDL.Video.Surface.legacy_rgb(flags, h, w, 32, rmask, gmask, bmask, amask);
+			var surface = new SDL.Video.Surface.legacy_rgb(0, h, w, 32, rmask, gmask, bmask, amask);
 			foreach (var segment in builder(h/2, w/2)) {
-				cache[i].surface.blit_scaled(segment.source, surface, segment.dest);
+				Surface.cache[i].surface.blit_scaled(segment.source, surface, segment.dest);
 			}
 			sprite.texture = SDL.Video.Texture.create_from_surface(renderer, surface);
 			sprite.width = w;
@@ -74,32 +73,11 @@ namespace sdx.graphics {
         public static Sprite  fromRegion(AtlasRegion region) {
 			var sprite = new Sprite();
 
-//  #if (ANDROID)
-//  			var j = indexOfPath(region.rg.texture.path);
-//  			if (j<0) { 
-//  				stdout.printf("Ran out of surface cache\n");
-//  			} 
-//  			print("Sprite %d - %s - %s\n", j, region.rg.texture.path, region.name);
-
-//  			var path = "assets/images/"+region.name+".png";
-//  			var i = indexOfPath(path);
-//  			if (i<0) { 
-//  				stdout.printf("Ran out of surface cache\n");
-//  			} 
-//  			sprite.texture = SDL.Video.Texture.create_from_surface(renderer, cache[i].surface);
-//  			if (sprite.texture == null)
-//  				stdout.printf("Unable to load image texture %s\n", path);
-//  			sprite.texture.set_blend_mode(SDL.Video.BlendMode.BLEND);
-//  			sprite.width = cache[i].width;
-//  			sprite.height = cache[i].height;
-//  			sprite.path = path;
-//  #else
 			var path = region.rg.texture.path;
-			var i = indexOfPath(region.rg.texture.path);
+			var i = Surface.indexOfPath(region.rg.texture.path);
 			if (i<0) { 
 				stdout.printf("Ran out of surface cache\n");
 			} 
-			var flags = (uint32)0x00010000;
             var rmask = (uint32)0x000000ff; 
             var gmask = (uint32)0x0000ff00;
             var bmask = (uint32)0x00ff0000;
@@ -109,14 +87,13 @@ namespace sdx.graphics {
             var y = region.rg.left;
             var w = region.rg.width;
             var h = region.rg.height;
-            var surface = new SDL.Video.Surface.legacy_rgb(flags, region.rg.width, region.rg.height, 
+            var surface = new SDL.Video.Surface.legacy_rgb(0, region.rg.width, region.rg.height, 
                     32, rmask, gmask, bmask, amask);
-            cache[i].surface.blit_scaled({ x, y, w, h }, surface, { 0, 0, w, h });
+            Surface.cache[i].surface.blit_scaled({ x, y, w, h }, surface, { 0, 0, w, h });
             sprite.texture = SDL.Video.Texture.create_from_surface(renderer, surface);
             sprite.width = w;
             sprite.height = h;
             sprite.path = region.name;
-//  #endif
 			return sprite;
 		}
 
@@ -143,22 +120,18 @@ namespace sdx.graphics {
 		}
 
 
-		public static void initialize(int length) {
-			if (cache.length == 0)
-				cache = new sdx.graphics.Surface[length];
-		}
 
-		public static int indexOfPath(string path) {
-			if (cache.length == 0) cache = new sdx.graphics.Surface[Pool.Count+1];
-			for (var i=0; i<cache.length; i++) {
-				if (cache[i] == null) {
-					cache[i] = new sdx.graphics.Surface(path);
-					return i;
-				}
-				if (cache[i].path == path) return i;
-			}
-			return -1;
-		}
+		//  public static int indexOfPath(string path) {
+		//  	if (cache.length == 0) cache = new sdx.graphics.Surface[Pool.Count+1];
+		//  	for (var i=0; i<cache.length; i++) {
+		//  		if (cache[i] == null) {
+		//  			cache[i] = new sdx.graphics.Surface(path);
+		//  			return i;
+		//  		}
+		//  		if (cache[i].path == path) return i;
+		//  	}
+		//  	return -1;
+		//  }
 
 		/**
 		 *  Change the text value of a Sprite.fromRenderedText

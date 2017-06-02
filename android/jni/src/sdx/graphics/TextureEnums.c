@@ -61,9 +61,9 @@ typedef enum  {
 
 GType sdx_graphics_texture_filter_get_type (void) G_GNUC_CONST;
 sdxgraphicsTextureFilter sdx_graphics_texture_filter_from (const gchar* value);
+GQuark sdx_sdl_exception_quark (void);
 gboolean sdx_graphics_texture_filter_isMipMap (sdxgraphicsTextureFilter self);
 gchar* sdx_graphics_texture_filter_to_string (sdxgraphicsTextureFilter self);
-GQuark sdx_sdl_exception_quark (void);
 GType sdx_graphics_texture_wrap_get_type (void) G_GNUC_CONST;
 sdxgraphicsTextureWrap sdx_graphics_texture_wrap_from (const gchar* value);
 gchar* sdx_graphics_texture_wrap_to_string (sdxgraphicsTextureWrap self);
@@ -84,13 +84,7 @@ sdxgraphicsTextureFilter sdx_graphics_texture_filter_from (const gchar* value) {
 	static GQuark _tmp2_label4 = 0;
 	static GQuark _tmp2_label5 = 0;
 	static GQuark _tmp2_label6 = 0;
-	static GQuark _tmp2_label7 = 0;
-	static GQuark _tmp2_label8 = 0;
-	static GQuark _tmp2_label9 = 0;
-	static GQuark _tmp2_label10 = 0;
-	static GQuark _tmp2_label11 = 0;
-	static GQuark _tmp2_label12 = 0;
-	static GQuark _tmp2_label13 = 0;
+	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (value != NULL, 0);
 	_tmp0_ = value;
 	_tmp1_ = _tmp0_;
@@ -151,68 +145,30 @@ sdxgraphicsTextureFilter sdx_graphics_texture_filter_from (const gchar* value) {
 				return result;
 			}
 		}
-	} else if (_tmp3_ == ((0 != _tmp2_label7) ? _tmp2_label7 : (_tmp2_label7 = g_quark_from_static_string (" Nearest")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_TEXTURE_FILTER_Nearest;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label8) ? _tmp2_label8 : (_tmp2_label8 = g_quark_from_static_string (" Linear")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_TEXTURE_FILTER_Linear;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label9) ? _tmp2_label9 : (_tmp2_label9 = g_quark_from_static_string (" MipMap")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_TEXTURE_FILTER_MipMap;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label10) ? _tmp2_label10 : (_tmp2_label10 = g_quark_from_static_string (" MipMapNearestNearest")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_TEXTURE_FILTER_MipMapNearestNearest;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label11) ? _tmp2_label11 : (_tmp2_label11 = g_quark_from_static_string (" MipMapLinearNearest")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_TEXTURE_FILTER_MipMapLinearNearest;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label12) ? _tmp2_label12 : (_tmp2_label12 = g_quark_from_static_string (" MipMapNearestLinear")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_TEXTURE_FILTER_MipMapNearestLinear;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label13) ? _tmp2_label13 : (_tmp2_label13 = g_quark_from_static_string (" MipMapLinearLinear")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_TEXTURE_FILTER_MipMapLinearLinear;
-				return result;
-			}
-		}
 	} else {
 		switch (0) {
 			default:
 			{
-				result = SDX_GRAPHICS_TEXTURE_FILTER_Nearest;
-				return result;
+				const gchar* _tmp4_ = NULL;
+				gchar* _tmp5_ = NULL;
+				gchar* _tmp6_ = NULL;
+				gchar* _tmp7_ = NULL;
+				gchar* _tmp8_ = NULL;
+				GError* _tmp9_ = NULL;
+				GError* _tmp10_ = NULL;
+				_tmp4_ = value;
+				_tmp5_ = g_strconcat ("TextureFilter.from[", _tmp4_, NULL);
+				_tmp6_ = _tmp5_;
+				_tmp7_ = g_strconcat (_tmp6_, "]", NULL);
+				_tmp8_ = _tmp7_;
+				_tmp9_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_NotReached, _tmp8_);
+				_tmp10_ = _tmp9_;
+				_g_free0 (_tmp8_);
+				_g_free0 (_tmp6_);
+				_inner_error_ = _tmp10_;
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return 0;
 			}
 		}
 	}
@@ -457,13 +413,7 @@ sdxgraphicsFormat sdx_graphics_format_from (const gchar* value) {
 	static GQuark _tmp2_label4 = 0;
 	static GQuark _tmp2_label5 = 0;
 	static GQuark _tmp2_label6 = 0;
-	static GQuark _tmp2_label7 = 0;
-	static GQuark _tmp2_label8 = 0;
-	static GQuark _tmp2_label9 = 0;
-	static GQuark _tmp2_label10 = 0;
-	static GQuark _tmp2_label11 = 0;
-	static GQuark _tmp2_label12 = 0;
-	static GQuark _tmp2_label13 = 0;
+	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (value != NULL, 0);
 	_tmp0_ = value;
 	_tmp1_ = _tmp0_;
@@ -524,68 +474,30 @@ sdxgraphicsFormat sdx_graphics_format_from (const gchar* value) {
 				return result;
 			}
 		}
-	} else if (_tmp3_ == ((0 != _tmp2_label7) ? _tmp2_label7 : (_tmp2_label7 = g_quark_from_static_string (" Alpha")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_FORMAT_Alpha;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label8) ? _tmp2_label8 : (_tmp2_label8 = g_quark_from_static_string (" Intensity")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_FORMAT_Intensity;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label9) ? _tmp2_label9 : (_tmp2_label9 = g_quark_from_static_string (" LuminanceAlpha")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_FORMAT_LuminanceAlpha;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label10) ? _tmp2_label10 : (_tmp2_label10 = g_quark_from_static_string (" RGB565")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_FORMAT_RGB565;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label11) ? _tmp2_label11 : (_tmp2_label11 = g_quark_from_static_string (" RGBA4444")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_FORMAT_RGBA4444;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label12) ? _tmp2_label12 : (_tmp2_label12 = g_quark_from_static_string (" RGB888")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_FORMAT_RGB888;
-				return result;
-			}
-		}
-	} else if (_tmp3_ == ((0 != _tmp2_label13) ? _tmp2_label13 : (_tmp2_label13 = g_quark_from_static_string (" RGBA8888")))) {
-		switch (0) {
-			default:
-			{
-				result = SDX_GRAPHICS_FORMAT_RGBA8888;
-				return result;
-			}
-		}
 	} else {
 		switch (0) {
 			default:
 			{
-				result = SDX_GRAPHICS_FORMAT_RGBA8888;
-				return result;
+				const gchar* _tmp4_ = NULL;
+				gchar* _tmp5_ = NULL;
+				gchar* _tmp6_ = NULL;
+				gchar* _tmp7_ = NULL;
+				gchar* _tmp8_ = NULL;
+				GError* _tmp9_ = NULL;
+				GError* _tmp10_ = NULL;
+				_tmp4_ = value;
+				_tmp5_ = g_strconcat ("Format.from[", _tmp4_, NULL);
+				_tmp6_ = _tmp5_;
+				_tmp7_ = g_strconcat (_tmp6_, "]", NULL);
+				_tmp8_ = _tmp7_;
+				_tmp9_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_NotReached, _tmp8_);
+				_tmp10_ = _tmp9_;
+				_g_free0 (_tmp8_);
+				_g_free0 (_tmp6_);
+				_inner_error_ = _tmp10_;
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return 0;
 			}
 		}
 	}

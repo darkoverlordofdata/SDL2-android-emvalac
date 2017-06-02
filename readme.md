@@ -36,5 +36,7 @@ cat hud.fnt | xml2son > hud.json
 cat normal.fnt | xml2son > normal.json
 -s ALLOW_MEMORY_GROWTH=1 
 
+enlarged memory arrays from 16777216 to 33554432, took 10 ms (has ArrayBuffer.transfer? false)
+
 java -cp gdx.jar:gdx-tools.jar com.badlogic.gdx.tools.texturepacker.TexturePacker assets outputDir pack
 

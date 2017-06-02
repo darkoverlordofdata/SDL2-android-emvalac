@@ -20,6 +20,12 @@ void sdx_files_file_handle_free (sdxfilesFileHandle* self);
 sdxfilesFileHandle* sdx_files_file_handle_retain (sdxfilesFileHandle* self);
 #define _sdx_files_file_handle_release0(var) ((var == NULL) ? NULL : (var = (sdx_files_file_handle_release (var), NULL)))
 
+#define TYPE_POOL (pool_get_type ())
+void sdx_graphics_surface_release (sdxgraphicsSurface* self);
+void sdx_graphics_surface_free (sdxgraphicsSurface* self);
+sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self);
+#define _sdx_graphics_surface_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_surface_release (var), NULL)))
+
 struct _sdxgraphicsSurface {
 	gint _retainCount;
 	SDL_Surface* surface;
@@ -29,7 +35,25 @@ struct _sdxgraphicsSurface {
 	gchar* path;
 };
 
+typedef enum  {
+	POOL_BACKGROUND,
+	POOL_ENEMY1,
+	POOL_ENEMY2,
+	POOL_ENEMY3,
+	POOL_PLAYER,
+	POOL_BULLET,
+	POOL_EXPLOSION,
+	POOL_BANG,
+	POOL_PARTICLE,
+	POOL_HUD,
+	POOL_Count
+} Pool;
 
+
+extern sdxgraphicsSurface** sdx_graphics_surface_cache;
+extern gint sdx_graphics_surface_cache_length1;
+sdxgraphicsSurface** sdx_graphics_surface_cache = NULL;
+gint sdx_graphics_surface_cache_length1 = 0;
 extern gint sdx_graphics_surface_uniqueId;
 gint sdx_graphics_surface_uniqueId = 0;
 
@@ -42,6 +66,10 @@ sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path);
 void sdx_files_file_handle_free (sdxfilesFileHandle* self);
 sdxfilesFileHandle* sdx_files_default (const gchar* path);
 SDL_RWops* sdx_files_file_handle_getRWops (sdxfilesFileHandle* self);
+gint sdx_graphics_surface_indexOfPath (const gchar* path);
+GType pool_get_type (void) G_GNUC_CONST;
+static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
 
 sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self) {
@@ -107,6 +135,92 @@ sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path) {
 }
 
 
+gint sdx_graphics_surface_indexOfPath (const gchar* path) {
+	gint result = 0;
+	sdxgraphicsSurface** _tmp0_ = NULL;
+	gint _tmp0__length1 = 0;
+	g_return_val_if_fail (path != NULL, 0);
+	_tmp0_ = sdx_graphics_surface_cache;
+	_tmp0__length1 = sdx_graphics_surface_cache_length1;
+	if (_tmp0__length1 == 0) {
+		sdxgraphicsSurface** _tmp1_ = NULL;
+		_tmp1_ = g_new0 (sdxgraphicsSurface*, (POOL_Count + 1) + 1);
+		sdx_graphics_surface_cache = (_vala_array_free (sdx_graphics_surface_cache, sdx_graphics_surface_cache_length1, (GDestroyNotify) sdx_graphics_surface_release), NULL);
+		sdx_graphics_surface_cache = _tmp1_;
+		sdx_graphics_surface_cache_length1 = POOL_Count + 1;
+	}
+	{
+		gint i = 0;
+		i = 0;
+		{
+			gboolean _tmp2_ = FALSE;
+			_tmp2_ = TRUE;
+			while (TRUE) {
+				gint _tmp4_ = 0;
+				sdxgraphicsSurface** _tmp5_ = NULL;
+				gint _tmp5__length1 = 0;
+				sdxgraphicsSurface** _tmp6_ = NULL;
+				gint _tmp6__length1 = 0;
+				gint _tmp7_ = 0;
+				sdxgraphicsSurface* _tmp8_ = NULL;
+				sdxgraphicsSurface** _tmp14_ = NULL;
+				gint _tmp14__length1 = 0;
+				gint _tmp15_ = 0;
+				sdxgraphicsSurface* _tmp16_ = NULL;
+				const gchar* _tmp17_ = NULL;
+				const gchar* _tmp18_ = NULL;
+				if (!_tmp2_) {
+					gint _tmp3_ = 0;
+					_tmp3_ = i;
+					i = _tmp3_ + 1;
+				}
+				_tmp2_ = FALSE;
+				_tmp4_ = i;
+				_tmp5_ = sdx_graphics_surface_cache;
+				_tmp5__length1 = sdx_graphics_surface_cache_length1;
+				if (!(_tmp4_ < _tmp5__length1)) {
+					break;
+				}
+				_tmp6_ = sdx_graphics_surface_cache;
+				_tmp6__length1 = sdx_graphics_surface_cache_length1;
+				_tmp7_ = i;
+				_tmp8_ = _tmp6_[_tmp7_];
+				if (_tmp8_ == NULL) {
+					sdxgraphicsSurface** _tmp9_ = NULL;
+					gint _tmp9__length1 = 0;
+					gint _tmp10_ = 0;
+					const gchar* _tmp11_ = NULL;
+					sdxgraphicsSurface* _tmp12_ = NULL;
+					sdxgraphicsSurface* _tmp13_ = NULL;
+					_tmp9_ = sdx_graphics_surface_cache;
+					_tmp9__length1 = sdx_graphics_surface_cache_length1;
+					_tmp10_ = i;
+					_tmp11_ = path;
+					_tmp12_ = sdx_graphics_surface_new (_tmp11_);
+					_sdx_graphics_surface_release0 (_tmp9_[_tmp10_]);
+					_tmp9_[_tmp10_] = _tmp12_;
+					_tmp13_ = _tmp9_[_tmp10_];
+					result = i;
+					return result;
+				}
+				_tmp14_ = sdx_graphics_surface_cache;
+				_tmp14__length1 = sdx_graphics_surface_cache_length1;
+				_tmp15_ = i;
+				_tmp16_ = _tmp14_[_tmp15_];
+				_tmp17_ = _tmp16_->path;
+				_tmp18_ = path;
+				if (g_strcmp0 (_tmp17_, _tmp18_) == 0) {
+					result = i;
+					return result;
+				}
+			}
+		}
+	}
+	result = -1;
+	return result;
+}
+
+
 static void sdx_graphics_surface_instance_init (sdxgraphicsSurface * self) {
 	gint _tmp0_ = 0;
 	gint _tmp1_ = 0;
@@ -122,6 +236,24 @@ void sdx_graphics_surface_free (sdxgraphicsSurface* self) {
 	_SDL_FreeSurface0 (self->surface);
 	_g_free0 (self->path);
 	g_slice_free (sdxgraphicsSurface, self);
+}
+
+
+static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	if ((array != NULL) && (destroy_func != NULL)) {
+		int i;
+		for (i = 0; i < array_length; i = i + 1) {
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
+		}
+	}
+}
+
+
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	_vala_array_destroy (array, array_length, destroy_func);
+	g_free (array);
 }
 
 

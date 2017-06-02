@@ -48,13 +48,13 @@ void sdx_graphics_region_free (sdxgraphicsRegion* self);
 sdxgraphicsRegion* sdx_graphics_region_retain (sdxgraphicsRegion* self);
 #define _sdx_graphics_region_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_region_release (var), NULL)))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
-typedef struct _sdxDataInputStream sdxDataInputStream;
 void sdx_graphics_texture_region_release (sdxgraphicsTextureRegion* self);
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
 sdxgraphicsTextureRegion* sdx_graphics_texture_region_retain (sdxgraphicsTextureRegion* self);
 #define _sdx_graphics_texture_region_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_texture_region_release (var), NULL)))
 #define __g_list_free__sdx_graphics_page_release0_0(var) ((var == NULL) ? NULL : (var = (_g_list_free__sdx_graphics_page_release0_ (var), NULL)))
 #define __g_list_free__sdx_graphics_region_release0_0(var) ((var == NULL) ? NULL : (var = (_g_list_free__sdx_graphics_region_release0_ (var), NULL)))
+typedef struct _sdxDataInputStream sdxDataInputStream;
 
 #define SDX_GRAPHICS_TYPE_TEXTURE_FILTER (sdx_graphics_texture_filter_get_type ())
 
@@ -182,12 +182,12 @@ typedef enum  {
 } sdxgraphicsTextureWrap;
 
 
-extern gchar** sdx_graphics_texture_atlas_tuple;
-extern gint sdx_graphics_texture_atlas_tuple_length1;
-gchar** sdx_graphics_texture_atlas_tuple = NULL;
-gint sdx_graphics_texture_atlas_tuple_length1 = 0;
 extern gint sdx_graphics_page_uniqueId;
 gint sdx_graphics_page_uniqueId = 0;
+extern gchar** sdx_graphics_texture_atlas_data_tuple;
+extern gint sdx_graphics_texture_atlas_data_tuple_length1;
+gchar** sdx_graphics_texture_atlas_data_tuple = NULL;
+gint sdx_graphics_texture_atlas_data_tuple_length1 = 0;
 
 void sdx_graphics_texture_atlas_free (sdxgraphicsTextureAtlas* self);
 void sdx_graphics_texture_free (sdxgraphicsTexture* self);
@@ -221,11 +221,6 @@ sdxgraphicsAtlasRegion* sdx_graphics_atlas_region_new (sdxgraphicsTexture* textu
 static gint* _vala_array_dup2 (gint* self, int length);
 static gint* _vala_array_dup3 (gint* self, int length);
 void sdx_graphics_atlas_region_flip (sdxgraphicsAtlasRegion* self, gboolean x, gboolean y);
-void sdx_data_input_stream_free (sdxDataInputStream* self);
-gint sdx_graphics_texture_atlas_readTuple (sdxDataInputStream* reader);
-gchar* sdx_data_input_stream_read_line (sdxDataInputStream* self);
-GQuark sdx_io_exception_quark (void);
-gchar* sdx_graphics_texture_atlas_readValue (sdxDataInputStream* reader);
 static void sdx_graphics_atlas_region_instance_init (sdxgraphicsAtlasRegion * self);
 sdxgraphicsAtlasRegion* sdx_graphics_atlas_region_retain (sdxgraphicsAtlasRegion* self);
 void sdx_graphics_atlas_region_release (sdxgraphicsAtlasRegion* self);
@@ -250,6 +245,11 @@ static void _g_list_free__sdx_graphics_region_release0_ (GList* self);
 sdxgraphicsTextureAtlasData* sdx_graphics_texture_atlas_data_retain (sdxgraphicsTextureAtlasData* self);
 void sdx_graphics_texture_atlas_data_release (sdxgraphicsTextureAtlasData* self);
 void sdx_graphics_texture_atlas_data_free (sdxgraphicsTextureAtlasData* self);
+void sdx_data_input_stream_free (sdxDataInputStream* self);
+gint sdx_graphics_texture_atlas_data_readTuple (sdxDataInputStream* reader);
+gchar* sdx_data_input_stream_read_line (sdxDataInputStream* self);
+GQuark sdx_io_exception_quark (void);
+gchar* sdx_graphics_texture_atlas_data_readValue (sdxDataInputStream* reader);
 gchar* sdx_files_file_handle_read (sdxfilesFileHandle* self);
 sdxDataInputStream* sdx_data_input_stream_new (const gchar* data);
 sdxfilesFileHandle* sdx_files_file_handle_child (sdxfilesFileHandle* self, const gchar* name);
@@ -806,180 +806,6 @@ void sdx_graphics_texture_atlas_load (sdxgraphicsTextureAtlas* self, sdxgraphics
 }
 
 
-/** Returns the number of tuple values read (1, 2 or 4). */
-gint sdx_graphics_texture_atlas_readTuple (sdxDataInputStream* reader) {
-	gint result = 0;
-	gchar* line = NULL;
-	sdxDataInputStream* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
-	gchar** ts = NULL;
-	const gchar* _tmp2_ = NULL;
-	gchar** _tmp3_ = NULL;
-	gchar** _tmp4_ = NULL;
-	gint ts_length1 = 0;
-	gint _ts_size_ = 0;
-	gchar** _tmp5_ = NULL;
-	gint _tmp5__length1 = 0;
-	gchar** _tmp12_ = NULL;
-	gint _tmp12__length1 = 0;
-	const gchar* _tmp13_ = NULL;
-	gchar** _tmp14_ = NULL;
-	gchar** _tmp15_ = NULL;
-	gchar** _tmp27_ = NULL;
-	gint _tmp27__length1 = 0;
-	GError * _inner_error_ = NULL;
-	g_return_val_if_fail (reader != NULL, 0);
-	_tmp0_ = reader;
-	_tmp1_ = sdx_data_input_stream_read_line (_tmp0_);
-	line = _tmp1_;
-	_tmp2_ = line;
-	_tmp4_ = _tmp3_ = g_strsplit (_tmp2_, ":", 0);
-	ts = _tmp4_;
-	ts_length1 = _vala_array_length (_tmp3_);
-	_ts_size_ = ts_length1;
-	_tmp5_ = ts;
-	_tmp5__length1 = ts_length1;
-	if (_tmp5__length1 == 0) {
-		const gchar* _tmp6_ = NULL;
-		gchar* _tmp7_ = NULL;
-		gchar* _tmp8_ = NULL;
-		GError* _tmp9_ = NULL;
-		GError* _tmp10_ = NULL;
-		gint _tmp11_ = 0;
-		_tmp6_ = line;
-		_tmp7_ = g_strconcat ("invalid line ", _tmp6_, NULL);
-		_tmp8_ = _tmp7_;
-		_tmp9_ = g_error_new_literal (SDX_IO_EXCEPTION, SDX_IO_EXCEPTION_InvalidData, _tmp8_);
-		_tmp10_ = _tmp9_;
-		_g_free0 (_tmp8_);
-		_inner_error_ = _tmp10_;
-		ts = (_vala_array_free (ts, ts_length1, (GDestroyNotify) g_free), NULL);
-		_g_free0 (line);
-		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-		g_clear_error (&_inner_error_);
-		return _tmp11_;
-	}
-	_tmp12_ = ts;
-	_tmp12__length1 = ts_length1;
-	_tmp13_ = _tmp12_[1];
-	_tmp15_ = _tmp14_ = g_strsplit (_tmp13_, ",", 0);
-	sdx_graphics_texture_atlas_tuple = (_vala_array_free (sdx_graphics_texture_atlas_tuple, sdx_graphics_texture_atlas_tuple_length1, (GDestroyNotify) g_free), NULL);
-	sdx_graphics_texture_atlas_tuple = _tmp15_;
-	sdx_graphics_texture_atlas_tuple_length1 = _vala_array_length (_tmp14_);
-	{
-		gint i = 0;
-		i = 0;
-		{
-			gboolean _tmp16_ = FALSE;
-			_tmp16_ = TRUE;
-			while (TRUE) {
-				gint _tmp18_ = 0;
-				gchar** _tmp19_ = NULL;
-				gint _tmp19__length1 = 0;
-				gchar** _tmp20_ = NULL;
-				gint _tmp20__length1 = 0;
-				gint _tmp21_ = 0;
-				gchar** _tmp22_ = NULL;
-				gint _tmp22__length1 = 0;
-				gint _tmp23_ = 0;
-				const gchar* _tmp24_ = NULL;
-				gchar* _tmp25_ = NULL;
-				gchar* _tmp26_ = NULL;
-				if (!_tmp16_) {
-					gint _tmp17_ = 0;
-					_tmp17_ = i;
-					i = _tmp17_ + 1;
-				}
-				_tmp16_ = FALSE;
-				_tmp18_ = i;
-				_tmp19_ = sdx_graphics_texture_atlas_tuple;
-				_tmp19__length1 = sdx_graphics_texture_atlas_tuple_length1;
-				if (!(_tmp18_ < _tmp19__length1)) {
-					break;
-				}
-				_tmp20_ = sdx_graphics_texture_atlas_tuple;
-				_tmp20__length1 = sdx_graphics_texture_atlas_tuple_length1;
-				_tmp21_ = i;
-				_tmp22_ = sdx_graphics_texture_atlas_tuple;
-				_tmp22__length1 = sdx_graphics_texture_atlas_tuple_length1;
-				_tmp23_ = i;
-				_tmp24_ = _tmp22_[_tmp23_];
-				_tmp25_ = g_strdup (_tmp24_);
-				_g_free0 (_tmp20_[_tmp21_]);
-				_tmp20_[_tmp21_] = _tmp25_;
-				_tmp26_ = _tmp20_[_tmp21_];
-			}
-		}
-	}
-	_tmp27_ = sdx_graphics_texture_atlas_tuple;
-	_tmp27__length1 = sdx_graphics_texture_atlas_tuple_length1;
-	result = _tmp27__length1;
-	ts = (_vala_array_free (ts, ts_length1, (GDestroyNotify) g_free), NULL);
-	_g_free0 (line);
-	return result;
-}
-
-
-/** Returns the single value */
-gchar* sdx_graphics_texture_atlas_readValue (sdxDataInputStream* reader) {
-	gchar* result = NULL;
-	gchar* line = NULL;
-	sdxDataInputStream* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
-	gchar** ts = NULL;
-	const gchar* _tmp2_ = NULL;
-	gchar** _tmp3_ = NULL;
-	gchar** _tmp4_ = NULL;
-	gint ts_length1 = 0;
-	gint _ts_size_ = 0;
-	gchar** _tmp5_ = NULL;
-	gint _tmp5__length1 = 0;
-	gchar** _tmp11_ = NULL;
-	gint _tmp11__length1 = 0;
-	const gchar* _tmp12_ = NULL;
-	gchar* _tmp13_ = NULL;
-	GError * _inner_error_ = NULL;
-	g_return_val_if_fail (reader != NULL, NULL);
-	_tmp0_ = reader;
-	_tmp1_ = sdx_data_input_stream_read_line (_tmp0_);
-	line = _tmp1_;
-	_tmp2_ = line;
-	_tmp4_ = _tmp3_ = g_strsplit (_tmp2_, ":", 0);
-	ts = _tmp4_;
-	ts_length1 = _vala_array_length (_tmp3_);
-	_ts_size_ = ts_length1;
-	_tmp5_ = ts;
-	_tmp5__length1 = ts_length1;
-	if (_tmp5__length1 == 0) {
-		const gchar* _tmp6_ = NULL;
-		gchar* _tmp7_ = NULL;
-		gchar* _tmp8_ = NULL;
-		GError* _tmp9_ = NULL;
-		GError* _tmp10_ = NULL;
-		_tmp6_ = line;
-		_tmp7_ = g_strconcat ("invalid line ", _tmp6_, NULL);
-		_tmp8_ = _tmp7_;
-		_tmp9_ = g_error_new_literal (SDX_IO_EXCEPTION, SDX_IO_EXCEPTION_InvalidData, _tmp8_);
-		_tmp10_ = _tmp9_;
-		_g_free0 (_tmp8_);
-		_inner_error_ = _tmp10_;
-		ts = (_vala_array_free (ts, ts_length1, (GDestroyNotify) g_free), NULL);
-		_g_free0 (line);
-		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-		g_clear_error (&_inner_error_);
-		return NULL;
-	}
-	_tmp11_ = ts;
-	_tmp11__length1 = ts_length1;
-	_tmp12_ = _tmp11_[1];
-	_tmp13_ = g_strdup (_tmp12_);
-	result = _tmp13_;
-	ts = (_vala_array_free (ts, ts_length1, (GDestroyNotify) g_free), NULL);
-	_g_free0 (line);
-	return result;
-}
-
-
 static void sdx_graphics_texture_atlas_instance_init (sdxgraphicsTextureAtlas * self) {
 	self->_retainCount = 1;
 	self->regions = NULL;
@@ -1246,11 +1072,200 @@ void sdx_graphics_texture_atlas_data_release (sdxgraphicsTextureAtlasData* self)
 }
 
 
+/** Returns the number of tuple values read (1, 2 or 4). */
+gint sdx_graphics_texture_atlas_data_readTuple (sdxDataInputStream* reader) {
+	gint result = 0;
+	gchar* line = NULL;
+	sdxDataInputStream* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	gchar** ts = NULL;
+	const gchar* _tmp2_ = NULL;
+	gchar** _tmp3_ = NULL;
+	gchar** _tmp4_ = NULL;
+	gint ts_length1 = 0;
+	gint _ts_size_ = 0;
+	gchar** _tmp5_ = NULL;
+	gint _tmp5__length1 = 0;
+	gchar** _tmp12_ = NULL;
+	gint _tmp12__length1 = 0;
+	const gchar* _tmp13_ = NULL;
+	gchar** _tmp14_ = NULL;
+	gchar** _tmp15_ = NULL;
+	gchar** _tmp27_ = NULL;
+	gint _tmp27__length1 = 0;
+	GError * _inner_error_ = NULL;
+	g_return_val_if_fail (reader != NULL, 0);
+	_tmp0_ = reader;
+	_tmp1_ = sdx_data_input_stream_read_line (_tmp0_);
+	line = _tmp1_;
+	_tmp2_ = line;
+	_tmp4_ = _tmp3_ = g_strsplit (_tmp2_, ":", 0);
+	ts = _tmp4_;
+	ts_length1 = _vala_array_length (_tmp3_);
+	_ts_size_ = ts_length1;
+	_tmp5_ = ts;
+	_tmp5__length1 = ts_length1;
+	if (_tmp5__length1 == 0) {
+		const gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		gchar* _tmp8_ = NULL;
+		GError* _tmp9_ = NULL;
+		GError* _tmp10_ = NULL;
+		gint _tmp11_ = 0;
+		_tmp6_ = line;
+		_tmp7_ = g_strconcat ("invalid line ", _tmp6_, NULL);
+		_tmp8_ = _tmp7_;
+		_tmp9_ = g_error_new_literal (SDX_IO_EXCEPTION, SDX_IO_EXCEPTION_InvalidData, _tmp8_);
+		_tmp10_ = _tmp9_;
+		_g_free0 (_tmp8_);
+		_inner_error_ = _tmp10_;
+		ts = (_vala_array_free (ts, ts_length1, (GDestroyNotify) g_free), NULL);
+		_g_free0 (line);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return _tmp11_;
+	}
+	_tmp12_ = ts;
+	_tmp12__length1 = ts_length1;
+	_tmp13_ = _tmp12_[1];
+	_tmp15_ = _tmp14_ = g_strsplit (_tmp13_, ",", 0);
+	sdx_graphics_texture_atlas_data_tuple = (_vala_array_free (sdx_graphics_texture_atlas_data_tuple, sdx_graphics_texture_atlas_data_tuple_length1, (GDestroyNotify) g_free), NULL);
+	sdx_graphics_texture_atlas_data_tuple = _tmp15_;
+	sdx_graphics_texture_atlas_data_tuple_length1 = _vala_array_length (_tmp14_);
+	{
+		gint i = 0;
+		i = 0;
+		{
+			gboolean _tmp16_ = FALSE;
+			_tmp16_ = TRUE;
+			while (TRUE) {
+				gint _tmp18_ = 0;
+				gchar** _tmp19_ = NULL;
+				gint _tmp19__length1 = 0;
+				gchar** _tmp20_ = NULL;
+				gint _tmp20__length1 = 0;
+				gint _tmp21_ = 0;
+				gchar** _tmp22_ = NULL;
+				gint _tmp22__length1 = 0;
+				gint _tmp23_ = 0;
+				const gchar* _tmp24_ = NULL;
+				gchar* _tmp25_ = NULL;
+				gchar* _tmp26_ = NULL;
+				if (!_tmp16_) {
+					gint _tmp17_ = 0;
+					_tmp17_ = i;
+					i = _tmp17_ + 1;
+				}
+				_tmp16_ = FALSE;
+				_tmp18_ = i;
+				_tmp19_ = sdx_graphics_texture_atlas_data_tuple;
+				_tmp19__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+				if (!(_tmp18_ < _tmp19__length1)) {
+					break;
+				}
+				_tmp20_ = sdx_graphics_texture_atlas_data_tuple;
+				_tmp20__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+				_tmp21_ = i;
+				_tmp22_ = sdx_graphics_texture_atlas_data_tuple;
+				_tmp22__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+				_tmp23_ = i;
+				_tmp24_ = _tmp22_[_tmp23_];
+				_tmp25_ = g_strdup (_tmp24_);
+				_g_free0 (_tmp20_[_tmp21_]);
+				_tmp20_[_tmp21_] = _tmp25_;
+				_tmp26_ = _tmp20_[_tmp21_];
+			}
+		}
+	}
+	_tmp27_ = sdx_graphics_texture_atlas_data_tuple;
+	_tmp27__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+	result = _tmp27__length1;
+	ts = (_vala_array_free (ts, ts_length1, (GDestroyNotify) g_free), NULL);
+	_g_free0 (line);
+	return result;
+}
+
+
+/** Returns the single value */
+gchar* sdx_graphics_texture_atlas_data_readValue (sdxDataInputStream* reader) {
+	gchar* result = NULL;
+	gchar* line = NULL;
+	sdxDataInputStream* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	gchar** ts = NULL;
+	const gchar* _tmp2_ = NULL;
+	gchar** _tmp3_ = NULL;
+	gchar** _tmp4_ = NULL;
+	gint ts_length1 = 0;
+	gint _ts_size_ = 0;
+	gchar** _tmp5_ = NULL;
+	gint _tmp5__length1 = 0;
+	gchar** _tmp11_ = NULL;
+	gint _tmp11__length1 = 0;
+	const gchar* _tmp12_ = NULL;
+	gchar* _tmp13_ = NULL;
+	GError * _inner_error_ = NULL;
+	g_return_val_if_fail (reader != NULL, NULL);
+	_tmp0_ = reader;
+	_tmp1_ = sdx_data_input_stream_read_line (_tmp0_);
+	line = _tmp1_;
+	_tmp2_ = line;
+	_tmp4_ = _tmp3_ = g_strsplit (_tmp2_, ":", 0);
+	ts = _tmp4_;
+	ts_length1 = _vala_array_length (_tmp3_);
+	_ts_size_ = ts_length1;
+	_tmp5_ = ts;
+	_tmp5__length1 = ts_length1;
+	if (_tmp5__length1 == 0) {
+		const gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		gchar* _tmp8_ = NULL;
+		GError* _tmp9_ = NULL;
+		GError* _tmp10_ = NULL;
+		_tmp6_ = line;
+		_tmp7_ = g_strconcat ("invalid line ", _tmp6_, NULL);
+		_tmp8_ = _tmp7_;
+		_tmp9_ = g_error_new_literal (SDX_IO_EXCEPTION, SDX_IO_EXCEPTION_InvalidData, _tmp8_);
+		_tmp10_ = _tmp9_;
+		_g_free0 (_tmp8_);
+		_inner_error_ = _tmp10_;
+		ts = (_vala_array_free (ts, ts_length1, (GDestroyNotify) g_free), NULL);
+		_g_free0 (line);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	}
+	_tmp11_ = ts;
+	_tmp11__length1 = ts_length1;
+	_tmp12_ = _tmp11_[1];
+	_tmp13_ = g_strdup (_tmp12_);
+	result = _tmp13_;
+	ts = (_vala_array_free (ts, ts_length1, (GDestroyNotify) g_free), NULL);
+	_g_free0 (line);
+	return result;
+}
+
+
 /**
          * @param packFile the atlas file
          * @param imagesDir for the bitmap(s)
          * @param flip
          */
+static gchar* string_strip (const gchar* self) {
+	gchar* result = NULL;
+	gchar* _result_ = NULL;
+	gchar* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = g_strdup (self);
+	_result_ = _tmp0_;
+	_tmp1_ = _result_;
+	g_strstrip (_tmp1_);
+	result = _result_;
+	return result;
+}
+
+
 static gboolean bool_parse (const gchar* str) {
 	gboolean result = FALSE;
 	const gchar* _tmp0_ = NULL;
@@ -1331,37 +1346,46 @@ sdxgraphicsTextureAtlasData* sdx_graphics_texture_atlas_data_new (sdxfilesFileHa
 					gchar** _tmp24_ = NULL;
 					gint _tmp24__length1 = 0;
 					const gchar* _tmp25_ = NULL;
-					sdxgraphicsFormat _tmp26_ = 0;
-					sdxDataInputStream* _tmp27_ = NULL;
+					gchar* _tmp26_ = NULL;
+					gchar* _tmp27_ = NULL;
+					sdxgraphicsFormat _tmp28_ = 0;
+					sdxgraphicsFormat _tmp29_ = 0;
+					sdxDataInputStream* _tmp30_ = NULL;
 					sdxgraphicsTextureFilter min = 0;
-					gchar** _tmp28_ = NULL;
-					gint _tmp28__length1 = 0;
-					const gchar* _tmp29_ = NULL;
-					sdxgraphicsTextureFilter _tmp30_ = 0;
-					sdxgraphicsTextureFilter max = 0;
 					gchar** _tmp31_ = NULL;
 					gint _tmp31__length1 = 0;
 					const gchar* _tmp32_ = NULL;
-					sdxgraphicsTextureFilter _tmp33_ = 0;
+					gchar* _tmp33_ = NULL;
+					gchar* _tmp34_ = NULL;
+					sdxgraphicsTextureFilter _tmp35_ = 0;
+					sdxgraphicsTextureFilter _tmp36_ = 0;
+					sdxgraphicsTextureFilter max = 0;
+					gchar** _tmp37_ = NULL;
+					gint _tmp37__length1 = 0;
+					const gchar* _tmp38_ = NULL;
+					gchar* _tmp39_ = NULL;
+					gchar* _tmp40_ = NULL;
+					sdxgraphicsTextureFilter _tmp41_ = 0;
+					sdxgraphicsTextureFilter _tmp42_ = 0;
 					gchar* direction = NULL;
-					sdxDataInputStream* _tmp34_ = NULL;
-					gchar* _tmp35_ = NULL;
+					sdxDataInputStream* _tmp43_ = NULL;
+					gchar* _tmp44_ = NULL;
 					sdxgraphicsTextureWrap repeatX = 0;
 					sdxgraphicsTextureWrap repeatY = 0;
-					const gchar* _tmp36_ = NULL;
-					sdxfilesFileHandle* _tmp39_ = NULL;
-					gint _tmp40_ = 0;
-					gint _tmp41_ = 0;
-					sdxgraphicsTextureFilter _tmp42_ = 0;
-					gboolean _tmp43_ = FALSE;
-					sdxgraphicsFormat _tmp44_ = 0;
-					sdxgraphicsTextureFilter _tmp45_ = 0;
-					sdxgraphicsTextureFilter _tmp46_ = 0;
-					sdxgraphicsTextureWrap _tmp47_ = 0;
-					sdxgraphicsTextureWrap _tmp48_ = 0;
-					sdxgraphicsPage* _tmp49_ = NULL;
-					sdxgraphicsPage* _tmp50_ = NULL;
-					sdxgraphicsPage* _tmp51_ = NULL;
+					const gchar* _tmp45_ = NULL;
+					sdxfilesFileHandle* _tmp48_ = NULL;
+					gint _tmp49_ = 0;
+					gint _tmp50_ = 0;
+					sdxgraphicsTextureFilter _tmp51_ = 0;
+					gboolean _tmp52_ = FALSE;
+					sdxgraphicsFormat _tmp53_ = 0;
+					sdxgraphicsTextureFilter _tmp54_ = 0;
+					sdxgraphicsTextureFilter _tmp55_ = 0;
+					sdxgraphicsTextureWrap _tmp56_ = 0;
+					sdxgraphicsTextureWrap _tmp57_ = 0;
+					sdxgraphicsPage* _tmp58_ = NULL;
+					sdxgraphicsPage* _tmp59_ = NULL;
+					sdxgraphicsPage* _tmp60_ = NULL;
 					_tmp12_ = imagesDir;
 					_tmp13_ = line;
 					_tmp14_ = sdx_files_file_handle_child (_tmp12_, _tmp13_);
@@ -1369,7 +1393,7 @@ sdxgraphicsTextureAtlasData* sdx_graphics_texture_atlas_data_new (sdxfilesFileHa
 					width = 0;
 					height = 0;
 					_tmp15_ = reader;
-					_tmp16_ = sdx_graphics_texture_atlas_readTuple (_tmp15_);
+					_tmp16_ = sdx_graphics_texture_atlas_data_readTuple (_tmp15_);
 					if (_tmp16_ == 2) {
 						gchar** _tmp17_ = NULL;
 						gint _tmp17__length1 = 0;
@@ -1380,127 +1404,128 @@ sdxgraphicsTextureAtlasData* sdx_graphics_texture_atlas_data_new (sdxfilesFileHa
 						const gchar* _tmp21_ = NULL;
 						gint _tmp22_ = 0;
 						sdxDataInputStream* _tmp23_ = NULL;
-						_tmp17_ = sdx_graphics_texture_atlas_tuple;
-						_tmp17__length1 = sdx_graphics_texture_atlas_tuple_length1;
+						_tmp17_ = sdx_graphics_texture_atlas_data_tuple;
+						_tmp17__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
 						_tmp18_ = _tmp17_[0];
 						_tmp19_ = atoi (_tmp18_);
 						width = _tmp19_;
-						_tmp20_ = sdx_graphics_texture_atlas_tuple;
-						_tmp20__length1 = sdx_graphics_texture_atlas_tuple_length1;
+						_tmp20_ = sdx_graphics_texture_atlas_data_tuple;
+						_tmp20__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
 						_tmp21_ = _tmp20_[1];
 						_tmp22_ = atoi (_tmp21_);
 						height = _tmp22_;
 						_tmp23_ = reader;
-						sdx_graphics_texture_atlas_readTuple (_tmp23_);
+						sdx_graphics_texture_atlas_data_readTuple (_tmp23_);
 					}
-					_tmp24_ = sdx_graphics_texture_atlas_tuple;
-					_tmp24__length1 = sdx_graphics_texture_atlas_tuple_length1;
+					_tmp24_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp24__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
 					_tmp25_ = _tmp24_[0];
-					_tmp26_ = sdx_graphics_format_from (_tmp25_);
-					format = _tmp26_;
-					_tmp27_ = reader;
-					sdx_graphics_texture_atlas_readTuple (_tmp27_);
-					_tmp28_ = sdx_graphics_texture_atlas_tuple;
-					_tmp28__length1 = sdx_graphics_texture_atlas_tuple_length1;
-					_tmp29_ = _tmp28_[0];
-					_tmp30_ = sdx_graphics_texture_filter_from (_tmp29_);
-					min = _tmp30_;
-					_tmp31_ = sdx_graphics_texture_atlas_tuple;
-					_tmp31__length1 = sdx_graphics_texture_atlas_tuple_length1;
-					_tmp32_ = _tmp31_[1];
-					_tmp33_ = sdx_graphics_texture_filter_from (_tmp32_);
-					max = _tmp33_;
-					_tmp34_ = reader;
-					_tmp35_ = sdx_graphics_texture_atlas_readValue (_tmp34_);
-					direction = _tmp35_;
+					_tmp26_ = string_strip (_tmp25_);
+					_tmp27_ = _tmp26_;
+					_tmp28_ = sdx_graphics_format_from (_tmp27_);
+					_tmp29_ = _tmp28_;
+					_g_free0 (_tmp27_);
+					format = _tmp29_;
+					_tmp30_ = reader;
+					sdx_graphics_texture_atlas_data_readTuple (_tmp30_);
+					_tmp31_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp31__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+					_tmp32_ = _tmp31_[0];
+					_tmp33_ = string_strip (_tmp32_);
+					_tmp34_ = _tmp33_;
+					_tmp35_ = sdx_graphics_texture_filter_from (_tmp34_);
+					_tmp36_ = _tmp35_;
+					_g_free0 (_tmp34_);
+					min = _tmp36_;
+					_tmp37_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp37__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+					_tmp38_ = _tmp37_[1];
+					_tmp39_ = string_strip (_tmp38_);
+					_tmp40_ = _tmp39_;
+					_tmp41_ = sdx_graphics_texture_filter_from (_tmp40_);
+					_tmp42_ = _tmp41_;
+					_g_free0 (_tmp40_);
+					max = _tmp42_;
+					_tmp43_ = reader;
+					_tmp44_ = sdx_graphics_texture_atlas_data_readValue (_tmp43_);
+					direction = _tmp44_;
 					repeatX = SDX_GRAPHICS_TEXTURE_WRAP_ClampToEdge;
 					repeatY = SDX_GRAPHICS_TEXTURE_WRAP_ClampToEdge;
-					_tmp36_ = direction;
-					if (g_strcmp0 (_tmp36_, "x") == 0) {
+					_tmp45_ = direction;
+					if (g_strcmp0 (_tmp45_, "x") == 0) {
 						repeatX = SDX_GRAPHICS_TEXTURE_WRAP_Repeat;
 					} else {
-						const gchar* _tmp37_ = NULL;
-						_tmp37_ = direction;
-						if (g_strcmp0 (_tmp37_, "y") == 0) {
+						const gchar* _tmp46_ = NULL;
+						_tmp46_ = direction;
+						if (g_strcmp0 (_tmp46_, "y") == 0) {
 							repeatY = SDX_GRAPHICS_TEXTURE_WRAP_Repeat;
 						} else {
-							const gchar* _tmp38_ = NULL;
-							_tmp38_ = direction;
-							if (g_strcmp0 (_tmp38_, "xy") == 0) {
+							const gchar* _tmp47_ = NULL;
+							_tmp47_ = direction;
+							if (g_strcmp0 (_tmp47_, "xy") == 0) {
 								repeatX = SDX_GRAPHICS_TEXTURE_WRAP_Repeat;
 								repeatY = SDX_GRAPHICS_TEXTURE_WRAP_Repeat;
 							}
 						}
 					}
-					_tmp39_ = file;
-					_tmp40_ = width;
-					_tmp41_ = height;
-					_tmp42_ = min;
-					_tmp43_ = sdx_graphics_texture_filter_isMipMap (_tmp42_);
-					_tmp44_ = format;
-					_tmp45_ = min;
-					_tmp46_ = max;
-					_tmp47_ = repeatX;
-					_tmp48_ = repeatY;
-					_tmp49_ = sdx_graphics_page_new (_tmp39_, _tmp40_, _tmp41_, _tmp43_, _tmp44_, (gint) _tmp45_, (gint) _tmp46_, (gint) _tmp47_, (gint) _tmp48_);
+					_tmp48_ = file;
+					_tmp49_ = width;
+					_tmp50_ = height;
+					_tmp51_ = min;
+					_tmp52_ = sdx_graphics_texture_filter_isMipMap (_tmp51_);
+					_tmp53_ = format;
+					_tmp54_ = min;
+					_tmp55_ = max;
+					_tmp56_ = repeatX;
+					_tmp57_ = repeatY;
+					_tmp58_ = sdx_graphics_page_new (_tmp48_, _tmp49_, _tmp50_, _tmp52_, _tmp53_, (gint) _tmp54_, (gint) _tmp55_, (gint) _tmp56_, (gint) _tmp57_);
 					_sdx_graphics_page_release0 (pageImage);
-					pageImage = _tmp49_;
-					_tmp50_ = pageImage;
-					_tmp51_ = _sdx_graphics_page_retain0 (_tmp50_);
-					self->pages = g_list_append (self->pages, _tmp51_);
+					pageImage = _tmp58_;
+					_tmp59_ = pageImage;
+					_tmp60_ = _sdx_graphics_page_retain0 (_tmp59_);
+					self->pages = g_list_append (self->pages, _tmp60_);
 					_g_free0 (direction);
 					_sdx_files_file_handle_release0 (file);
 				} else {
 					gboolean rotate = FALSE;
-					sdxDataInputStream* _tmp52_ = NULL;
-					gchar* _tmp53_ = NULL;
-					gchar* _tmp54_ = NULL;
-					gboolean _tmp55_ = FALSE;
-					gboolean _tmp56_ = FALSE;
-					sdxDataInputStream* _tmp57_ = NULL;
+					sdxDataInputStream* _tmp61_ = NULL;
+					gchar* _tmp62_ = NULL;
+					gchar* _tmp63_ = NULL;
+					gboolean _tmp64_ = FALSE;
+					gboolean _tmp65_ = FALSE;
+					sdxDataInputStream* _tmp66_ = NULL;
 					gint left = 0;
-					gchar** _tmp58_ = NULL;
-					gint _tmp58__length1 = 0;
-					const gchar* _tmp59_ = NULL;
-					gint _tmp60_ = 0;
+					gchar** _tmp67_ = NULL;
+					gint _tmp67__length1 = 0;
+					const gchar* _tmp68_ = NULL;
+					gint _tmp69_ = 0;
 					gint top = 0;
-					gchar** _tmp61_ = NULL;
-					gint _tmp61__length1 = 0;
-					const gchar* _tmp62_ = NULL;
-					gint _tmp63_ = 0;
-					sdxDataInputStream* _tmp64_ = NULL;
-					gint width = 0;
-					gchar** _tmp65_ = NULL;
-					gint _tmp65__length1 = 0;
-					const gchar* _tmp66_ = NULL;
-					gint _tmp67_ = 0;
-					gint height = 0;
-					gchar** _tmp68_ = NULL;
-					gint _tmp68__length1 = 0;
-					const gchar* _tmp69_ = NULL;
-					gint _tmp70_ = 0;
-					sdxgraphicsRegion* region = NULL;
-					sdxgraphicsPage* _tmp71_ = NULL;
+					gchar** _tmp70_ = NULL;
+					gint _tmp70__length1 = 0;
+					const gchar* _tmp71_ = NULL;
 					gint _tmp72_ = 0;
-					gint _tmp73_ = 0;
-					gint _tmp74_ = 0;
-					gint _tmp75_ = 0;
-					const gchar* _tmp76_ = NULL;
-					gboolean _tmp77_ = FALSE;
-					sdxgraphicsRegion* _tmp78_ = NULL;
-					sdxDataInputStream* _tmp79_ = NULL;
-					gint _tmp80_ = 0;
-					sdxgraphicsRegion* _tmp112_ = NULL;
-					gchar** _tmp113_ = NULL;
-					gint _tmp113__length1 = 0;
-					const gchar* _tmp114_ = NULL;
-					gint _tmp115_ = 0;
-					sdxgraphicsRegion* _tmp116_ = NULL;
-					gchar** _tmp117_ = NULL;
-					gint _tmp117__length1 = 0;
-					const gchar* _tmp118_ = NULL;
-					gint _tmp119_ = 0;
-					sdxDataInputStream* _tmp120_ = NULL;
+					sdxDataInputStream* _tmp73_ = NULL;
+					gint width = 0;
+					gchar** _tmp74_ = NULL;
+					gint _tmp74__length1 = 0;
+					const gchar* _tmp75_ = NULL;
+					gint _tmp76_ = 0;
+					gint height = 0;
+					gchar** _tmp77_ = NULL;
+					gint _tmp77__length1 = 0;
+					const gchar* _tmp78_ = NULL;
+					gint _tmp79_ = 0;
+					sdxgraphicsRegion* region = NULL;
+					sdxgraphicsPage* _tmp80_ = NULL;
+					gint _tmp81_ = 0;
+					gint _tmp82_ = 0;
+					gint _tmp83_ = 0;
+					gint _tmp84_ = 0;
+					const gchar* _tmp85_ = NULL;
+					gboolean _tmp86_ = FALSE;
+					sdxgraphicsRegion* _tmp87_ = NULL;
+					sdxDataInputStream* _tmp88_ = NULL;
+					gint _tmp89_ = 0;
 					sdxgraphicsRegion* _tmp121_ = NULL;
 					gchar** _tmp122_ = NULL;
 					gint _tmp122__length1 = 0;
@@ -1511,195 +1536,206 @@ sdxgraphicsTextureAtlasData* sdx_graphics_texture_atlas_data_new (sdxfilesFileHa
 					gint _tmp126__length1 = 0;
 					const gchar* _tmp127_ = NULL;
 					gint _tmp128_ = 0;
-					sdxgraphicsRegion* _tmp129_ = NULL;
-					sdxDataInputStream* _tmp130_ = NULL;
-					gchar* _tmp131_ = NULL;
-					gchar* _tmp132_ = NULL;
+					sdxDataInputStream* _tmp129_ = NULL;
+					sdxgraphicsRegion* _tmp130_ = NULL;
+					gchar** _tmp131_ = NULL;
+					gint _tmp131__length1 = 0;
+					const gchar* _tmp132_ = NULL;
 					gint _tmp133_ = 0;
-					gboolean _tmp134_ = FALSE;
-					sdxgraphicsRegion* _tmp136_ = NULL;
-					sdxgraphicsRegion* _tmp137_ = NULL;
-					_tmp52_ = reader;
-					_tmp53_ = sdx_graphics_texture_atlas_readValue (_tmp52_);
-					_tmp54_ = _tmp53_;
-					_tmp55_ = bool_parse (_tmp54_);
-					_tmp56_ = _tmp55_;
-					_g_free0 (_tmp54_);
-					rotate = _tmp56_;
-					_tmp57_ = reader;
-					sdx_graphics_texture_atlas_readTuple (_tmp57_);
-					_tmp58_ = sdx_graphics_texture_atlas_tuple;
-					_tmp58__length1 = sdx_graphics_texture_atlas_tuple_length1;
-					_tmp59_ = _tmp58_[0];
-					_tmp60_ = atoi (_tmp59_);
-					left = _tmp60_;
-					_tmp61_ = sdx_graphics_texture_atlas_tuple;
-					_tmp61__length1 = sdx_graphics_texture_atlas_tuple_length1;
-					_tmp62_ = _tmp61_[1];
-					_tmp63_ = atoi (_tmp62_);
-					top = _tmp63_;
-					_tmp64_ = reader;
-					sdx_graphics_texture_atlas_readTuple (_tmp64_);
-					_tmp65_ = sdx_graphics_texture_atlas_tuple;
-					_tmp65__length1 = sdx_graphics_texture_atlas_tuple_length1;
-					_tmp66_ = _tmp65_[0];
-					_tmp67_ = atoi (_tmp66_);
-					width = _tmp67_;
-					_tmp68_ = sdx_graphics_texture_atlas_tuple;
-					_tmp68__length1 = sdx_graphics_texture_atlas_tuple_length1;
-					_tmp69_ = _tmp68_[1];
-					_tmp70_ = atoi (_tmp69_);
-					height = _tmp70_;
-					_tmp71_ = pageImage;
-					_tmp72_ = left;
-					_tmp73_ = top;
-					_tmp74_ = width;
-					_tmp75_ = height;
-					_tmp76_ = line;
-					_tmp77_ = rotate;
-					_tmp78_ = sdx_graphics_region_new (_tmp71_, _tmp72_, _tmp73_, _tmp74_, _tmp75_, _tmp76_, _tmp77_);
-					region = _tmp78_;
-					_tmp79_ = reader;
-					_tmp80_ = sdx_graphics_texture_atlas_readTuple (_tmp79_);
-					if (_tmp80_ == 4) {
-						sdxgraphicsRegion* _tmp81_ = NULL;
-						gchar** _tmp82_ = NULL;
-						gint _tmp82__length1 = 0;
-						const gchar* _tmp83_ = NULL;
-						gint _tmp84_ = 0;
-						gchar** _tmp85_ = NULL;
-						gint _tmp85__length1 = 0;
-						const gchar* _tmp86_ = NULL;
-						gint _tmp87_ = 0;
-						gchar** _tmp88_ = NULL;
-						gint _tmp88__length1 = 0;
-						const gchar* _tmp89_ = NULL;
-						gint _tmp90_ = 0;
+					sdxgraphicsRegion* _tmp134_ = NULL;
+					gchar** _tmp135_ = NULL;
+					gint _tmp135__length1 = 0;
+					const gchar* _tmp136_ = NULL;
+					gint _tmp137_ = 0;
+					sdxgraphicsRegion* _tmp138_ = NULL;
+					sdxDataInputStream* _tmp139_ = NULL;
+					gchar* _tmp140_ = NULL;
+					gchar* _tmp141_ = NULL;
+					gint _tmp142_ = 0;
+					gboolean _tmp143_ = FALSE;
+					sdxgraphicsRegion* _tmp145_ = NULL;
+					sdxgraphicsRegion* _tmp146_ = NULL;
+					_tmp61_ = reader;
+					_tmp62_ = sdx_graphics_texture_atlas_data_readValue (_tmp61_);
+					_tmp63_ = _tmp62_;
+					_tmp64_ = bool_parse (_tmp63_);
+					_tmp65_ = _tmp64_;
+					_g_free0 (_tmp63_);
+					rotate = _tmp65_;
+					_tmp66_ = reader;
+					sdx_graphics_texture_atlas_data_readTuple (_tmp66_);
+					_tmp67_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp67__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+					_tmp68_ = _tmp67_[0];
+					_tmp69_ = atoi (_tmp68_);
+					left = _tmp69_;
+					_tmp70_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp70__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+					_tmp71_ = _tmp70_[1];
+					_tmp72_ = atoi (_tmp71_);
+					top = _tmp72_;
+					_tmp73_ = reader;
+					sdx_graphics_texture_atlas_data_readTuple (_tmp73_);
+					_tmp74_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp74__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+					_tmp75_ = _tmp74_[0];
+					_tmp76_ = atoi (_tmp75_);
+					width = _tmp76_;
+					_tmp77_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp77__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+					_tmp78_ = _tmp77_[1];
+					_tmp79_ = atoi (_tmp78_);
+					height = _tmp79_;
+					_tmp80_ = pageImage;
+					_tmp81_ = left;
+					_tmp82_ = top;
+					_tmp83_ = width;
+					_tmp84_ = height;
+					_tmp85_ = line;
+					_tmp86_ = rotate;
+					_tmp87_ = sdx_graphics_region_new (_tmp80_, _tmp81_, _tmp82_, _tmp83_, _tmp84_, _tmp85_, _tmp86_);
+					region = _tmp87_;
+					_tmp88_ = reader;
+					_tmp89_ = sdx_graphics_texture_atlas_data_readTuple (_tmp88_);
+					if (_tmp89_ == 4) {
+						sdxgraphicsRegion* _tmp90_ = NULL;
 						gchar** _tmp91_ = NULL;
 						gint _tmp91__length1 = 0;
 						const gchar* _tmp92_ = NULL;
 						gint _tmp93_ = 0;
-						gint* _tmp94_ = NULL;
-						sdxDataInputStream* _tmp95_ = NULL;
+						gchar** _tmp94_ = NULL;
+						gint _tmp94__length1 = 0;
+						const gchar* _tmp95_ = NULL;
 						gint _tmp96_ = 0;
-						_tmp81_ = region;
-						_tmp82_ = sdx_graphics_texture_atlas_tuple;
-						_tmp82__length1 = sdx_graphics_texture_atlas_tuple_length1;
-						_tmp83_ = _tmp82_[0];
-						_tmp84_ = atoi (_tmp83_);
-						_tmp85_ = sdx_graphics_texture_atlas_tuple;
-						_tmp85__length1 = sdx_graphics_texture_atlas_tuple_length1;
-						_tmp86_ = _tmp85_[1];
-						_tmp87_ = atoi (_tmp86_);
-						_tmp88_ = sdx_graphics_texture_atlas_tuple;
-						_tmp88__length1 = sdx_graphics_texture_atlas_tuple_length1;
-						_tmp89_ = _tmp88_[2];
-						_tmp90_ = atoi (_tmp89_);
-						_tmp91_ = sdx_graphics_texture_atlas_tuple;
-						_tmp91__length1 = sdx_graphics_texture_atlas_tuple_length1;
-						_tmp92_ = _tmp91_[3];
+						gchar** _tmp97_ = NULL;
+						gint _tmp97__length1 = 0;
+						const gchar* _tmp98_ = NULL;
+						gint _tmp99_ = 0;
+						gchar** _tmp100_ = NULL;
+						gint _tmp100__length1 = 0;
+						const gchar* _tmp101_ = NULL;
+						gint _tmp102_ = 0;
+						gint* _tmp103_ = NULL;
+						sdxDataInputStream* _tmp104_ = NULL;
+						gint _tmp105_ = 0;
+						_tmp90_ = region;
+						_tmp91_ = sdx_graphics_texture_atlas_data_tuple;
+						_tmp91__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+						_tmp92_ = _tmp91_[0];
 						_tmp93_ = atoi (_tmp92_);
-						_tmp94_ = g_new0 (gint, 4);
-						_tmp94_[0] = _tmp84_;
-						_tmp94_[1] = _tmp87_;
-						_tmp94_[2] = _tmp90_;
-						_tmp94_[3] = _tmp93_;
-						_tmp81_->splits = (g_free (_tmp81_->splits), NULL);
-						_tmp81_->splits = _tmp94_;
-						_tmp81_->splits_length1 = 4;
-						_tmp95_ = reader;
-						_tmp96_ = sdx_graphics_texture_atlas_readTuple (_tmp95_);
-						if (_tmp96_ == 4) {
-							sdxgraphicsRegion* _tmp97_ = NULL;
-							gchar** _tmp98_ = NULL;
-							gint _tmp98__length1 = 0;
-							const gchar* _tmp99_ = NULL;
-							gint _tmp100_ = 0;
-							gchar** _tmp101_ = NULL;
-							gint _tmp101__length1 = 0;
-							const gchar* _tmp102_ = NULL;
-							gint _tmp103_ = 0;
-							gchar** _tmp104_ = NULL;
-							gint _tmp104__length1 = 0;
-							const gchar* _tmp105_ = NULL;
-							gint _tmp106_ = 0;
+						_tmp94_ = sdx_graphics_texture_atlas_data_tuple;
+						_tmp94__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+						_tmp95_ = _tmp94_[1];
+						_tmp96_ = atoi (_tmp95_);
+						_tmp97_ = sdx_graphics_texture_atlas_data_tuple;
+						_tmp97__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+						_tmp98_ = _tmp97_[2];
+						_tmp99_ = atoi (_tmp98_);
+						_tmp100_ = sdx_graphics_texture_atlas_data_tuple;
+						_tmp100__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+						_tmp101_ = _tmp100_[3];
+						_tmp102_ = atoi (_tmp101_);
+						_tmp103_ = g_new0 (gint, 4);
+						_tmp103_[0] = _tmp93_;
+						_tmp103_[1] = _tmp96_;
+						_tmp103_[2] = _tmp99_;
+						_tmp103_[3] = _tmp102_;
+						_tmp90_->splits = (g_free (_tmp90_->splits), NULL);
+						_tmp90_->splits = _tmp103_;
+						_tmp90_->splits_length1 = 4;
+						_tmp104_ = reader;
+						_tmp105_ = sdx_graphics_texture_atlas_data_readTuple (_tmp104_);
+						if (_tmp105_ == 4) {
+							sdxgraphicsRegion* _tmp106_ = NULL;
 							gchar** _tmp107_ = NULL;
 							gint _tmp107__length1 = 0;
 							const gchar* _tmp108_ = NULL;
 							gint _tmp109_ = 0;
-							gint* _tmp110_ = NULL;
-							sdxDataInputStream* _tmp111_ = NULL;
-							_tmp97_ = region;
-							_tmp98_ = sdx_graphics_texture_atlas_tuple;
-							_tmp98__length1 = sdx_graphics_texture_atlas_tuple_length1;
-							_tmp99_ = _tmp98_[0];
-							_tmp100_ = atoi (_tmp99_);
-							_tmp101_ = sdx_graphics_texture_atlas_tuple;
-							_tmp101__length1 = sdx_graphics_texture_atlas_tuple_length1;
-							_tmp102_ = _tmp101_[1];
-							_tmp103_ = atoi (_tmp102_);
-							_tmp104_ = sdx_graphics_texture_atlas_tuple;
-							_tmp104__length1 = sdx_graphics_texture_atlas_tuple_length1;
-							_tmp105_ = _tmp104_[2];
-							_tmp106_ = atoi (_tmp105_);
-							_tmp107_ = sdx_graphics_texture_atlas_tuple;
-							_tmp107__length1 = sdx_graphics_texture_atlas_tuple_length1;
-							_tmp108_ = _tmp107_[3];
+							gchar** _tmp110_ = NULL;
+							gint _tmp110__length1 = 0;
+							const gchar* _tmp111_ = NULL;
+							gint _tmp112_ = 0;
+							gchar** _tmp113_ = NULL;
+							gint _tmp113__length1 = 0;
+							const gchar* _tmp114_ = NULL;
+							gint _tmp115_ = 0;
+							gchar** _tmp116_ = NULL;
+							gint _tmp116__length1 = 0;
+							const gchar* _tmp117_ = NULL;
+							gint _tmp118_ = 0;
+							gint* _tmp119_ = NULL;
+							sdxDataInputStream* _tmp120_ = NULL;
+							_tmp106_ = region;
+							_tmp107_ = sdx_graphics_texture_atlas_data_tuple;
+							_tmp107__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+							_tmp108_ = _tmp107_[0];
 							_tmp109_ = atoi (_tmp108_);
-							_tmp110_ = g_new0 (gint, 4);
-							_tmp110_[0] = _tmp100_;
-							_tmp110_[1] = _tmp103_;
-							_tmp110_[2] = _tmp106_;
-							_tmp110_[3] = _tmp109_;
-							_tmp97_->pads = (g_free (_tmp97_->pads), NULL);
-							_tmp97_->pads = _tmp110_;
-							_tmp97_->pads_length1 = 4;
-							_tmp111_ = reader;
-							sdx_graphics_texture_atlas_readTuple (_tmp111_);
+							_tmp110_ = sdx_graphics_texture_atlas_data_tuple;
+							_tmp110__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+							_tmp111_ = _tmp110_[1];
+							_tmp112_ = atoi (_tmp111_);
+							_tmp113_ = sdx_graphics_texture_atlas_data_tuple;
+							_tmp113__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+							_tmp114_ = _tmp113_[2];
+							_tmp115_ = atoi (_tmp114_);
+							_tmp116_ = sdx_graphics_texture_atlas_data_tuple;
+							_tmp116__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+							_tmp117_ = _tmp116_[3];
+							_tmp118_ = atoi (_tmp117_);
+							_tmp119_ = g_new0 (gint, 4);
+							_tmp119_[0] = _tmp109_;
+							_tmp119_[1] = _tmp112_;
+							_tmp119_[2] = _tmp115_;
+							_tmp119_[3] = _tmp118_;
+							_tmp106_->pads = (g_free (_tmp106_->pads), NULL);
+							_tmp106_->pads = _tmp119_;
+							_tmp106_->pads_length1 = 4;
+							_tmp120_ = reader;
+							sdx_graphics_texture_atlas_data_readTuple (_tmp120_);
 						}
 					}
-					_tmp112_ = region;
-					_tmp113_ = sdx_graphics_texture_atlas_tuple;
-					_tmp113__length1 = sdx_graphics_texture_atlas_tuple_length1;
-					_tmp114_ = _tmp113_[0];
-					_tmp115_ = atoi (_tmp114_);
-					_tmp112_->originalWidth = _tmp115_;
-					_tmp116_ = region;
-					_tmp117_ = sdx_graphics_texture_atlas_tuple;
-					_tmp117__length1 = sdx_graphics_texture_atlas_tuple_length1;
-					_tmp118_ = _tmp117_[1];
-					_tmp119_ = atoi (_tmp118_);
-					_tmp116_->originalHeight = _tmp119_;
-					_tmp120_ = reader;
-					sdx_graphics_texture_atlas_readTuple (_tmp120_);
 					_tmp121_ = region;
-					_tmp122_ = sdx_graphics_texture_atlas_tuple;
-					_tmp122__length1 = sdx_graphics_texture_atlas_tuple_length1;
+					_tmp122_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp122__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
 					_tmp123_ = _tmp122_[0];
 					_tmp124_ = atoi (_tmp123_);
-					_tmp121_->offsetX = _tmp124_;
+					_tmp121_->originalWidth = _tmp124_;
 					_tmp125_ = region;
-					_tmp126_ = sdx_graphics_texture_atlas_tuple;
-					_tmp126__length1 = sdx_graphics_texture_atlas_tuple_length1;
+					_tmp126_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp126__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
 					_tmp127_ = _tmp126_[1];
 					_tmp128_ = atoi (_tmp127_);
-					_tmp125_->offsetY = _tmp128_;
-					_tmp129_ = region;
-					_tmp130_ = reader;
-					_tmp131_ = sdx_graphics_texture_atlas_readValue (_tmp130_);
-					_tmp132_ = _tmp131_;
+					_tmp125_->originalHeight = _tmp128_;
+					_tmp129_ = reader;
+					sdx_graphics_texture_atlas_data_readTuple (_tmp129_);
+					_tmp130_ = region;
+					_tmp131_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp131__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+					_tmp132_ = _tmp131_[0];
 					_tmp133_ = atoi (_tmp132_);
-					_tmp129_->index = _tmp133_;
-					_g_free0 (_tmp132_);
-					_tmp134_ = flip;
-					if (_tmp134_) {
-						sdxgraphicsRegion* _tmp135_ = NULL;
-						_tmp135_ = region;
-						_tmp135_->flip = TRUE;
+					_tmp130_->offsetX = _tmp133_;
+					_tmp134_ = region;
+					_tmp135_ = sdx_graphics_texture_atlas_data_tuple;
+					_tmp135__length1 = sdx_graphics_texture_atlas_data_tuple_length1;
+					_tmp136_ = _tmp135_[1];
+					_tmp137_ = atoi (_tmp136_);
+					_tmp134_->offsetY = _tmp137_;
+					_tmp138_ = region;
+					_tmp139_ = reader;
+					_tmp140_ = sdx_graphics_texture_atlas_data_readValue (_tmp139_);
+					_tmp141_ = _tmp140_;
+					_tmp142_ = atoi (_tmp141_);
+					_tmp138_->index = _tmp142_;
+					_g_free0 (_tmp141_);
+					_tmp143_ = flip;
+					if (_tmp143_) {
+						sdxgraphicsRegion* _tmp144_ = NULL;
+						_tmp144_ = region;
+						_tmp144_->flip = TRUE;
 					}
-					_tmp136_ = region;
-					_tmp137_ = _sdx_graphics_region_retain0 (_tmp136_);
-					self->regions = g_list_append (self->regions, _tmp137_);
+					_tmp145_ = region;
+					_tmp146_ = _sdx_graphics_region_retain0 (_tmp145_);
+					self->regions = g_list_append (self->regions, _tmp146_);
 					_sdx_graphics_region_release0 (region);
 				}
 			}
@@ -1711,13 +1747,13 @@ sdxgraphicsTextureAtlasData* sdx_graphics_texture_atlas_data_new (sdxfilesFileHa
 	__catch0_g_error:
 	{
 		GError* e = NULL;
-		GError* _tmp138_ = NULL;
-		const gchar* _tmp139_ = NULL;
+		GError* _tmp147_ = NULL;
+		const gchar* _tmp148_ = NULL;
 		e = _inner_error_;
 		_inner_error_ = NULL;
-		_tmp138_ = e;
-		_tmp139_ = _tmp138_->message;
-		g_print ("%s", _tmp139_);
+		_tmp147_ = e;
+		_tmp148_ = _tmp147_->message;
+		g_print ("%s", _tmp148_);
 		_g_error_free0 (e);
 	}
 	__finally0:

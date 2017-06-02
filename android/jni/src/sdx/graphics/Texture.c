@@ -88,10 +88,7 @@ sdxgraphicsTexture* sdx_graphics_texture_new (sdxfilesFileHandle* file) {
 	sdxfilesFileHandle* _tmp4_ = NULL;
 	gchar* _tmp5_ = NULL;
 	gchar* _tmp6_ = NULL;
-	sdxfilesFileHandle* _tmp7_ = NULL;
-	gchar* _tmp8_ = NULL;
-	gchar* _tmp9_ = NULL;
-	SDL_Surface* _tmp10_ = NULL;
+	SDL_Surface* _tmp7_ = NULL;
 	g_return_val_if_fail (file != NULL, NULL);
 	self = g_slice_new0 (sdxgraphicsTexture);
 	sdx_graphics_texture_instance_init (self);
@@ -103,17 +100,12 @@ sdxgraphicsTexture* sdx_graphics_texture_new (sdxfilesFileHandle* file) {
 	_tmp3_ = sdx_files_file_handle_getRWops (_tmp2_);
 	raw = _tmp3_;
 	_tmp4_ = file;
-	_tmp5_ = sdx_files_file_handle_getPath (_tmp4_);
+	_tmp5_ = sdx_files_file_handle_getExt (_tmp4_);
 	_tmp6_ = _tmp5_;
-	g_print ("CALL getSurface |%s|\n", _tmp6_);
-	_g_free0 (_tmp6_);
-	_tmp7_ = file;
-	_tmp8_ = sdx_files_file_handle_getExt (_tmp7_);
-	_tmp9_ = _tmp8_;
-	_tmp10_ = sdx_graphics_texture_getSurface (_tmp9_, raw);
+	_tmp7_ = sdx_graphics_texture_getSurface (_tmp6_, raw);
 	_SDL_FreeSurface0 (self->data);
-	self->data = _tmp10_;
-	_g_free0 (_tmp9_);
+	self->data = _tmp7_;
+	_g_free0 (_tmp6_);
 	_SDL_FreeRW0 (raw);
 	return self;
 }

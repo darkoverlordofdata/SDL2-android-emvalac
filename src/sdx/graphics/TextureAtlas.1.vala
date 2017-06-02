@@ -89,6 +89,27 @@ namespace sdx.graphics {
             }
         }
 
+        //  /** tuple used to return the parsed values */
+        //  public static string[] tuple;
+	    //  /** Returns the number of tuple values read (1, 2 or 4). */
+        //  public static int readTuple(DataInputStream reader) {
+        //      var line = reader.read_line();
+        //      var ts = line.split(":");
+        //      if (ts.length == 0) throw new IOException.InvalidData("invalid line "+line);
+        //      tuple = ts[1].split(",");
+        //      for (var i=0; i<tuple.length; i++) {
+        //          tuple[i] = tuple[i];
+        //      }
+        //      return tuple.length;
+        //  }
+
+        //  /** Returns the single value */
+        //  public static string readValue(DataInputStream reader) {
+        //      var line = reader.read_line();
+        //      var ts = line.split(":");
+        //      if (ts.length == 0) throw new IOException.InvalidData("invalid line "+line);
+        //      return ts[1];
+        //  }
     }
 
     /** Describes the region of a packed image and provides information about the original image before it was packed. */
@@ -216,7 +237,7 @@ namespace sdx.graphics {
             if (ts.length == 0) throw new IOException.InvalidData("invalid line "+line);
             return ts[1];
         }
-
+        
         public List<Page> pages;
         public List<Region> regions;
 
@@ -240,16 +261,16 @@ namespace sdx.graphics {
                         var file = imagesDir.child(line);
                         var width = 0;
                         var height = 0;
-                        if (readTuple(reader) == 2) {
-                            width = int.parse(tuple[0]);
-                            height = int.parse(tuple[1]);
-                            readTuple(reader);
+                        if (TextureAtlas.readTuple(reader) == 2) {
+                            width = int.parse(TextureAtlas.tuple[0]);
+                            height = int.parse(TextureAtlas.tuple[1]);
+                            TextureAtlas.readTuple(reader);
                         }
-                        var format = Format.from(tuple[0].strip());
-                        readTuple(reader);
-                        var min = TextureFilter.from(tuple[0].strip());
-                        var max = TextureFilter.from(tuple[1].strip());
-                        var direction = readValue(reader);
+                        var format = Format.from(TextureAtlas.tuple[0]);
+                        TextureAtlas.readTuple(reader);
+                        var min = TextureFilter.from(TextureAtlas.tuple[0]);
+                        var max = TextureFilter.from(TextureAtlas.tuple[1]);
+                        var direction = TextureAtlas.readValue(reader);
                         var repeatX = TextureWrap.ClampToEdge;
                         var repeatY = TextureWrap.ClampToEdge;
                         if (direction == "x") {
@@ -264,38 +285,38 @@ namespace sdx.graphics {
                         pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
                         pages.append(pageImage);
                     } else {
-                        var rotate = bool.parse(readValue(reader));
+                        var rotate = bool.parse(TextureAtlas.readValue(reader));
 
-                        readTuple(reader);
-                        var left = int.parse(tuple[0]);
-                        var top = int.parse(tuple[1]);
+                        TextureAtlas.readTuple(reader);
+                        var left = int.parse(TextureAtlas.tuple[0]);
+                        var top = int.parse(TextureAtlas.tuple[1]);
 
-                        readTuple(reader);
-                        var width = int.parse(tuple[0]);
-                        var height = int.parse(tuple[1]);
+                        TextureAtlas.readTuple(reader);
+                        var width = int.parse(TextureAtlas.tuple[0]);
+                        var height = int.parse(TextureAtlas.tuple[1]);
 
                         var region = new Region(pageImage, left, top, width, height, line, rotate);
 
-                        if (readTuple(reader) == 4) {
-                            region.splits = { int.parse(tuple[0]), int.parse(tuple[1]), 
-                                int.parse(tuple[2]), int.parse(tuple[3]) };
+                        if (TextureAtlas.readTuple(reader) == 4) {
+                            region.splits = { int.parse(TextureAtlas.tuple[0]), int.parse(TextureAtlas.tuple[1]), 
+                                int.parse(TextureAtlas.tuple[2]), int.parse(TextureAtlas.tuple[3]) };
 
-                            if (readTuple(reader) == 4) {
-                                region.pads = { int.parse(tuple[0]), int.parse(tuple[1]), 
-                                    int.parse(tuple[2]), int.parse(tuple[3]) };
+                            if (TextureAtlas.readTuple(reader) == 4) {
+                                region.pads = { int.parse(TextureAtlas.tuple[0]), int.parse(TextureAtlas.tuple[1]), 
+                                    int.parse(TextureAtlas.tuple[2]), int.parse(TextureAtlas.tuple[3]) };
 
-                                readTuple(reader);
+                                TextureAtlas.readTuple(reader);
                             }
                         }
 
-                        region.originalWidth = int.parse(tuple[0]);
-                        region.originalHeight = int.parse(tuple[1]);
+                        region.originalWidth = int.parse(TextureAtlas.tuple[0]);
+                        region.originalHeight = int.parse(TextureAtlas.tuple[1]);
 
-                        readTuple(reader);
-                        region.offsetX = int.parse(tuple[0]);
-                        region.offsetY = int.parse(tuple[1]);
+                        TextureAtlas.readTuple(reader);
+                        region.offsetX = int.parse(TextureAtlas.tuple[0]);
+                        region.offsetY = int.parse(TextureAtlas.tuple[1]);
 
-                        region.index = int.parse(readValue(reader));
+                        region.index = int.parse(TextureAtlas.readValue(reader));
 
                         if (flip) region.flip = true;
 
