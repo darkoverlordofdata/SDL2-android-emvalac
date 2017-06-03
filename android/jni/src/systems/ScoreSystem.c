@@ -81,6 +81,7 @@ typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
 typedef struct _entitasSprite entitasSprite;
 
 #define ENTITAS_TYPE_TEXT (entitas_text_get_type ())
+typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
 typedef struct _entitasText entitasText;
 
 #define ENTITAS_TYPE_TINT (entitas_tint_get_type ())
@@ -192,7 +193,7 @@ struct _entitasSprite {
 
 struct _entitasText {
 	gchar* text;
-	sdxgraphicsSprite* sprite;
+	sdxgraphicsSpriteTextSprite* sprite;
 };
 
 struct _entitasTint {
@@ -259,6 +260,7 @@ struct _sdxgraphicsSprite {
 	gint height;
 	gint x;
 	gint y;
+	gint index;
 	sdxgraphicsScale scale;
 	SDL_Color color;
 	gboolean centered;
@@ -358,7 +360,7 @@ void entitas_entity_copy (const entitasEntity* self, entitasEntity* dest);
 void entitas_entity_destroy (entitasEntity* self);
 gboolean entitas_entity_isActive (entitasEntity *self);
 void sdx_font_free (sdxFont* self);
-void sdx_graphics_sprite_setText (sdxgraphicsSprite* self, const gchar* text, sdxFont* font, SDL_Color color);
+void sdx_graphics_sprite_text_sprite_setText (sdxgraphicsSpriteTextSprite* self, const gchar* text, sdxFont* font, SDL_Color color);
 GType sdx_graphics_scale_get_type (void) G_GNUC_CONST;
 sdxgraphicsScale* sdx_graphics_scale_dup (const sdxgraphicsScale* self);
 void sdx_graphics_scale_free (sdxgraphicsScale* self);
@@ -497,18 +499,18 @@ void systems_score_system_execute (systemsScoreSystem* self, gdouble delta) {
 						gchar* _tmp18_ = NULL;
 						entitasEntity* _tmp19_ = NULL;
 						entitasText* _tmp20_ = NULL;
-						sdxgraphicsSprite* _tmp21_ = NULL;
+						sdxgraphicsSpriteTextSprite* _tmp21_ = NULL;
 						const gchar* _tmp22_ = NULL;
 						sdxFont* _tmp23_ = NULL;
 						entitasEntity* _tmp24_ = NULL;
 						entitasText* _tmp25_ = NULL;
-						sdxgraphicsSprite* _tmp26_ = NULL;
+						sdxgraphicsSpriteTextSprite* _tmp26_ = NULL;
 						entitasEntity* _tmp27_ = NULL;
 						entitasPosition* _tmp28_ = NULL;
 						gdouble _tmp29_ = 0.0;
 						entitasEntity* _tmp30_ = NULL;
 						entitasText* _tmp31_ = NULL;
-						sdxgraphicsSprite* _tmp32_ = NULL;
+						sdxgraphicsSpriteTextSprite* _tmp32_ = NULL;
 						entitasEntity* _tmp33_ = NULL;
 						entitasPosition* _tmp34_ = NULL;
 						gdouble _tmp35_ = 0.0;
@@ -523,21 +525,21 @@ void systems_score_system_execute (systemsScoreSystem* self, gdouble delta) {
 						_tmp21_ = (*_tmp20_).sprite;
 						_tmp22_ = pct;
 						_tmp23_ = sdx_smallFont;
-						sdx_graphics_sprite_setText (_tmp21_, _tmp22_, _tmp23_, SDX_COLOR_LimeGreen);
+						sdx_graphics_sprite_text_sprite_setText (_tmp21_, _tmp22_, _tmp23_, SDX_COLOR_LimeGreen);
 						_tmp24_ = entity;
 						_tmp25_ = (*_tmp24_).text;
 						_tmp26_ = (*_tmp25_).sprite;
 						_tmp27_ = entity;
 						_tmp28_ = (*_tmp27_).position;
 						_tmp29_ = (*_tmp28_).x;
-						_tmp26_->x = (gint) _tmp29_;
+						((sdxgraphicsSprite*) _tmp26_)->x = (gint) _tmp29_;
 						_tmp30_ = entity;
 						_tmp31_ = (*_tmp30_).text;
 						_tmp32_ = (*_tmp31_).sprite;
 						_tmp33_ = entity;
 						_tmp34_ = (*_tmp33_).position;
 						_tmp35_ = (*_tmp34_).y;
-						_tmp32_->y = (gint) _tmp35_;
+						((sdxgraphicsSprite*) _tmp32_)->y = (gint) _tmp35_;
 					}
 					_g_free0 (pct);
 				}

@@ -58,6 +58,7 @@ sdxgraphicsSprite* sdx_graphics_sprite_retain (sdxgraphicsSprite* self);
 #define _sdx_graphics_sprite_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_sprite_release (var), NULL)))
 
 #define ENTITAS_TYPE_TEXT (entitas_text_get_type ())
+typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
 typedef struct _entitasText entitasText;
 #define _g_free0(var) (var = (g_free (var), NULL))
 
@@ -174,7 +175,7 @@ struct _entitasSprite {
 
 struct _entitasText {
 	gchar* text;
-	sdxgraphicsSprite* sprite;
+	sdxgraphicsSpriteTextSprite* sprite;
 };
 
 struct _entitasTint {
@@ -373,8 +374,8 @@ entitasEntity* entitas_entity_addSprite (entitasEntity *self, sdxgraphicsSprite*
 entitasEntity* entitas_entity_setSprite (entitasEntity *self, sdxgraphicsSprite* sprite, gint width, gint height);
 entitasEntity* entitas_entity_removeSprite (entitasEntity *self);
 gboolean entitas_entity_hasText (entitasEntity *self);
-entitasEntity* entitas_entity_addText (entitasEntity *self, const gchar* text, sdxgraphicsSprite* texture);
-entitasEntity* entitas_entity_setText (entitasEntity *self, const gchar* text, sdxgraphicsSprite* texture);
+entitasEntity* entitas_entity_addText (entitasEntity *self, const gchar* text, sdxgraphicsSpriteTextSprite* texture);
+entitasEntity* entitas_entity_setText (entitasEntity *self, const gchar* text, sdxgraphicsSpriteTextSprite* texture);
 entitasEntity* entitas_entity_removeText (entitasEntity *self);
 gboolean entitas_entity_hasTint (entitasEntity *self);
 entitasEntity* entitas_entity_addTint (entitasEntity *self, gint r, gint g, gint b, gint a);
@@ -749,8 +750,8 @@ GType entitas_sprite_get_type (void) {
 void entitas_text_copy (const entitasText* self, entitasText* dest) {
 	const gchar* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	sdxgraphicsSprite* _tmp2_ = NULL;
-	sdxgraphicsSprite* _tmp3_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp2_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp3_ = NULL;
 	_tmp0_ = (*self).text;
 	_tmp1_ = g_strdup (_tmp0_);
 	_g_free0 ((*dest).text);
@@ -2210,13 +2211,13 @@ static gpointer _entitas_text_dup0 (gpointer self) {
 }
 
 
-entitasEntity* entitas_entity_addText (entitasEntity *self, const gchar* text, sdxgraphicsSprite* texture) {
+entitasEntity* entitas_entity_addText (entitasEntity *self, const gchar* text, sdxgraphicsSpriteTextSprite* texture) {
 	entitasEntity* result = NULL;
 	guint64 _tmp0_ = 0ULL;
 	const gchar* _tmp2_ = NULL;
 	gchar* _tmp3_ = NULL;
-	sdxgraphicsSprite* _tmp4_ = NULL;
-	sdxgraphicsSprite* _tmp5_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp4_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp5_ = NULL;
 	entitasText _tmp6_ = {0};
 	entitasText _tmp7_ = {0};
 	entitasText* _tmp8_ = NULL;
@@ -2254,15 +2255,15 @@ entitasEntity* entitas_entity_addText (entitasEntity *self, const gchar* text, s
 }
 
 
-entitasEntity* entitas_entity_setText (entitasEntity *self, const gchar* text, sdxgraphicsSprite* texture) {
+entitasEntity* entitas_entity_setText (entitasEntity *self, const gchar* text, sdxgraphicsSpriteTextSprite* texture) {
 	entitasEntity* result = NULL;
 	guint64 _tmp0_ = 0ULL;
 	entitasText* _tmp2_ = NULL;
 	const gchar* _tmp3_ = NULL;
 	gchar* _tmp4_ = NULL;
 	entitasText* _tmp5_ = NULL;
-	sdxgraphicsSprite* _tmp6_ = NULL;
-	sdxgraphicsSprite* _tmp7_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp6_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp7_ = NULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (texture != NULL, NULL);

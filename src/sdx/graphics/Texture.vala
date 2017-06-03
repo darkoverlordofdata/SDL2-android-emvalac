@@ -12,7 +12,7 @@ using sdx.files;
 namespace sdx.graphics {
 
     public class Texture : Object {
-        public Video.Surface data;
+        public Video.Surface? data;
         public string path;
         public int width {
             get { return data.w; }

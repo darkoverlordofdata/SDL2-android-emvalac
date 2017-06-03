@@ -22,12 +22,14 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_keyboard.h>
+#include <android/log.h>
 
 
 #define SDX_TYPE_BLIT (sdx_blit_get_type ())
 typedef struct _sdxBlit sdxBlit;
 typedef struct _sdxFont sdxFont;
 typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
+typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
 
 #define SDX_TYPE_DIRECTION (sdx_direction_get_type ())
 #define _SDL_DestroyWindow0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyWindow (var), NULL)))
@@ -70,6 +72,7 @@ typedef enum  {
 	SDX_SDL_EXCEPTION_InvalidForPlatform,
 	SDX_SDL_EXCEPTION_UnableToLoadResource,
 	SDX_SDL_EXCEPTION_UnableToLoadSurface,
+	SDX_SDL_EXCEPTION_UnableToLoadTexture,
 	SDX_SDL_EXCEPTION_NullPointer,
 	SDX_SDL_EXCEPTION_NoSuchElement,
 	SDX_SDL_EXCEPTION_IllegalStateException,
@@ -90,6 +93,7 @@ struct _sdxgraphicsSprite {
 	gint height;
 	gint x;
 	gint y;
+	gint index;
 	sdxgraphicsScale scale;
 	SDL_Color color;
 	gboolean centered;
@@ -116,8 +120,8 @@ extern SDL_Color sdx_fpsColor;
 SDL_Color sdx_fpsColor = {0};
 extern SDL_Color sdx_bgdColor;
 SDL_Color sdx_bgdColor = {0};
-extern sdxgraphicsSprite* sdx_fpsSprite;
-sdxgraphicsSprite* sdx_fpsSprite = NULL;
+extern sdxgraphicsSpriteTextSprite* sdx_fpsSprite;
+sdxgraphicsSpriteTextSprite* sdx_fpsSprite = NULL;
 extern glong sdx_pixelFactor;
 glong sdx_pixelFactor = 0L;
 extern gboolean sdx_showFps;
@@ -178,12 +182,12 @@ sdxFont* sdx_font_new (const gchar* path, gint size);
 void sdx_setSmallFont (const gchar* path, gint size);
 void sdx_setLargeFont (const gchar* path, gint size);
 void sdx_setShowFps (gboolean value);
-sdxgraphicsSprite* sdx_graphics_sprite_fromText (const gchar* path, sdxFont* font, SDL_Color color);
+sdxgraphicsSpriteTextSprite* sdx_graphics_sprite_text_sprite_new (const gchar* path, sdxFont* font, SDL_Color color);
 GType sdx_graphics_scale_get_type (void) G_GNUC_CONST;
 sdxgraphicsScale* sdx_graphics_scale_dup (const sdxgraphicsScale* self);
 void sdx_graphics_scale_free (sdxgraphicsScale* self);
 void sdx_drawFps (void);
-void sdx_graphics_sprite_setText (sdxgraphicsSprite* self, const gchar* text, sdxFont* font, SDL_Color color);
+void sdx_graphics_sprite_text_sprite_setText (sdxgraphicsSpriteTextSprite* self, const gchar* text, sdxFont* font, SDL_Color color);
 void sdx_graphics_sprite_render (sdxgraphicsSprite* self, gint x, gint y, SDL_Rect* clip);
 gdouble sdx_getNow (void);
 void sdx_start (void);
@@ -191,6 +195,7 @@ void sdx_update (void);
 void sdx_processEvents (void);
 void sdx_begin (void);
 void sdx_end (void);
+void sdx_log (const gchar* text);
 
 extern const SDL_Color SDX_COLOR_AntiqueWhite;
 
@@ -450,18 +455,18 @@ void sdx_setShowFps (gboolean value) {
 		gchar* _tmp3_ = NULL;
 		sdxFont* _tmp4_ = NULL;
 		SDL_Color _tmp5_ = {0};
-		sdxgraphicsSprite* _tmp6_ = NULL;
-		sdxgraphicsSprite* _tmp7_ = NULL;
+		sdxgraphicsSpriteTextSprite* _tmp6_ = NULL;
+		sdxgraphicsSpriteTextSprite* _tmp7_ = NULL;
 		_tmp2_ = g_strdup_printf ("%2.2f", (gdouble) 60);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = sdx_font;
 		_tmp5_ = sdx_fpsColor;
-		_tmp6_ = sdx_graphics_sprite_fromText (_tmp3_, _tmp4_, _tmp5_);
+		_tmp6_ = sdx_graphics_sprite_text_sprite_new (_tmp3_, _tmp4_, _tmp5_);
 		_sdx_graphics_sprite_release0 (sdx_fpsSprite);
 		sdx_fpsSprite = _tmp6_;
 		_g_free0 (_tmp3_);
 		_tmp7_ = sdx_fpsSprite;
-		_tmp7_->centered = FALSE;
+		((sdxgraphicsSprite*) _tmp7_)->centered = FALSE;
 	} else {
 		_sdx_graphics_sprite_release0 (sdx_fpsSprite);
 		sdx_fpsSprite = NULL;
@@ -473,23 +478,23 @@ void sdx_drawFps (void) {
 	gboolean _tmp0_ = FALSE;
 	_tmp0_ = sdx_showFps;
 	if (_tmp0_) {
-		sdxgraphicsSprite* _tmp1_ = NULL;
+		sdxgraphicsSpriteTextSprite* _tmp1_ = NULL;
 		gdouble _tmp2_ = 0.0;
 		gchar* _tmp3_ = NULL;
 		gchar* _tmp4_ = NULL;
 		sdxFont* _tmp5_ = NULL;
 		SDL_Color _tmp6_ = {0};
-		sdxgraphicsSprite* _tmp7_ = NULL;
+		sdxgraphicsSpriteTextSprite* _tmp7_ = NULL;
 		_tmp1_ = sdx_fpsSprite;
 		_tmp2_ = sdx_fps;
 		_tmp3_ = g_strdup_printf ("%2.2f", _tmp2_);
 		_tmp4_ = _tmp3_;
 		_tmp5_ = sdx_font;
 		_tmp6_ = sdx_fpsColor;
-		sdx_graphics_sprite_setText (_tmp1_, _tmp4_, _tmp5_, _tmp6_);
+		sdx_graphics_sprite_text_sprite_setText (_tmp1_, _tmp4_, _tmp5_, _tmp6_);
 		_g_free0 (_tmp4_);
 		_tmp7_ = sdx_fpsSprite;
-		sdx_graphics_sprite_render (_tmp7_, 0, 0, NULL);
+		sdx_graphics_sprite_render ((sdxgraphicsSprite*) _tmp7_, 0, 0, NULL);
 	}
 }
 
@@ -836,6 +841,14 @@ void sdx_end (void) {
 	SDL_Renderer* _tmp0_ = NULL;
 	_tmp0_ = sdx_renderer;
 	SDL_RenderPresent (_tmp0_);
+}
+
+
+void sdx_log (const gchar* text) {
+	const gchar* _tmp0_ = NULL;
+	g_return_if_fail (text != NULL);
+	_tmp0_ = text;
+	__android_log_write (ANDROID_LOG_ERROR, "SDX", _tmp0_);
 }
 
 

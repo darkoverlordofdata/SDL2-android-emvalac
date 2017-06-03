@@ -155,7 +155,7 @@ namespace entitas
 
 	struct Text
 		text : string 
-		sprite: sdx.graphics.Sprite
+		sprite: sdx.graphics.Sprite.TextSprite
 
 	[SimpleType]
 	struct Tint
@@ -545,14 +545,14 @@ namespace entitas
 		def hasText():bool
 			return (mask & TEXT) != 0
 
-		def addText(text:string,texture:sdx.graphics.Sprite):Entity* 
+		def addText(text:string,texture:sdx.graphics.Sprite.TextSprite):Entity* 
 			if (mask & TEXT) != 0 do raise new Exception.EntityAlreadyHasComponent("Text")
 			this.text = { text, texture }
 			mask |= TEXT
 			World.onComponentAdded(&this, Components.TextComponent)
 			return &this
 
-		def setText(text:string,texture:sdx.graphics.Sprite):Entity*
+		def setText(text:string,texture:sdx.graphics.Sprite.TextSprite):Entity*
 			if (mask & TEXT) == 0 do raise new Exception.EntityDoesNotHaveComponent("Text")
 			this.text.text = text
 			this.text.sprite = texture

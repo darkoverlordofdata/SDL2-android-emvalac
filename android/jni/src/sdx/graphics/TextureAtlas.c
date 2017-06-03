@@ -34,6 +34,7 @@ void sdx_graphics_atlas_region_free (sdxgraphicsAtlasRegion* self);
 sdxgraphicsAtlasRegion* sdx_graphics_atlas_region_retain (sdxgraphicsAtlasRegion* self);
 #define _sdx_graphics_atlas_region_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_atlas_region_release (var), NULL)))
 typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
+typedef sdxgraphicsSprite sdxgraphicsSpriteAtlasSprite;
 typedef struct _sdxgraphicsPage sdxgraphicsPage;
 typedef struct _sdxgraphicsRegion sdxgraphicsRegion;
 
@@ -208,7 +209,7 @@ sdxgraphicsAtlasRegion* sdx_graphics_texture_atlas_findRegion (sdxgraphicsTextur
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
 void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
 sdxgraphicsSprite* sdx_graphics_texture_atlas_createSprite (sdxgraphicsTextureAtlas* self, const gchar* name, gint index);
-sdxgraphicsSprite* sdx_graphics_sprite_fromRegion (sdxgraphicsAtlasRegion* region);
+sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsAtlasRegion* region);
 static void _g_free0_ (gpointer var);
 static void _sdx_graphics_texture_release0_ (gpointer var);
 void sdx_graphics_page_free (sdxgraphicsPage* self);
@@ -433,10 +434,10 @@ sdxgraphicsSprite* sdx_graphics_texture_atlas_createSprite (sdxgraphicsTextureAt
 					_tmp5_ = name;
 					if (g_strcmp0 (_tmp4_, _tmp5_) == 0) {
 						sdxgraphicsAtlasRegion* _tmp6_ = NULL;
-						sdxgraphicsSprite* _tmp7_ = NULL;
+						sdxgraphicsSpriteAtlasSprite* _tmp7_ = NULL;
 						_tmp6_ = region;
-						_tmp7_ = sdx_graphics_sprite_fromRegion (_tmp6_);
-						result = _tmp7_;
+						_tmp7_ = sdx_graphics_sprite_atlas_sprite_new (_tmp6_);
+						result = (sdxgraphicsSprite*) _tmp7_;
 						_sdx_graphics_atlas_region_release0 (region);
 						return result;
 					}
@@ -461,10 +462,10 @@ sdxgraphicsSprite* sdx_graphics_texture_atlas_createSprite (sdxgraphicsTextureAt
 					}
 					if (_tmp8_) {
 						sdxgraphicsAtlasRegion* _tmp15_ = NULL;
-						sdxgraphicsSprite* _tmp16_ = NULL;
+						sdxgraphicsSpriteAtlasSprite* _tmp16_ = NULL;
 						_tmp15_ = region;
-						_tmp16_ = sdx_graphics_sprite_fromRegion (_tmp15_);
-						result = _tmp16_;
+						_tmp16_ = sdx_graphics_sprite_atlas_sprite_new (_tmp15_);
+						result = (sdxgraphicsSprite*) _tmp16_;
 						_sdx_graphics_atlas_region_release0 (region);
 						return result;
 					}

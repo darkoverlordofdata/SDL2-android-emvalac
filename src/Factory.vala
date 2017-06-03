@@ -82,7 +82,7 @@ public class Factory : World {
 		return createBase("enemy1", "assets/images/enemy1.png", Pool.ENEMY1)
 			.addHealth(10, 10)
 			.addVelocity(0, 40)
-			.addText("100%", sdx.graphics.Sprite.fromText("100%", sdx.smallFont, sdx.Color.LimeGreen))
+			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
 			.setEnemy1(true);
 	}
 
@@ -90,7 +90,7 @@ public class Factory : World {
 		return createBase("enemy2", "assets/images/enemy2.png", Pool.ENEMY2)
 			.addHealth(20, 20)
 			.addVelocity(0, 30)
-			.addText("100%", sdx.graphics.Sprite.fromText("100%", sdx.smallFont, sdx.Color.LimeGreen))
+			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
 			.setEnemy2(true);
 	}
 
@@ -98,7 +98,7 @@ public class Factory : World {
 		return createBase("enemy3", "assets/images/enemy3.png", Pool.ENEMY3)
 			.addHealth(60, 60)
 			.addVelocity(0, 20)
-			.addText("100%", sdx.graphics.Sprite.fromText("100%", sdx.smallFont, sdx.Color.LimeGreen))
+			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
 			.setEnemy3(true);
 	}
 

@@ -57,6 +57,7 @@ typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
 typedef struct _entitasSprite entitasSprite;
 
 #define ENTITAS_TYPE_TEXT (entitas_text_get_type ())
+typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
 typedef struct _entitasText entitasText;
 
 #define ENTITAS_TYPE_TINT (entitas_tint_get_type ())
@@ -157,7 +158,7 @@ struct _entitasSprite {
 
 struct _entitasText {
 	gchar* text;
-	sdxgraphicsSprite* sprite;
+	sdxgraphicsSpriteTextSprite* sprite;
 };
 
 struct _entitasTint {
@@ -225,6 +226,7 @@ struct _sdxgraphicsSprite {
 	gint height;
 	gint x;
 	gint y;
+	gint index;
 	sdxgraphicsScale scale;
 	SDL_Color color;
 	gboolean centered;
@@ -693,7 +695,7 @@ gboolean systems_display_system_draw (systemsDisplaySystem* self, entitasEntity*
 			SDL_Renderer* _tmp74_ = NULL;
 			entitasEntity* _tmp75_ = NULL;
 			entitasText* _tmp76_ = NULL;
-			sdxgraphicsSprite* _tmp77_ = NULL;
+			sdxgraphicsSpriteTextSprite* _tmp77_ = NULL;
 			SDL_Texture* _tmp78_ = NULL;
 			entitasEntity* _tmp79_ = NULL;
 			entitasPosition* _tmp80_ = NULL;
@@ -703,18 +705,18 @@ gboolean systems_display_system_draw (systemsDisplaySystem* self, entitasEntity*
 			gdouble _tmp84_ = 0.0;
 			entitasEntity* _tmp85_ = NULL;
 			entitasText* _tmp86_ = NULL;
-			sdxgraphicsSprite* _tmp87_ = NULL;
+			sdxgraphicsSpriteTextSprite* _tmp87_ = NULL;
 			gint _tmp88_ = 0;
 			entitasEntity* _tmp89_ = NULL;
 			entitasText* _tmp90_ = NULL;
-			sdxgraphicsSprite* _tmp91_ = NULL;
+			sdxgraphicsSpriteTextSprite* _tmp91_ = NULL;
 			gint _tmp92_ = 0;
 			SDL_Rect _tmp93_ = {0};
 			_tmp74_ = sdx_renderer;
 			_tmp75_ = e;
 			_tmp76_ = (*_tmp75_).text;
 			_tmp77_ = (*_tmp76_).sprite;
-			_tmp78_ = _tmp77_->texture;
+			_tmp78_ = ((sdxgraphicsSprite*) _tmp77_)->texture;
 			_tmp79_ = e;
 			_tmp80_ = (*_tmp79_).position;
 			_tmp81_ = (*_tmp80_).x;
@@ -724,11 +726,11 @@ gboolean systems_display_system_draw (systemsDisplaySystem* self, entitasEntity*
 			_tmp85_ = e;
 			_tmp86_ = (*_tmp85_).text;
 			_tmp87_ = (*_tmp86_).sprite;
-			_tmp88_ = _tmp87_->width;
+			_tmp88_ = ((sdxgraphicsSprite*) _tmp87_)->width;
 			_tmp89_ = e;
 			_tmp90_ = (*_tmp89_).text;
 			_tmp91_ = (*_tmp90_).sprite;
-			_tmp92_ = _tmp91_->height;
+			_tmp92_ = ((sdxgraphicsSprite*) _tmp91_)->height;
 			_tmp93_.x = (gint) _tmp81_;
 			_tmp93_.y = (gint) _tmp84_;
 			_tmp93_.w = (guint) _tmp88_;

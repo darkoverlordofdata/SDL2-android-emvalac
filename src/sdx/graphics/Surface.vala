@@ -29,7 +29,7 @@ namespace sdx.graphics {
 		}
 
 		public static int indexOfPath(string path) {
-			if (cache.length == 0) cache = new sdx.graphics.Surface[Pool.Count+1];
+			if (cache.length == 0) cache = new sdx.graphics.Surface[Pool.Count];
 			for (var i=0; i<cache.length; i++) {
 				if (cache[i] == null) {
 					cache[i] = new sdx.graphics.Surface(path);
@@ -37,7 +37,7 @@ namespace sdx.graphics {
 				}
 				if (cache[i].path == path) return i;
 			}
-			return -1;
+			throw new SdlException.UnableToLoadSurface("Cache is full");
 		}
 
 	}

@@ -14,8 +14,13 @@
 #include <string.h>
 
 typedef struct _sdxgraphicsBitmapFont sdxgraphicsBitmapFont;
+typedef struct _sdxutilsJson sdxutilsJson;
 typedef struct _sdxgraphicsTextureRegion sdxgraphicsTextureRegion;
 typedef struct _sdxgraphicsBitmapFontData sdxgraphicsBitmapFontData;
+void sdx_utils_json_release (sdxutilsJson* self);
+void sdx_utils_json_free (sdxutilsJson* self);
+sdxutilsJson* sdx_utils_json_retain (sdxutilsJson* self);
+#define _sdx_utils_json_release0(var) ((var == NULL) ? NULL : (var = (sdx_utils_json_release (var), NULL)))
 void sdx_graphics_texture_region_release (sdxgraphicsTextureRegion* self);
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
 sdxgraphicsTextureRegion* sdx_graphics_texture_region_retain (sdxgraphicsTextureRegion* self);
@@ -51,6 +56,7 @@ sdxgraphicsTexture* sdx_graphics_texture_retain (sdxgraphicsTexture* self);
 
 struct _sdxgraphicsBitmapFont {
 	gint _retainCount;
+	sdxutilsJson* dummy2;
 	sdxgraphicsTextureRegion* dummy;
 	sdxgraphicsBitmapFontData* data;
 	GList* regions;
@@ -121,6 +127,7 @@ typedef enum  {
 	SDX_SDL_EXCEPTION_InvalidForPlatform,
 	SDX_SDL_EXCEPTION_UnableToLoadResource,
 	SDX_SDL_EXCEPTION_UnableToLoadSurface,
+	SDX_SDL_EXCEPTION_UnableToLoadTexture,
 	SDX_SDL_EXCEPTION_NullPointer,
 	SDX_SDL_EXCEPTION_NoSuchElement,
 	SDX_SDL_EXCEPTION_IllegalStateException,
@@ -165,6 +172,7 @@ struct _sdxgraphicsTextureRegion {
 
 
 void sdx_graphics_bitmap_font_free (sdxgraphicsBitmapFont* self);
+void sdx_utils_json_free (sdxutilsJson* self);
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
 void sdx_graphics_bitmap_font_data_free (sdxgraphicsBitmapFontData* self);
 static void sdx_graphics_bitmap_font_instance_init (sdxgraphicsBitmapFont * self);
@@ -264,6 +272,7 @@ static void sdx_graphics_bitmap_font_instance_init (sdxgraphicsBitmapFont * self
 
 
 void sdx_graphics_bitmap_font_free (sdxgraphicsBitmapFont* self) {
+	_sdx_utils_json_release0 (self->dummy2);
 	_sdx_graphics_texture_region_release0 (self->dummy);
 	_sdx_graphics_bitmap_font_data_release0 (self->data);
 	__g_list_free__sdx_graphics_texture_region_release0_0 (self->regions);

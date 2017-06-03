@@ -1875,7 +1875,7 @@ namespace SDL {
 
 			public Surface.rgb (int width, int height, int depth,
 						uint32 rmask, uint32 gmask, uint32 bmask, uint32 amask) {
-				this.legacy_rgb (0, width, height, depth, rmask, gmask, bmask, amask);
+				new this.legacy_rgb (0, width, height, depth, rmask, gmask, bmask, amask);
 			}
 
 			[CCode (cname = "SDL_CreateRGBSurfaceFrom")]

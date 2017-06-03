@@ -62,6 +62,7 @@ typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
 typedef struct _entitasSprite entitasSprite;
 
 #define ENTITAS_TYPE_TEXT (entitas_text_get_type ())
+typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
 typedef struct _entitasText entitasText;
 
 #define ENTITAS_TYPE_TINT (entitas_tint_get_type ())
@@ -175,7 +176,7 @@ struct _entitasSprite {
 
 struct _entitasText {
 	gchar* text;
-	sdxgraphicsSprite* sprite;
+	sdxgraphicsSpriteTextSprite* sprite;
 };
 
 struct _entitasTint {
@@ -271,6 +272,7 @@ struct _sdxgraphicsSprite {
 	gint height;
 	gint x;
 	gint y;
+	gint index;
 	sdxgraphicsScale scale;
 	SDL_Color color;
 	gboolean centered;
@@ -402,9 +404,9 @@ entitasEntity* entitas_entity_addTint (entitasEntity *self, gint r, gint g, gint
 entitasEntity* entitas_entity_addHealth (entitasEntity *self, gdouble current, gdouble maximum);
 entitasEntity* entitas_entity_addVelocity (entitasEntity *self, gdouble x, gdouble y);
 entitasEntity* entitas_entity_setBullet (entitasEntity *self, gboolean value);
-entitasEntity* entitas_entity_addText (entitasEntity *self, const gchar* text, sdxgraphicsSprite* texture);
+entitasEntity* entitas_entity_addText (entitasEntity *self, const gchar* text, sdxgraphicsSpriteTextSprite* texture);
 void sdx_font_free (sdxFont* self);
-sdxgraphicsSprite* sdx_graphics_sprite_fromText (const gchar* path, sdxFont* font, SDL_Color color);
+sdxgraphicsSpriteTextSprite* sdx_graphics_sprite_text_sprite_new (const gchar* path, sdxFont* font, SDL_Color color);
 entitasEntity* entitas_entity_setEnemy1 (entitasEntity *self, gboolean value);
 entitasEntity* entitas_entity_setEnemy2 (entitasEntity *self, gboolean value);
 entitasEntity* entitas_entity_setEnemy3 (entitasEntity *self, gboolean value);
@@ -661,8 +663,8 @@ entitasEntity* factory_createEnemy1 (Factory* self) {
 	entitasEntity* _tmp1_ = NULL;
 	entitasEntity* _tmp2_ = NULL;
 	sdxFont* _tmp3_ = NULL;
-	sdxgraphicsSprite* _tmp4_ = NULL;
-	sdxgraphicsSprite* _tmp5_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp4_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp5_ = NULL;
 	entitasEntity* _tmp6_ = NULL;
 	entitasEntity* _tmp7_ = NULL;
 	entitasEntity* _tmp8_ = NULL;
@@ -671,7 +673,7 @@ entitasEntity* factory_createEnemy1 (Factory* self) {
 	_tmp1_ = entitas_entity_addHealth (_tmp0_, (gdouble) 10, (gdouble) 10);
 	_tmp2_ = entitas_entity_addVelocity (_tmp1_, (gdouble) 0, (gdouble) 40);
 	_tmp3_ = sdx_smallFont;
-	_tmp4_ = sdx_graphics_sprite_fromText ("100%", _tmp3_, SDX_COLOR_LimeGreen);
+	_tmp4_ = sdx_graphics_sprite_text_sprite_new ("100%", _tmp3_, SDX_COLOR_LimeGreen);
 	_tmp5_ = _tmp4_;
 	_tmp6_ = entitas_entity_addText (_tmp2_, "100%", _tmp5_);
 	_tmp7_ = entitas_entity_setEnemy1 (_tmp6_, TRUE);
@@ -688,8 +690,8 @@ entitasEntity* factory_createEnemy2 (Factory* self) {
 	entitasEntity* _tmp1_ = NULL;
 	entitasEntity* _tmp2_ = NULL;
 	sdxFont* _tmp3_ = NULL;
-	sdxgraphicsSprite* _tmp4_ = NULL;
-	sdxgraphicsSprite* _tmp5_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp4_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp5_ = NULL;
 	entitasEntity* _tmp6_ = NULL;
 	entitasEntity* _tmp7_ = NULL;
 	entitasEntity* _tmp8_ = NULL;
@@ -698,7 +700,7 @@ entitasEntity* factory_createEnemy2 (Factory* self) {
 	_tmp1_ = entitas_entity_addHealth (_tmp0_, (gdouble) 20, (gdouble) 20);
 	_tmp2_ = entitas_entity_addVelocity (_tmp1_, (gdouble) 0, (gdouble) 30);
 	_tmp3_ = sdx_smallFont;
-	_tmp4_ = sdx_graphics_sprite_fromText ("100%", _tmp3_, SDX_COLOR_LimeGreen);
+	_tmp4_ = sdx_graphics_sprite_text_sprite_new ("100%", _tmp3_, SDX_COLOR_LimeGreen);
 	_tmp5_ = _tmp4_;
 	_tmp6_ = entitas_entity_addText (_tmp2_, "100%", _tmp5_);
 	_tmp7_ = entitas_entity_setEnemy2 (_tmp6_, TRUE);
@@ -715,8 +717,8 @@ entitasEntity* factory_createEnemy3 (Factory* self) {
 	entitasEntity* _tmp1_ = NULL;
 	entitasEntity* _tmp2_ = NULL;
 	sdxFont* _tmp3_ = NULL;
-	sdxgraphicsSprite* _tmp4_ = NULL;
-	sdxgraphicsSprite* _tmp5_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp4_ = NULL;
+	sdxgraphicsSpriteTextSprite* _tmp5_ = NULL;
 	entitasEntity* _tmp6_ = NULL;
 	entitasEntity* _tmp7_ = NULL;
 	entitasEntity* _tmp8_ = NULL;
@@ -725,7 +727,7 @@ entitasEntity* factory_createEnemy3 (Factory* self) {
 	_tmp1_ = entitas_entity_addHealth (_tmp0_, (gdouble) 60, (gdouble) 60);
 	_tmp2_ = entitas_entity_addVelocity (_tmp1_, (gdouble) 0, (gdouble) 20);
 	_tmp3_ = sdx_smallFont;
-	_tmp4_ = sdx_graphics_sprite_fromText ("100%", _tmp3_, SDX_COLOR_LimeGreen);
+	_tmp4_ = sdx_graphics_sprite_text_sprite_new ("100%", _tmp3_, SDX_COLOR_LimeGreen);
 	_tmp5_ = _tmp4_;
 	_tmp6_ = entitas_entity_addText (_tmp2_, "100%", _tmp5_);
 	_tmp7_ = entitas_entity_setEnemy3 (_tmp6_, TRUE);

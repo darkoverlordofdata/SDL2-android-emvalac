@@ -54,6 +54,7 @@ typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
 typedef struct _entitasSprite entitasSprite;
 
 #define ENTITAS_TYPE_TEXT (entitas_text_get_type ())
+typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
 typedef struct _entitasText entitasText;
 
 #define ENTITAS_TYPE_TINT (entitas_tint_get_type ())
@@ -143,7 +144,7 @@ struct _entitasSprite {
 
 struct _entitasText {
 	gchar* text;
-	sdxgraphicsSprite* sprite;
+	sdxgraphicsSpriteTextSprite* sprite;
 };
 
 struct _entitasTint {

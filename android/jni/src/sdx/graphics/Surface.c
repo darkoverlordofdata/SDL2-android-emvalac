@@ -49,6 +49,24 @@ typedef enum  {
 	POOL_Count
 } Pool;
 
+typedef enum  {
+	SDX_SDL_EXCEPTION_Initialization,
+	SDX_SDL_EXCEPTION_ImageInitialization,
+	SDX_SDL_EXCEPTION_TtfInitialization,
+	SDX_SDL_EXCEPTION_TextureFilteringNotEnabled,
+	SDX_SDL_EXCEPTION_OpenWindow,
+	SDX_SDL_EXCEPTION_CreateRenderer,
+	SDX_SDL_EXCEPTION_InvalidForPlatform,
+	SDX_SDL_EXCEPTION_UnableToLoadResource,
+	SDX_SDL_EXCEPTION_UnableToLoadSurface,
+	SDX_SDL_EXCEPTION_UnableToLoadTexture,
+	SDX_SDL_EXCEPTION_NullPointer,
+	SDX_SDL_EXCEPTION_NoSuchElement,
+	SDX_SDL_EXCEPTION_IllegalStateException,
+	SDX_SDL_EXCEPTION_RuntimeException,
+	SDX_SDL_EXCEPTION_NotReached
+} sdxSdlException;
+#define SDX_SDL_EXCEPTION sdx_sdl_exception_quark ()
 
 extern sdxgraphicsSurface** sdx_graphics_surface_cache;
 extern gint sdx_graphics_surface_cache_length1;
@@ -68,6 +86,7 @@ sdxfilesFileHandle* sdx_files_default (const gchar* path);
 SDL_RWops* sdx_files_file_handle_getRWops (sdxfilesFileHandle* self);
 gint sdx_graphics_surface_indexOfPath (const gchar* path);
 GType pool_get_type (void) G_GNUC_CONST;
+GQuark sdx_sdl_exception_quark (void);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
@@ -139,15 +158,18 @@ gint sdx_graphics_surface_indexOfPath (const gchar* path) {
 	gint result = 0;
 	sdxgraphicsSurface** _tmp0_ = NULL;
 	gint _tmp0__length1 = 0;
+	GError* _tmp19_ = NULL;
+	gint _tmp20_ = 0;
+	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (path != NULL, 0);
 	_tmp0_ = sdx_graphics_surface_cache;
 	_tmp0__length1 = sdx_graphics_surface_cache_length1;
 	if (_tmp0__length1 == 0) {
 		sdxgraphicsSurface** _tmp1_ = NULL;
-		_tmp1_ = g_new0 (sdxgraphicsSurface*, (POOL_Count + 1) + 1);
+		_tmp1_ = g_new0 (sdxgraphicsSurface*, POOL_Count + 1);
 		sdx_graphics_surface_cache = (_vala_array_free (sdx_graphics_surface_cache, sdx_graphics_surface_cache_length1, (GDestroyNotify) sdx_graphics_surface_release), NULL);
 		sdx_graphics_surface_cache = _tmp1_;
-		sdx_graphics_surface_cache_length1 = POOL_Count + 1;
+		sdx_graphics_surface_cache_length1 = POOL_Count;
 	}
 	{
 		gint i = 0;
@@ -216,8 +238,11 @@ gint sdx_graphics_surface_indexOfPath (const gchar* path) {
 			}
 		}
 	}
-	result = -1;
-	return result;
+	_tmp19_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_UnableToLoadSurface, "Cache is full");
+	_inner_error_ = _tmp19_;
+	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+	g_clear_error (&_inner_error_);
+	return _tmp20_;
 }
 
 

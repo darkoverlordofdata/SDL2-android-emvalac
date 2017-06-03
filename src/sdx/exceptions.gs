@@ -13,6 +13,7 @@ namespace sdx
 		InvalidForPlatform
 		UnableToLoadResource
 		UnableToLoadSurface
+		UnableToLoadTexture
 		NullPointer
 		NoSuchElement
 		IllegalStateException

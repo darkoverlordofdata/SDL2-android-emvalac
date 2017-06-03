@@ -24,7 +24,7 @@ namespace sdx {
 	SDL.Video.DisplayMode displayMode;
 	SDL.Video.Color fpsColor;
 	SDL.Video.Color bgdColor;
-	sdx.graphics.Sprite fpsSprite;
+	sdx.graphics.Sprite.TextSprite fpsSprite;
 	long pixelFactor;
 	bool showFps;
 	double fps;
@@ -125,7 +125,7 @@ namespace sdx {
 	void setShowFps(bool value) {
 		showFps = value;
 		if (showFps == true) {
-			fpsSprite = sdx.graphics.Sprite.fromText("%2.2f".printf(60), font, fpsColor);
+			fpsSprite = new sdx.graphics.Sprite.TextSprite("%2.2f".printf(60), font, fpsColor);
 			fpsSprite.centered = false;
 		} else {
 			fpsSprite = null;
@@ -225,6 +225,14 @@ namespace sdx {
 
 	void end() {
 		sdx.renderer.present();
+	}
+
+	void log(string text) {
+#if (ANDROID)
+		Android.logWrite(Android.LogPriority.ERROR, "SDX", text);
+#else
+		stdout.printf("%s\n", text);
+#endif
 	}
 
 }

@@ -37,11 +37,12 @@ namespace sdx.graphics {
             foreach (var region in regions) {
                 if (index == -1) {
                     if (region.name == name) {
-                        return Sprite.fromRegion(region);
+                        return new Sprite.AtlasSprite(region);
                     }
                 } else {    
                     if (region.name == name && region.index == index)
-                        return Sprite.fromRegion(region);
+                        return new Sprite.AtlasSprite(region);
+                        //  return Sprite.fromRegion(region);
                 }
             }
             return null;
