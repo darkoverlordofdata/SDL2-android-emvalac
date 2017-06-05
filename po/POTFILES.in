@@ -18,7 +18,6 @@ src/sdx/files/files.vala
 src/sdx/graphics/BitmapFont.vala
 src/sdx/graphics/Sprite.vala
 src/sdx/graphics/Surface.vala
-src/sdx/graphics/Texture.vala
 src/sdx/graphics/TextureAtlas.vala
 src/sdx/graphics/TextureEnums.vala
 src/sdx/graphics/TextureRegion.vala

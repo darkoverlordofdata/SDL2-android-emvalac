@@ -8,7 +8,7 @@ using sdx.graphics;
 namespace sdx.graphics {
 
     public class TextureRegion : Object {
-        public Texture texture;
+        public Surface.TextureSurface? texture;
         public int top;
         public int left;
         public int width;
@@ -20,7 +20,7 @@ namespace sdx.graphics {
         public double u2;
         public double v2;
 
-        public TextureRegion(Texture texture, int x=0, int y=0, int width=0, int height=0) {
+        public TextureRegion(Surface.TextureSurface texture, int x=0, int y=0, int width=0, int height=0) {
             width = width == 0 ? texture.width : width;
             height = height == 0 ? texture.height : height;
             this.texture = texture;

@@ -30,7 +30,7 @@ typedef struct _sdxgraphicsSurface sdxgraphicsSurface;
 typedef sdxgraphicsSprite sdxgraphicsSpriteAtlasSprite;
 typedef struct _sdxgraphicsAtlasRegion sdxgraphicsAtlasRegion;
 typedef struct _sdxgraphicsTextureRegion sdxgraphicsTextureRegion;
-typedef struct _sdxgraphicsTexture sdxgraphicsTexture;
+typedef sdxgraphicsSurface sdxgraphicsTextureSurface;
 typedef sdxgraphicsSprite sdxgraphicsSpriteCompositeSprite;
 
 #define SDX_TYPE_BLIT (sdx_blit_get_type ())
@@ -64,8 +64,6 @@ struct _sdxgraphicsSprite {
 struct _sdxgraphicsSurface {
 	gint _retainCount;
 	SDL_Surface* surface;
-	gint width;
-	gint height;
 	gint id;
 	gchar* path;
 };
@@ -108,7 +106,7 @@ struct _sdxgraphicsAtlasRegion {
 
 struct _sdxgraphicsTextureRegion {
 	gint _retainCount;
-	sdxgraphicsTexture* texture;
+	sdxgraphicsTextureSurface* texture;
 	gint top;
 	gint left;
 	gint width;
@@ -119,12 +117,6 @@ struct _sdxgraphicsTextureRegion {
 	gdouble v;
 	gdouble u2;
 	gdouble v2;
-};
-
-struct _sdxgraphicsTexture {
-	gint _retainCount;
-	SDL_Surface* data;
-	gchar* path;
 };
 
 struct _sdxBlit {
@@ -147,8 +139,8 @@ struct _sdxFont {
 extern gint sdx_graphics_sprite_uniqueId;
 gint sdx_graphics_sprite_uniqueId = 0;
 extern SDL_Renderer* sdx_renderer;
-extern sdxgraphicsSurface** sdx_graphics_surface_cache;
-extern gint sdx_graphics_surface_cache_length1;
+extern sdxgraphicsSurface** sdx_graphics_cached_surface_cache;
+extern gint sdx_graphics_cached_surface_cache_length1;
 
 GType sdx_graphics_scale_get_type (void) G_GNUC_CONST;
 sdxgraphicsScale* sdx_graphics_scale_dup (const sdxgraphicsScale* self);
@@ -162,13 +154,14 @@ void sdx_graphics_sprite_render (sdxgraphicsSprite* self, gint x, gint y, SDL_Re
 void sdx_graphics_sprite_copy (sdxgraphicsSprite* self, SDL_Rect* src, SDL_Rect* dest);
 sdxgraphicsSprite* sdx_graphics_sprite_new (void);
 sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gchar* path);
-gint sdx_graphics_surface_indexOfPath (const gchar* path);
+gint sdx_graphics_cached_surface_indexOfPath (const gchar* path);
 void sdx_graphics_surface_free (sdxgraphicsSurface* self);
 GQuark sdx_sdl_exception_quark (void);
+gint sdx_graphics_surface_get_width (sdxgraphicsSurface* self);
+gint sdx_graphics_surface_get_height (sdxgraphicsSurface* self);
 void sdx_graphics_atlas_region_free (sdxgraphicsAtlasRegion* self);
 sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsAtlasRegion* region);
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
-void sdx_graphics_texture_free (sdxgraphicsTexture* self);
 GType sdx_blit_get_type (void) G_GNUC_CONST;
 sdxBlit* sdx_blit_dup (const sdxBlit* self);
 void sdx_blit_free (sdxBlit* self);
@@ -382,23 +375,25 @@ sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gc
 	gint _tmp13_ = 0;
 	sdxgraphicsSurface* _tmp14_ = NULL;
 	gint _tmp15_ = 0;
-	sdxgraphicsSurface** _tmp16_ = NULL;
-	gint _tmp16__length1 = 0;
-	gint _tmp17_ = 0;
-	sdxgraphicsSurface* _tmp18_ = NULL;
-	gint _tmp19_ = 0;
-	const gchar* _tmp20_ = NULL;
-	gchar* _tmp21_ = NULL;
+	gint _tmp16_ = 0;
+	sdxgraphicsSurface** _tmp17_ = NULL;
+	gint _tmp17__length1 = 0;
+	gint _tmp18_ = 0;
+	sdxgraphicsSurface* _tmp19_ = NULL;
+	gint _tmp20_ = 0;
+	gint _tmp21_ = 0;
+	const gchar* _tmp22_ = NULL;
+	gchar* _tmp23_ = NULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (path != NULL, NULL);
 	self = (sdxgraphicsSpriteTextureSprite*) sdx_graphics_sprite_new ();
 	((sdxgraphicsSprite*) self)->isText = FALSE;
 	_tmp0_ = path;
-	_tmp1_ = sdx_graphics_surface_indexOfPath (_tmp0_);
+	_tmp1_ = sdx_graphics_cached_surface_indexOfPath (_tmp0_);
 	index = _tmp1_;
 	_tmp2_ = sdx_renderer;
-	_tmp3_ = sdx_graphics_surface_cache;
-	_tmp3__length1 = sdx_graphics_surface_cache_length1;
+	_tmp3_ = sdx_graphics_cached_surface_cache;
+	_tmp3__length1 = sdx_graphics_cached_surface_cache_length1;
 	_tmp4_ = index;
 	_tmp5_ = _tmp3_[_tmp4_];
 	_tmp6_ = _tmp5_->surface;
@@ -418,22 +413,24 @@ sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gc
 	}
 	_tmp11_ = ((sdxgraphicsSprite*) self)->texture;
 	SDL_SetTextureBlendMode (_tmp11_, SDL_BLENDMODE_BLEND);
-	_tmp12_ = sdx_graphics_surface_cache;
-	_tmp12__length1 = sdx_graphics_surface_cache_length1;
+	_tmp12_ = sdx_graphics_cached_surface_cache;
+	_tmp12__length1 = sdx_graphics_cached_surface_cache_length1;
 	_tmp13_ = index;
 	_tmp14_ = _tmp12_[_tmp13_];
-	_tmp15_ = _tmp14_->width;
-	((sdxgraphicsSprite*) self)->width = _tmp15_;
-	_tmp16_ = sdx_graphics_surface_cache;
-	_tmp16__length1 = sdx_graphics_surface_cache_length1;
-	_tmp17_ = index;
-	_tmp18_ = _tmp16_[_tmp17_];
-	_tmp19_ = _tmp18_->height;
-	((sdxgraphicsSprite*) self)->height = _tmp19_;
-	_tmp20_ = path;
-	_tmp21_ = g_strdup (_tmp20_);
+	_tmp15_ = sdx_graphics_surface_get_width (_tmp14_);
+	_tmp16_ = _tmp15_;
+	((sdxgraphicsSprite*) self)->width = _tmp16_;
+	_tmp17_ = sdx_graphics_cached_surface_cache;
+	_tmp17__length1 = sdx_graphics_cached_surface_cache_length1;
+	_tmp18_ = index;
+	_tmp19_ = _tmp17_[_tmp18_];
+	_tmp20_ = sdx_graphics_surface_get_height (_tmp19_);
+	_tmp21_ = _tmp20_;
+	((sdxgraphicsSprite*) self)->height = _tmp21_;
+	_tmp22_ = path;
+	_tmp23_ = g_strdup (_tmp22_);
 	_g_free0 (((sdxgraphicsSprite*) self)->path);
-	((sdxgraphicsSprite*) self)->path = _tmp21_;
+	((sdxgraphicsSprite*) self)->path = _tmp23_;
 	return self;
 }
 
@@ -443,13 +440,13 @@ sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsA
 	gchar* path = NULL;
 	sdxgraphicsAtlasRegion* _tmp0_ = NULL;
 	sdxgraphicsTextureRegion* _tmp1_ = NULL;
-	sdxgraphicsTexture* _tmp2_ = NULL;
+	sdxgraphicsTextureSurface* _tmp2_ = NULL;
 	const gchar* _tmp3_ = NULL;
 	gchar* _tmp4_ = NULL;
 	gint index = 0;
 	sdxgraphicsAtlasRegion* _tmp5_ = NULL;
 	sdxgraphicsTextureRegion* _tmp6_ = NULL;
-	sdxgraphicsTexture* _tmp7_ = NULL;
+	sdxgraphicsTextureSurface* _tmp7_ = NULL;
 	const gchar* _tmp8_ = NULL;
 	gint _tmp9_ = 0;
 	guint32 rmask = 0U;
@@ -490,14 +487,14 @@ sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsA
 	_tmp0_ = region;
 	_tmp1_ = _tmp0_->rg;
 	_tmp2_ = _tmp1_->texture;
-	_tmp3_ = _tmp2_->path;
+	_tmp3_ = ((sdxgraphicsSurface*) _tmp2_)->path;
 	_tmp4_ = g_strdup (_tmp3_);
 	path = _tmp4_;
 	_tmp5_ = region;
 	_tmp6_ = _tmp5_->rg;
 	_tmp7_ = _tmp6_->texture;
-	_tmp8_ = _tmp7_->path;
-	_tmp9_ = sdx_graphics_surface_indexOfPath (_tmp8_);
+	_tmp8_ = ((sdxgraphicsSurface*) _tmp7_)->path;
+	_tmp9_ = sdx_graphics_cached_surface_indexOfPath (_tmp8_);
 	index = _tmp9_;
 	rmask = (guint32) 0x000000ff;
 	gmask = (guint32) 0x0000ff00;
@@ -521,8 +518,8 @@ sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsA
 	h = _tmp21_;
 	_tmp22_ = SDL_CreateRGBSurface ((guint32) 0, w, h, 32, rmask, gmask, bmask, amask);
 	surface = _tmp22_;
-	_tmp23_ = sdx_graphics_surface_cache;
-	_tmp23__length1 = sdx_graphics_surface_cache_length1;
+	_tmp23_ = sdx_graphics_cached_surface_cache;
+	_tmp23__length1 = sdx_graphics_cached_surface_cache_length1;
 	_tmp24_ = _tmp23_[index];
 	_tmp25_ = _tmp24_->surface;
 	_tmp26_.x = x;
@@ -644,7 +641,7 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 		segment_collection = (g_free (segment_collection), NULL);
 	}
 	_tmp17_ = path;
-	_tmp18_ = sdx_graphics_surface_indexOfPath (_tmp17_);
+	_tmp18_ = sdx_graphics_cached_surface_indexOfPath (_tmp17_);
 	index = _tmp18_;
 	rmask = (guint32) 0x000000ff;
 	gmask = (guint32) 0x0000ff00;
@@ -684,8 +681,8 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 				SDL_Surface* _tmp37_ = NULL;
 				sdxBlit _tmp38_ = {0};
 				SDL_Rect _tmp39_ = {0};
-				_tmp31_ = sdx_graphics_surface_cache;
-				_tmp31__length1 = sdx_graphics_surface_cache_length1;
+				_tmp31_ = sdx_graphics_cached_surface_cache;
+				_tmp31__length1 = sdx_graphics_cached_surface_cache_length1;
 				_tmp32_ = index;
 				_tmp33_ = _tmp31_[_tmp32_];
 				_tmp34_ = _tmp33_->surface;

@@ -31,8 +31,7 @@ public class Factory : World {
 	public Factory() {
 		base();
 		
-		sdx.files.FileHandle packFile = sdx.files.@default("assets/assets.atlas");
-		atlas = new sdx.graphics.TextureAtlas(packFile);
+		atlas = new sdx.graphics.TextureAtlas(sdx.files.@default("assets/assets.atlas"));
 		setPool(256, Pool.Count, {
 			Buffer(Pool.BULLET, 	 20, createBullet),
 			Buffer(Pool.ENEMY1, 	 15, createEnemy1),
@@ -47,7 +46,7 @@ public class Factory : World {
 	/**
 	 * The stuff that all entities have
 	 */
-	public Entity* createBase(string name, string path, int pool, double scale = 1.0, bool active = false) {
+	public Entity* createBase(string name, int pool, double scale = 1.0, bool active = false) {
 
 		var sprite = atlas.createSprite(name);
 		return createEntity(name, pool, active)
@@ -61,16 +60,16 @@ public class Factory : World {
 	 *	factory methods:
 	 */
 	public Entity* createBackground() {
-		return entityAdded(createBase("background", "assets/images/background.png", Pool.BACKGROUND, 2.0, true)
+		return entityAdded(createBase("background", Pool.BACKGROUND, 2.0, true)
 			.setBackground(true));
 	}
 
 	public Entity* createPlayer() {
-		return entityAdded(createBase("spaceshipspr", "assets/images/spaceshipspr.png", Pool.PLAYER, 1.0, true));
+		return entityAdded(createBase("spaceshipspr", Pool.PLAYER, 1.0, true));
 	}
 
 	public Entity* createBullet() {
-		return (createBase("bullet", "assets/images/bullet.png", Pool.BULLET)
+		return (createBase("bullet", Pool.BULLET)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/pew.wav")))
 			.addTint(0xd2, 0xfa, 0, 0xfa)
 			.addHealth(2, 2)
@@ -79,7 +78,7 @@ public class Factory : World {
 	}
 
 	public Entity* createEnemy1() {
-		return createBase("enemy1", "assets/images/enemy1.png", Pool.ENEMY1)
+		return createBase("enemy1", Pool.ENEMY1)
 			.addHealth(10, 10)
 			.addVelocity(0, 40)
 			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
@@ -87,7 +86,7 @@ public class Factory : World {
 	}
 
 	public Entity* createEnemy2() {
-		return createBase("enemy2", "assets/images/enemy2.png", Pool.ENEMY2)
+		return createBase("enemy2", Pool.ENEMY2)
 			.addHealth(20, 20)
 			.addVelocity(0, 30)
 			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
@@ -95,7 +94,7 @@ public class Factory : World {
 	}
 
 	public Entity* createEnemy3() {
-		return createBase("enemy3", "assets/images/enemy3.png", Pool.ENEMY3)
+		return createBase("enemy3", Pool.ENEMY3)
 			.addHealth(60, 60)
 			.addVelocity(0, 20)
 			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
@@ -103,7 +102,7 @@ public class Factory : World {
 	}
 
 	public Entity* createExplosion() {
-		return createBase("explosion", "assets/images/explosion.png", Pool.EXPLOSION, 0.6)
+		return createBase("explosion", Pool.EXPLOSION, 0.6)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/asplode.wav")))
 			.addTint(0xd2, 0xfa, 0xd2, 0x7f)
 			.addExpires(0.2)
@@ -111,7 +110,7 @@ public class Factory : World {
 	}
 
 	public Entity* createBang() {
-		return createBase("bang", "assets/images/explosion.png", Pool.BANG, 0.3)
+		return createBase("bang", Pool.BANG, 0.3)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/smallasplode.wav")))
 			.addTint(0xd2, 0xfa, 0xd2, 0x9f)
 			.addExpires(0.2)
@@ -119,7 +118,7 @@ public class Factory : World {
 	}
 
 	public Entity* createParticle() {
-		return createBase("star", "assets/images/star.png", Pool.PARTICLE)
+		return createBase("star", Pool.PARTICLE)
 			.addTint(0xd2, 0xfa, 0xd2, 0xfa)
 			.addExpires(0.75)
 			.addVelocity(0, 0);

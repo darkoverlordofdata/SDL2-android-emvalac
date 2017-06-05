@@ -11,12 +11,13 @@
 #include <SDL2/SDL_surface.h>
 
 typedef struct _sdxgraphicsTextureAtlas sdxgraphicsTextureAtlas;
-typedef struct _sdxgraphicsTexture sdxgraphicsTexture;
+typedef struct _sdxgraphicsSurface sdxgraphicsSurface;
+typedef sdxgraphicsSurface sdxgraphicsTextureSurface;
 typedef struct _sdxgraphicsAtlasRegion sdxgraphicsAtlasRegion;
-void sdx_graphics_texture_release (sdxgraphicsTexture* self);
-void sdx_graphics_texture_free (sdxgraphicsTexture* self);
-sdxgraphicsTexture* sdx_graphics_texture_retain (sdxgraphicsTexture* self);
-#define _sdx_graphics_texture_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_texture_release (var), NULL)))
+void sdx_graphics_surface_release (sdxgraphicsSurface* self);
+void sdx_graphics_surface_free (sdxgraphicsSurface* self);
+sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self);
+#define _sdx_graphics_surface_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_surface_release (var), NULL)))
 #define __g_list_free__sdx_graphics_atlas_region_release0_0(var) ((var == NULL) ? NULL : (var = (_g_list_free__sdx_graphics_atlas_region_release0_ (var), NULL)))
 typedef struct _sdxfilesFileHandle sdxfilesFileHandle;
 void sdx_files_file_handle_release (sdxfilesFileHandle* self);
@@ -68,7 +69,7 @@ sdxDataInputStream* sdx_data_input_stream_retain (sdxDataInputStream* self);
 
 struct _sdxgraphicsTextureAtlas {
 	gint _retainCount;
-	sdxgraphicsTexture* texture;
+	sdxgraphicsTextureSurface* texture;
 	GList* regions;
 };
 
@@ -110,7 +111,7 @@ struct _sdxgraphicsPage {
 	gint _retainCount;
 	gint id;
 	sdxfilesFileHandle* textureFile;
-	sdxgraphicsTexture* texture;
+	sdxgraphicsTextureSurface* texture;
 	gint height;
 	gint width;
 	gboolean useMipMaps;
@@ -144,7 +145,7 @@ struct _sdxgraphicsRegion {
 
 struct _sdxgraphicsTextureRegion {
 	gint _retainCount;
-	sdxgraphicsTexture* texture;
+	sdxgraphicsTextureSurface* texture;
 	gint top;
 	gint left;
 	gint width;
@@ -157,9 +158,10 @@ struct _sdxgraphicsTextureRegion {
 	gdouble v2;
 };
 
-struct _sdxgraphicsTexture {
+struct _sdxgraphicsSurface {
 	gint _retainCount;
-	SDL_Surface* data;
+	SDL_Surface* surface;
+	gint id;
 	gchar* path;
 };
 
@@ -191,7 +193,7 @@ gchar** sdx_graphics_texture_atlas_data_tuple = NULL;
 gint sdx_graphics_texture_atlas_data_tuple_length1 = 0;
 
 void sdx_graphics_texture_atlas_free (sdxgraphicsTextureAtlas* self);
-void sdx_graphics_texture_free (sdxgraphicsTexture* self);
+void sdx_graphics_surface_free (sdxgraphicsSurface* self);
 void sdx_graphics_atlas_region_free (sdxgraphicsAtlasRegion* self);
 static void sdx_graphics_texture_atlas_instance_init (sdxgraphicsTextureAtlas * self);
 static void _sdx_graphics_atlas_region_release0_ (gpointer var);
@@ -211,14 +213,14 @@ void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
 sdxgraphicsSprite* sdx_graphics_texture_atlas_createSprite (sdxgraphicsTextureAtlas* self, const gchar* name, gint index);
 sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsAtlasRegion* region);
 static void _g_free0_ (gpointer var);
-static void _sdx_graphics_texture_release0_ (gpointer var);
+static void _sdx_graphics_surface_release0_ (gpointer var);
 void sdx_graphics_page_free (sdxgraphicsPage* self);
 void sdx_graphics_region_free (sdxgraphicsRegion* self);
 GType sdx_graphics_format_get_type (void) G_GNUC_CONST;
-sdxgraphicsTexture* sdx_graphics_texture_new (sdxfilesFileHandle* file);
-void sdx_graphics_texture_setFilter (sdxgraphicsTexture* self, gint minFilter, gint magFilter);
-void sdx_graphics_texture_setWrap (sdxgraphicsTexture* self, gint u, gint v);
-sdxgraphicsAtlasRegion* sdx_graphics_atlas_region_new (sdxgraphicsTexture* texture, gint x, gint y, gint width, gint height);
+sdxgraphicsTextureSurface* sdx_graphics_texture_surface_new (sdxfilesFileHandle* file);
+void sdx_graphics_texture_surface_setFilter (sdxgraphicsTextureSurface* self, gint minFilter, gint magFilter);
+void sdx_graphics_texture_surface_setWrap (sdxgraphicsTextureSurface* self, gint u, gint v);
+sdxgraphicsAtlasRegion* sdx_graphics_atlas_region_new (sdxgraphicsTextureSurface* texture, gint x, gint y, gint width, gint height);
 static gint* _vala_array_dup2 (gint* self, int length);
 static gint* _vala_array_dup3 (gint* self, int length);
 void sdx_graphics_atlas_region_flip (sdxgraphicsAtlasRegion* self, gboolean x, gboolean y);
@@ -226,7 +228,7 @@ static void sdx_graphics_atlas_region_instance_init (sdxgraphicsAtlasRegion * se
 sdxgraphicsAtlasRegion* sdx_graphics_atlas_region_retain (sdxgraphicsAtlasRegion* self);
 void sdx_graphics_atlas_region_release (sdxgraphicsAtlasRegion* self);
 void sdx_graphics_atlas_region_free (sdxgraphicsAtlasRegion* self);
-sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* texture, gint x, gint y, gint width, gint height);
+sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTextureSurface* texture, gint x, gint y, gint width, gint height);
 void sdx_graphics_texture_region_flip (sdxgraphicsTextureRegion* self, gboolean x, gboolean y);
 static void sdx_graphics_page_instance_init (sdxgraphicsPage * self);
 sdxgraphicsPage* sdx_graphics_page_retain (sdxgraphicsPage* self);
@@ -487,8 +489,8 @@ static void _g_free0_ (gpointer var) {
 }
 
 
-static void _sdx_graphics_texture_release0_ (gpointer var) {
-	(var == NULL) ? NULL : (var = (sdx_graphics_texture_release (var), NULL));
+static void _sdx_graphics_surface_release0_ (gpointer var) {
+	(var == NULL) ? NULL : (var = (sdx_graphics_surface_release (var), NULL));
 }
 
 
@@ -497,8 +499,8 @@ static gpointer _sdx_graphics_page_retain0 (gpointer self) {
 }
 
 
-static gpointer _sdx_graphics_texture_retain0 (gpointer self) {
-	return self ? sdx_graphics_texture_retain (self) : NULL;
+static gpointer _sdx_graphics_surface_retain0 (gpointer self) {
+	return self ? sdx_graphics_surface_retain (self) : NULL;
 }
 
 
@@ -528,11 +530,11 @@ void sdx_graphics_texture_atlas_load (sdxgraphicsTextureAtlas* self, sdxgraphics
 	GList* _tmp31_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (data != NULL);
-	_sdx_graphics_texture_release0 (self->texture);
+	_sdx_graphics_surface_release0 (self->texture);
 	self->texture = NULL;
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
-	_tmp2_ = g_hash_table_new_full (_tmp0_, _tmp1_, _g_free0_, _sdx_graphics_texture_release0_);
+	_tmp2_ = g_hash_table_new_full (_tmp0_, _tmp1_, _g_free0_, _sdx_graphics_surface_release0_);
 	pageToTexture = _tmp2_;
 	_tmp3_ = data;
 	_tmp4_ = _tmp3_->pages;
@@ -547,13 +549,13 @@ void sdx_graphics_texture_atlas_load (sdxgraphicsTextureAtlas* self, sdxgraphics
 			page = _tmp5_;
 			{
 				sdxgraphicsPage* _tmp6_ = NULL;
-				sdxgraphicsTexture* _tmp7_ = NULL;
-				sdxgraphicsTexture* _tmp14_ = NULL;
+				sdxgraphicsTextureSurface* _tmp7_ = NULL;
+				sdxgraphicsTextureSurface* _tmp14_ = NULL;
 				sdxgraphicsPage* _tmp15_ = NULL;
 				gint _tmp16_ = 0;
 				sdxgraphicsPage* _tmp17_ = NULL;
 				gint _tmp18_ = 0;
-				sdxgraphicsTexture* _tmp19_ = NULL;
+				sdxgraphicsTextureSurface* _tmp19_ = NULL;
 				sdxgraphicsPage* _tmp20_ = NULL;
 				gint _tmp21_ = 0;
 				sdxgraphicsPage* _tmp22_ = NULL;
@@ -562,27 +564,27 @@ void sdx_graphics_texture_atlas_load (sdxgraphicsTextureAtlas* self, sdxgraphics
 				sdxgraphicsPage* _tmp25_ = NULL;
 				gint _tmp26_ = 0;
 				gchar* _tmp27_ = NULL;
-				sdxgraphicsTexture* _tmp28_ = NULL;
-				sdxgraphicsTexture* _tmp29_ = NULL;
+				sdxgraphicsTextureSurface* _tmp28_ = NULL;
+				sdxgraphicsTextureSurface* _tmp29_ = NULL;
 				_tmp6_ = page;
 				_tmp7_ = _tmp6_->texture;
 				if (_tmp7_ == NULL) {
 					sdxgraphicsPage* _tmp8_ = NULL;
 					sdxfilesFileHandle* _tmp9_ = NULL;
-					sdxgraphicsTexture* _tmp10_ = NULL;
+					sdxgraphicsTextureSurface* _tmp10_ = NULL;
 					_tmp8_ = page;
 					_tmp9_ = _tmp8_->textureFile;
-					_tmp10_ = sdx_graphics_texture_new (_tmp9_);
-					_sdx_graphics_texture_release0 (self->texture);
+					_tmp10_ = sdx_graphics_texture_surface_new (_tmp9_);
+					_sdx_graphics_surface_release0 (self->texture);
 					self->texture = _tmp10_;
 				} else {
 					sdxgraphicsPage* _tmp11_ = NULL;
-					sdxgraphicsTexture* _tmp12_ = NULL;
-					sdxgraphicsTexture* _tmp13_ = NULL;
+					sdxgraphicsTextureSurface* _tmp12_ = NULL;
+					sdxgraphicsTextureSurface* _tmp13_ = NULL;
 					_tmp11_ = page;
 					_tmp12_ = _tmp11_->texture;
-					_tmp13_ = _sdx_graphics_texture_retain0 (_tmp12_);
-					_sdx_graphics_texture_release0 (self->texture);
+					_tmp13_ = _sdx_graphics_surface_retain0 (_tmp12_);
+					_sdx_graphics_surface_release0 (self->texture);
 					self->texture = _tmp13_;
 				}
 				_tmp14_ = self->texture;
@@ -590,19 +592,19 @@ void sdx_graphics_texture_atlas_load (sdxgraphicsTextureAtlas* self, sdxgraphics
 				_tmp16_ = _tmp15_->minFilter;
 				_tmp17_ = page;
 				_tmp18_ = _tmp17_->magFilter;
-				sdx_graphics_texture_setFilter (_tmp14_, _tmp16_, _tmp18_);
+				sdx_graphics_texture_surface_setFilter (_tmp14_, _tmp16_, _tmp18_);
 				_tmp19_ = self->texture;
 				_tmp20_ = page;
 				_tmp21_ = _tmp20_->uWrap;
 				_tmp22_ = page;
 				_tmp23_ = _tmp22_->vWrap;
-				sdx_graphics_texture_setWrap (_tmp19_, _tmp21_, _tmp23_);
+				sdx_graphics_texture_surface_setWrap (_tmp19_, _tmp21_, _tmp23_);
 				_tmp24_ = pageToTexture;
 				_tmp25_ = page;
 				_tmp26_ = _tmp25_->id;
 				_tmp27_ = g_strdup_printf ("%i", _tmp26_);
 				_tmp28_ = self->texture;
-				_tmp29_ = _sdx_graphics_texture_retain0 (_tmp28_);
+				_tmp29_ = _sdx_graphics_surface_retain0 (_tmp28_);
 				g_hash_table_insert (_tmp24_, _tmp27_, _tmp29_);
 				_sdx_graphics_page_release0 (page);
 			}
@@ -682,7 +684,7 @@ void sdx_graphics_texture_atlas_load (sdxgraphicsTextureAtlas* self, sdxgraphics
 				gint _tmp89__length1 = 0;
 				sdxgraphicsAtlasRegion* _tmp90_ = NULL;
 				sdxgraphicsTextureRegion* _tmp91_ = NULL;
-				sdxgraphicsTexture* _tmp92_ = NULL;
+				sdxgraphicsTextureSurface* _tmp92_ = NULL;
 				const gchar* _tmp93_ = NULL;
 				sdxgraphicsAtlasRegion* _tmp94_ = NULL;
 				const gchar* _tmp95_ = NULL;
@@ -729,7 +731,7 @@ void sdx_graphics_texture_atlas_load (sdxgraphicsTextureAtlas* self, sdxgraphics
 				_tmp55_ = _tmp54_->left;
 				_tmp56_ = region;
 				_tmp57_ = _tmp56_->top;
-				_tmp58_ = sdx_graphics_atlas_region_new ((sdxgraphicsTexture*) _tmp53_, _tmp55_, _tmp57_, _tmp37_, _tmp42_);
+				_tmp58_ = sdx_graphics_atlas_region_new ((sdxgraphicsTextureSurface*) _tmp53_, _tmp55_, _tmp57_, _tmp37_, _tmp42_);
 				_tmp59_ = _tmp58_;
 				_g_free0 (_tmp52_);
 				atlasRegion = _tmp59_;
@@ -784,7 +786,7 @@ void sdx_graphics_texture_atlas_load (sdxgraphicsTextureAtlas* self, sdxgraphics
 				_tmp90_ = atlasRegion;
 				_tmp91_ = _tmp90_->rg;
 				_tmp92_ = _tmp91_->texture;
-				_tmp93_ = _tmp92_->path;
+				_tmp93_ = ((sdxgraphicsSurface*) _tmp92_)->path;
 				_tmp94_ = atlasRegion;
 				_tmp95_ = _tmp94_->name;
 				g_print ("%s - %s\n", _tmp93_, _tmp95_);
@@ -814,7 +816,7 @@ static void sdx_graphics_texture_atlas_instance_init (sdxgraphicsTextureAtlas * 
 
 
 void sdx_graphics_texture_atlas_free (sdxgraphicsTextureAtlas* self) {
-	_sdx_graphics_texture_release0 (self->texture);
+	_sdx_graphics_surface_release0 (self->texture);
 	__g_list_free__sdx_graphics_atlas_region_release0_0 (self->regions);
 	g_slice_free (sdxgraphicsTextureAtlas, self);
 }
@@ -839,9 +841,9 @@ void sdx_graphics_atlas_region_release (sdxgraphicsAtlasRegion* self) {
 }
 
 
-sdxgraphicsAtlasRegion* sdx_graphics_atlas_region_new (sdxgraphicsTexture* texture, gint x, gint y, gint width, gint height) {
+sdxgraphicsAtlasRegion* sdx_graphics_atlas_region_new (sdxgraphicsTextureSurface* texture, gint x, gint y, gint width, gint height) {
 	sdxgraphicsAtlasRegion* self;
-	sdxgraphicsTexture* _tmp0_ = NULL;
+	sdxgraphicsTextureSurface* _tmp0_ = NULL;
 	gint _tmp1_ = 0;
 	gint _tmp2_ = 0;
 	gint _tmp3_ = 0;
@@ -957,7 +959,7 @@ static void sdx_graphics_page_instance_init (sdxgraphicsPage * self) {
 
 void sdx_graphics_page_free (sdxgraphicsPage* self) {
 	_sdx_files_file_handle_release0 (self->textureFile);
-	_sdx_graphics_texture_release0 (self->texture);
+	_sdx_graphics_surface_release0 (self->texture);
 	g_slice_free (sdxgraphicsPage, self);
 }
 

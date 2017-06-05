@@ -11,7 +11,7 @@ namespace sdx.graphics {
      *  load a libgdx format atlas
      */
     public class TextureAtlas : Object {
-        public Texture? texture;
+        public Surface.TextureSurface? texture;
         public List<AtlasRegion> regions = new List<AtlasRegion>();
 
         /**
@@ -22,7 +22,7 @@ namespace sdx.graphics {
         }
 
 
-        public AtlasRegion findRegion(string name, int index=-1) {
+        public AtlasRegion? findRegion(string name, int index=-1) {
             foreach (var region in regions) {   
                 if (index == -1) {
                     if (region.name == name) return region;
@@ -42,7 +42,6 @@ namespace sdx.graphics {
                 } else {    
                     if (region.name == name && region.index == index)
                         return new Sprite.AtlasSprite(region);
-                        //  return Sprite.fromRegion(region);
                 }
             }
             return null;
@@ -55,17 +54,16 @@ namespace sdx.graphics {
         public void load(TextureAtlasData data) {
         
             texture = null;
-            var pageToTexture = new HashTable<string,Texture>(str_hash, str_equal);
+            var pageToTexture = new HashTable<string,Surface.TextureSurface>(str_hash, str_equal);
             foreach (var page in data.pages) {
 
                 if (page.texture == null) {
-                    texture = new Texture(page.textureFile); //, page.format, page.useMipMaps)
+                    texture = new Surface.TextureSurface(page.textureFile); //, page.format, page.useMipMaps)
                 } else {    
                     texture = page.texture;
                 }
                 texture.setFilter(page.minFilter, page.magFilter);
                 texture.setWrap(page.uWrap, page.vWrap);
-                //textures.append(texture);
                 pageToTexture.insert(page.id.to_string(), texture);
             }
 
@@ -84,7 +82,6 @@ namespace sdx.graphics {
                 atlasRegion.rotate = region.rotate;
                 atlasRegion.splits = region.splits;
                 atlasRegion.pads = region.pads;
-                print("%s - %s\n", atlasRegion.rg.texture.path, atlasRegion.name);
                 if (region.flip) atlasRegion.flip(false, true);
                 regions.append(atlasRegion);
             }
@@ -125,7 +122,7 @@ namespace sdx.graphics {
         /** The ninepatch pads, or null if not a ninepatch or the has no padding. Has 4 elements: left, right, top, bottom. */
         public int[] pads;
 
-        public AtlasRegion(Texture texture, int x, int y, int width, int height) {
+        public AtlasRegion(Surface.TextureSurface texture, int x, int y, int width, int height) {
             rg = new TextureRegion(texture, x, y, width, height);
         }
 
@@ -140,8 +137,8 @@ namespace sdx.graphics {
     public class Page : Object {
         public static int uniqueId;
         public int id;
-        public FileHandle textureFile;
-        public Texture texture;
+        public FileHandle? textureFile;
+        public Surface.TextureSurface? texture;
         public int height;
         public int width;
         public bool useMipMaps;

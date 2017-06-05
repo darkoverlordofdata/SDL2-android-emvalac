@@ -349,6 +349,32 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 }
 
 
+static gint string_index_of (const gchar* self, const gchar* needle, gint start_index) {
+	gint result = 0;
+	gchar* _result_ = NULL;
+	gint _tmp0_ = 0;
+	const gchar* _tmp1_ = NULL;
+	gchar* _tmp2_ = NULL;
+	gchar* _tmp3_ = NULL;
+	g_return_val_if_fail (self != NULL, 0);
+	g_return_val_if_fail (needle != NULL, 0);
+	_tmp0_ = start_index;
+	_tmp1_ = needle;
+	_tmp2_ = strstr (((gchar*) self) + _tmp0_, (gchar*) _tmp1_);
+	_result_ = _tmp2_;
+	_tmp3_ = _result_;
+	if (_tmp3_ != NULL) {
+		gchar* _tmp4_ = NULL;
+		_tmp4_ = _result_;
+		result = (gint) (_tmp4_ - ((gchar*) self));
+		return result;
+	} else {
+		result = -1;
+		return result;
+	}
+}
+
+
 gchar* sdx_files_file_handle_getExt (sdxfilesFileHandle* self) {
 	gchar* result = NULL;
 	gchar* name = NULL;
@@ -357,9 +383,12 @@ gchar* sdx_files_file_handle_getExt (sdxfilesFileHandle* self) {
 	const gchar* _tmp1_ = NULL;
 	gint _tmp2_ = 0;
 	gint _tmp3_ = 0;
+	gchar* ext = NULL;
 	const gchar* _tmp5_ = NULL;
 	gint _tmp6_ = 0;
 	gchar* _tmp7_ = NULL;
+	const gchar* _tmp8_ = NULL;
+	gint _tmp9_ = 0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = sdx_files_file_handle_getName (self);
 	name = _tmp0_;
@@ -377,7 +406,18 @@ gchar* sdx_files_file_handle_getExt (sdxfilesFileHandle* self) {
 	_tmp5_ = name;
 	_tmp6_ = i;
 	_tmp7_ = string_substring (_tmp5_, (glong) _tmp6_, (glong) -1);
-	result = _tmp7_;
+	ext = _tmp7_;
+	_tmp8_ = ext;
+	_tmp9_ = string_index_of (_tmp8_, ".", 0);
+	if (_tmp9_ < 0) {
+		const gchar* _tmp10_ = NULL;
+		gchar* _tmp11_ = NULL;
+		_tmp10_ = ext;
+		_tmp11_ = g_strconcat (".", _tmp10_, NULL);
+		_g_free0 (ext);
+		ext = _tmp11_;
+	}
+	result = ext;
 	_g_free0 (name);
 	return result;
 }

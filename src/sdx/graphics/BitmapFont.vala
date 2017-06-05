@@ -17,10 +17,10 @@ namespace sdx.graphics {
         public const int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
         public const int PAGES = 0x10000 / PAGE_SIZE;
 
-        public sdx.utils.Json dummy2;
-        public TextureRegion dummy; // generic reference doesn't trigger forward reference.
+        public sdx.utils.Json? dummy2;
+        public TextureRegion? dummy; // generic reference doesn't trigger forward reference.
         
-        public BitmapFontData data;
+        public BitmapFontData? data;
         public List<TextureRegion> regions;
     }
 

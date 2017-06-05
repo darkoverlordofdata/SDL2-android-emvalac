@@ -48,11 +48,12 @@ void sdx_utils_js_variant_release (sdxutilsJsVariant* self);
 void sdx_utils_js_variant_free (sdxutilsJsVariant* self);
 sdxutilsJsVariant* sdx_utils_js_variant_retain (sdxutilsJsVariant* self);
 #define _sdx_utils_js_variant_release0(var) ((var == NULL) ? NULL : (var = (sdx_utils_js_variant_release (var), NULL)))
-typedef struct _sdxgraphicsTexture sdxgraphicsTexture;
-void sdx_graphics_texture_release (sdxgraphicsTexture* self);
-void sdx_graphics_texture_free (sdxgraphicsTexture* self);
-sdxgraphicsTexture* sdx_graphics_texture_retain (sdxgraphicsTexture* self);
-#define _sdx_graphics_texture_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_texture_release (var), NULL)))
+typedef struct _sdxgraphicsSurface sdxgraphicsSurface;
+typedef sdxgraphicsSurface sdxgraphicsTextureSurface;
+void sdx_graphics_surface_release (sdxgraphicsSurface* self);
+void sdx_graphics_surface_free (sdxgraphicsSurface* self);
+sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self);
+#define _sdx_graphics_surface_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_surface_release (var), NULL)))
 
 struct _sdxgraphicsBitmapFont {
 	gint _retainCount;
@@ -156,7 +157,7 @@ struct _sdxutilsJsVariant {
 
 struct _sdxgraphicsTextureRegion {
 	gint _retainCount;
-	sdxgraphicsTexture* texture;
+	sdxgraphicsTextureSurface* texture;
 	gint top;
 	gint left;
 	gint width;
@@ -213,9 +214,9 @@ sdxgraphicsGlyph* sdx_graphics_bitmap_font_data_getGlyph (sdxgraphicsBitmapFontD
 sdxgraphicsGlyph* sdx_graphics_bitmap_font_data_getFirstGlyph (sdxgraphicsBitmapFontData* self);
 void sdx_graphics_bitmap_font_data_setGlyph (sdxgraphicsBitmapFontData* self, gint ch, sdxgraphicsGlyph* glyph);
 void sdx_graphics_bitmap_font_data_setGlyphRegion (sdxgraphicsBitmapFontData* self, sdxgraphicsGlyph* glyph, sdxgraphicsTextureRegion* region);
-void sdx_graphics_texture_free (sdxgraphicsTexture* self);
-gint sdx_graphics_texture_get_width (sdxgraphicsTexture* self);
-gint sdx_graphics_texture_get_height (sdxgraphicsTexture* self);
+void sdx_graphics_surface_free (sdxgraphicsSurface* self);
+gint sdx_graphics_surface_get_width (sdxgraphicsSurface* self);
+gint sdx_graphics_surface_get_height (sdxgraphicsSurface* self);
 gint sdx_graphics_texture_region_getRegionWidth (sdxgraphicsTextureRegion* self);
 gint sdx_graphics_texture_region_getRegionHeight (sdxgraphicsTextureRegion* self);
 void sdx_graphics_bitmap_font_data_setLineHeight (sdxgraphicsBitmapFontData* self, gdouble height);
@@ -1233,22 +1234,22 @@ void sdx_graphics_bitmap_font_data_load (sdxgraphicsBitmapFontData* self, sdxfil
 }
 
 
-static gpointer _sdx_graphics_texture_retain0 (gpointer self) {
-	return self ? sdx_graphics_texture_retain (self) : NULL;
+static gpointer _sdx_graphics_surface_retain0 (gpointer self) {
+	return self ? sdx_graphics_surface_retain (self) : NULL;
 }
 
 
 void sdx_graphics_bitmap_font_data_setGlyphRegion (sdxgraphicsBitmapFontData* self, sdxgraphicsGlyph* glyph, sdxgraphicsTextureRegion* region) {
-	sdxgraphicsTexture* texture = NULL;
+	sdxgraphicsTextureSurface* texture = NULL;
 	sdxgraphicsTextureRegion* _tmp0_ = NULL;
-	sdxgraphicsTexture* _tmp1_ = NULL;
-	sdxgraphicsTexture* _tmp2_ = NULL;
+	sdxgraphicsTextureSurface* _tmp1_ = NULL;
+	sdxgraphicsTextureSurface* _tmp2_ = NULL;
 	gdouble invTexWidth = 0.0;
-	sdxgraphicsTexture* _tmp3_ = NULL;
+	sdxgraphicsTextureSurface* _tmp3_ = NULL;
 	gint _tmp4_ = 0;
 	gint _tmp5_ = 0;
 	gdouble invTexHeight = 0.0;
-	sdxgraphicsTexture* _tmp6_ = NULL;
+	sdxgraphicsTextureSurface* _tmp6_ = NULL;
 	gint _tmp7_ = 0;
 	gint _tmp8_ = 0;
 	gint offsetX = 0;
@@ -1297,14 +1298,14 @@ void sdx_graphics_bitmap_font_data_setGlyphRegion (sdxgraphicsBitmapFontData* se
 	g_return_if_fail (region != NULL);
 	_tmp0_ = region;
 	_tmp1_ = _tmp0_->texture;
-	_tmp2_ = _sdx_graphics_texture_retain0 (_tmp1_);
+	_tmp2_ = _sdx_graphics_surface_retain0 (_tmp1_);
 	texture = _tmp2_;
 	_tmp3_ = texture;
-	_tmp4_ = sdx_graphics_texture_get_width (_tmp3_);
+	_tmp4_ = sdx_graphics_surface_get_width ((sdxgraphicsSurface*) _tmp3_);
 	_tmp5_ = _tmp4_;
 	invTexWidth = 1.0 / _tmp5_;
 	_tmp6_ = texture;
-	_tmp7_ = sdx_graphics_texture_get_height (_tmp6_);
+	_tmp7_ = sdx_graphics_surface_get_height ((sdxgraphicsSurface*) _tmp6_);
 	_tmp8_ = _tmp7_;
 	invTexHeight = 1.0 / _tmp8_;
 	offsetX = 0;
@@ -1503,7 +1504,7 @@ void sdx_graphics_bitmap_font_data_setGlyphRegion (sdxgraphicsBitmapFontData* se
 		_tmp98_ = invTexHeight;
 		_tmp95_->v = _tmp96_ + (_tmp97_ * _tmp98_);
 	}
-	_sdx_graphics_texture_release0 (texture);
+	_sdx_graphics_surface_release0 (texture);
 }
 
 

@@ -73,7 +73,11 @@ namespace sdx.files {
             var name = getName();
             var i = name.last_index_of(".");
             if (i < 0) return "";
-            return name.substring(i);			
+			var ext = name.substring(i);
+			// BUG fix for emscripten:
+			if (ext.index_of(".") < 0) ext = "."+ext;
+			return ext;
+            //  return name.substring(i);			
 		}
 
 		public string getPath() {

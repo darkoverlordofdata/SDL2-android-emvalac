@@ -8,15 +8,16 @@
 #include <math.h>
 
 typedef struct _sdxgraphicsTextureRegion sdxgraphicsTextureRegion;
-typedef struct _sdxgraphicsTexture sdxgraphicsTexture;
-void sdx_graphics_texture_release (sdxgraphicsTexture* self);
-void sdx_graphics_texture_free (sdxgraphicsTexture* self);
-sdxgraphicsTexture* sdx_graphics_texture_retain (sdxgraphicsTexture* self);
-#define _sdx_graphics_texture_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_texture_release (var), NULL)))
+typedef struct _sdxgraphicsSurface sdxgraphicsSurface;
+typedef sdxgraphicsSurface sdxgraphicsTextureSurface;
+void sdx_graphics_surface_release (sdxgraphicsSurface* self);
+void sdx_graphics_surface_free (sdxgraphicsSurface* self);
+sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self);
+#define _sdx_graphics_surface_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_surface_release (var), NULL)))
 
 struct _sdxgraphicsTextureRegion {
 	gint _retainCount;
-	sdxgraphicsTexture* texture;
+	sdxgraphicsTextureSurface* texture;
 	gint top;
 	gint left;
 	gint width;
@@ -32,14 +33,14 @@ struct _sdxgraphicsTextureRegion {
 
 
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
-void sdx_graphics_texture_free (sdxgraphicsTexture* self);
+void sdx_graphics_surface_free (sdxgraphicsSurface* self);
 static void sdx_graphics_texture_region_instance_init (sdxgraphicsTextureRegion * self);
 sdxgraphicsTextureRegion* sdx_graphics_texture_region_retain (sdxgraphicsTextureRegion* self);
 void sdx_graphics_texture_region_release (sdxgraphicsTextureRegion* self);
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
-sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* texture, gint x, gint y, gint width, gint height);
-gint sdx_graphics_texture_get_width (sdxgraphicsTexture* self);
-gint sdx_graphics_texture_get_height (sdxgraphicsTexture* self);
+sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTextureSurface* texture, gint x, gint y, gint width, gint height);
+gint sdx_graphics_surface_get_width (sdxgraphicsSurface* self);
+gint sdx_graphics_surface_get_height (sdxgraphicsSurface* self);
 void sdx_graphics_texture_region_setRegionXY (sdxgraphicsTextureRegion* self, gint x, gint y, gint width, gint height);
 void sdx_graphics_texture_region_setRegion (sdxgraphicsTextureRegion* self, gdouble u, gdouble v, gdouble u2, gdouble v2);
 void sdx_graphics_texture_region_setByRegion (sdxgraphicsTextureRegion* self, sdxgraphicsTextureRegion* region);
@@ -84,19 +85,19 @@ void sdx_graphics_texture_region_release (sdxgraphicsTextureRegion* self) {
 }
 
 
-static gpointer _sdx_graphics_texture_retain0 (gpointer self) {
-	return self ? sdx_graphics_texture_retain (self) : NULL;
+static gpointer _sdx_graphics_surface_retain0 (gpointer self) {
+	return self ? sdx_graphics_surface_retain (self) : NULL;
 }
 
 
-sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* texture, gint x, gint y, gint width, gint height) {
+sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTextureSurface* texture, gint x, gint y, gint width, gint height) {
 	sdxgraphicsTextureRegion* self;
 	gint _tmp0_ = 0;
 	gint _tmp1_ = 0;
 	gint _tmp6_ = 0;
 	gint _tmp7_ = 0;
-	sdxgraphicsTexture* _tmp12_ = NULL;
-	sdxgraphicsTexture* _tmp13_ = NULL;
+	sdxgraphicsTextureSurface* _tmp12_ = NULL;
+	sdxgraphicsTextureSurface* _tmp13_ = NULL;
 	gint _tmp14_ = 0;
 	gint _tmp15_ = 0;
 	gint _tmp16_ = 0;
@@ -110,11 +111,11 @@ sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* t
 	sdx_graphics_texture_region_instance_init (self);
 	_tmp1_ = width;
 	if (_tmp1_ == 0) {
-		sdxgraphicsTexture* _tmp2_ = NULL;
+		sdxgraphicsTextureSurface* _tmp2_ = NULL;
 		gint _tmp3_ = 0;
 		gint _tmp4_ = 0;
 		_tmp2_ = texture;
-		_tmp3_ = sdx_graphics_texture_get_width (_tmp2_);
+		_tmp3_ = sdx_graphics_surface_get_width ((sdxgraphicsSurface*) _tmp2_);
 		_tmp4_ = _tmp3_;
 		_tmp0_ = _tmp4_;
 	} else {
@@ -125,11 +126,11 @@ sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* t
 	width = _tmp0_;
 	_tmp7_ = height;
 	if (_tmp7_ == 0) {
-		sdxgraphicsTexture* _tmp8_ = NULL;
+		sdxgraphicsTextureSurface* _tmp8_ = NULL;
 		gint _tmp9_ = 0;
 		gint _tmp10_ = 0;
 		_tmp8_ = texture;
-		_tmp9_ = sdx_graphics_texture_get_height (_tmp8_);
+		_tmp9_ = sdx_graphics_surface_get_height ((sdxgraphicsSurface*) _tmp8_);
 		_tmp10_ = _tmp9_;
 		_tmp6_ = _tmp10_;
 	} else {
@@ -139,8 +140,8 @@ sdxgraphicsTextureRegion* sdx_graphics_texture_region_new (sdxgraphicsTexture* t
 	}
 	height = _tmp6_;
 	_tmp12_ = texture;
-	_tmp13_ = _sdx_graphics_texture_retain0 (_tmp12_);
-	_sdx_graphics_texture_release0 (self->texture);
+	_tmp13_ = _sdx_graphics_surface_retain0 (_tmp12_);
+	_sdx_graphics_surface_release0 (self->texture);
 	self->texture = _tmp13_;
 	_tmp14_ = x;
 	self->top = _tmp14_;
@@ -264,8 +265,8 @@ void sdx_graphics_texture_region_setRegionXY (sdxgraphicsTextureRegion* self, gi
 
 void sdx_graphics_texture_region_setByRegion (sdxgraphicsTextureRegion* self, sdxgraphicsTextureRegion* region) {
 	sdxgraphicsTextureRegion* _tmp0_ = NULL;
-	sdxgraphicsTexture* _tmp1_ = NULL;
-	sdxgraphicsTexture* _tmp2_ = NULL;
+	sdxgraphicsTextureSurface* _tmp1_ = NULL;
+	sdxgraphicsTextureSurface* _tmp2_ = NULL;
 	sdxgraphicsTextureRegion* _tmp3_ = NULL;
 	gdouble _tmp4_ = 0.0;
 	sdxgraphicsTextureRegion* _tmp5_ = NULL;
@@ -278,8 +279,8 @@ void sdx_graphics_texture_region_setByRegion (sdxgraphicsTextureRegion* self, sd
 	g_return_if_fail (region != NULL);
 	_tmp0_ = region;
 	_tmp1_ = _tmp0_->texture;
-	_tmp2_ = _sdx_graphics_texture_retain0 (_tmp1_);
-	_sdx_graphics_texture_release0 (self->texture);
+	_tmp2_ = _sdx_graphics_surface_retain0 (_tmp1_);
+	_sdx_graphics_surface_release0 (self->texture);
 	self->texture = _tmp2_;
 	_tmp3_ = region;
 	_tmp4_ = _tmp3_->u;
@@ -295,8 +296,8 @@ void sdx_graphics_texture_region_setByRegion (sdxgraphicsTextureRegion* self, sd
 
 void sdx_graphics_texture_region_setByRegionXY (sdxgraphicsTextureRegion* self, sdxgraphicsTextureRegion* region, gint x, gint y, gint width, gint height) {
 	sdxgraphicsTextureRegion* _tmp0_ = NULL;
-	sdxgraphicsTexture* _tmp1_ = NULL;
-	sdxgraphicsTexture* _tmp2_ = NULL;
+	sdxgraphicsTextureSurface* _tmp1_ = NULL;
+	sdxgraphicsTextureSurface* _tmp2_ = NULL;
 	sdxgraphicsTextureRegion* _tmp3_ = NULL;
 	gint _tmp4_ = 0;
 	gint _tmp5_ = 0;
@@ -309,8 +310,8 @@ void sdx_graphics_texture_region_setByRegionXY (sdxgraphicsTextureRegion* self, 
 	g_return_if_fail (region != NULL);
 	_tmp0_ = region;
 	_tmp1_ = _tmp0_->texture;
-	_tmp2_ = _sdx_graphics_texture_retain0 (_tmp1_);
-	_sdx_graphics_texture_release0 (self->texture);
+	_tmp2_ = _sdx_graphics_surface_retain0 (_tmp1_);
+	_sdx_graphics_surface_release0 (self->texture);
 	self->texture = _tmp2_;
 	_tmp3_ = region;
 	_tmp4_ = sdx_graphics_texture_region_getRegionX (_tmp3_);
@@ -621,7 +622,7 @@ static void sdx_graphics_texture_region_instance_init (sdxgraphicsTextureRegion 
 
 
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self) {
-	_sdx_graphics_texture_release0 (self->texture);
+	_sdx_graphics_surface_release0 (self->texture);
 	g_slice_free (sdxgraphicsTextureRegion, self);
 }
 

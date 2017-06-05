@@ -7,30 +7,30 @@
 #include <SDL2/SDL_surface.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL_image.h>
 
 typedef struct _sdxgraphicsSurface sdxgraphicsSurface;
 #define _SDL_FreeSurface0(var) ((var == NULL) ? NULL : (var = (SDL_FreeSurface (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
+typedef sdxgraphicsSurface sdxgraphicsCachedSurface;
 typedef struct _sdxfilesFileHandle sdxfilesFileHandle;
 #define _SDL_FreeRW0(var) ((var == NULL) ? NULL : (var = (SDL_FreeRW (var), NULL)))
-void sdx_files_file_handle_release (sdxfilesFileHandle* self);
-void sdx_files_file_handle_free (sdxfilesFileHandle* self);
-sdxfilesFileHandle* sdx_files_file_handle_retain (sdxfilesFileHandle* self);
-#define _sdx_files_file_handle_release0(var) ((var == NULL) ? NULL : (var = (sdx_files_file_handle_release (var), NULL)))
 
 #define TYPE_POOL (pool_get_type ())
 void sdx_graphics_surface_release (sdxgraphicsSurface* self);
 void sdx_graphics_surface_free (sdxgraphicsSurface* self);
 sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self);
 #define _sdx_graphics_surface_release0(var) ((var == NULL) ? NULL : (var = (sdx_graphics_surface_release (var), NULL)))
+void sdx_files_file_handle_release (sdxfilesFileHandle* self);
+void sdx_files_file_handle_free (sdxfilesFileHandle* self);
+sdxfilesFileHandle* sdx_files_file_handle_retain (sdxfilesFileHandle* self);
+#define _sdx_files_file_handle_release0(var) ((var == NULL) ? NULL : (var = (sdx_files_file_handle_release (var), NULL)))
+typedef sdxgraphicsSurface sdxgraphicsTextureSurface;
 
 struct _sdxgraphicsSurface {
 	gint _retainCount;
 	SDL_Surface* surface;
-	gint width;
-	gint height;
 	gint id;
 	gchar* path;
 };
@@ -68,25 +68,35 @@ typedef enum  {
 } sdxSdlException;
 #define SDX_SDL_EXCEPTION sdx_sdl_exception_quark ()
 
-extern sdxgraphicsSurface** sdx_graphics_surface_cache;
-extern gint sdx_graphics_surface_cache_length1;
-sdxgraphicsSurface** sdx_graphics_surface_cache = NULL;
-gint sdx_graphics_surface_cache_length1 = 0;
 extern gint sdx_graphics_surface_uniqueId;
 gint sdx_graphics_surface_uniqueId = 0;
+extern sdxgraphicsSurface** sdx_graphics_cached_surface_cache;
+extern gint sdx_graphics_cached_surface_cache_length1;
+sdxgraphicsSurface** sdx_graphics_cached_surface_cache = NULL;
+gint sdx_graphics_cached_surface_cache_length1 = 0;
 
 void sdx_graphics_surface_free (sdxgraphicsSurface* self);
 static void sdx_graphics_surface_instance_init (sdxgraphicsSurface * self);
 sdxgraphicsSurface* sdx_graphics_surface_retain (sdxgraphicsSurface* self);
 void sdx_graphics_surface_release (sdxgraphicsSurface* self);
 void sdx_graphics_surface_free (sdxgraphicsSurface* self);
-sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path);
+sdxgraphicsSurface* sdx_graphics_surface_new (void);
+gint sdx_graphics_surface_get_width (sdxgraphicsSurface* self);
+gint sdx_graphics_surface_get_height (sdxgraphicsSurface* self);
 void sdx_files_file_handle_free (sdxfilesFileHandle* self);
-sdxfilesFileHandle* sdx_files_default (const gchar* path);
+sdxgraphicsCachedSurface* sdx_graphics_cached_surface_new (sdxfilesFileHandle* file);
+gchar* sdx_files_file_handle_getExt (sdxfilesFileHandle* self);
 SDL_RWops* sdx_files_file_handle_getRWops (sdxfilesFileHandle* self);
-gint sdx_graphics_surface_indexOfPath (const gchar* path);
+gchar* sdx_files_file_handle_getPath (sdxfilesFileHandle* self);
+SDL_Surface* sdx_graphics_cached_surface_getSurface (const gchar* ext, SDL_RWops* raw);
+gint sdx_graphics_cached_surface_indexOfPath (const gchar* path);
 GType pool_get_type (void) G_GNUC_CONST;
+sdxfilesFileHandle* sdx_files_default (const gchar* path);
 GQuark sdx_sdl_exception_quark (void);
+sdxgraphicsTextureSurface* sdx_graphics_texture_surface_new (sdxfilesFileHandle* file);
+SDL_Surface* sdx_graphics_texture_surface_getSurface (const gchar* ext, SDL_RWops* raw);
+void sdx_graphics_texture_surface_setFilter (sdxgraphicsTextureSurface* self, gint minFilter, gint magFilter);
+void sdx_graphics_texture_surface_setWrap (sdxgraphicsTextureSurface* self, gint u, gint v);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
@@ -110,139 +120,35 @@ void sdx_graphics_surface_release (sdxgraphicsSurface* self) {
 }
 
 
-sdxgraphicsSurface* sdx_graphics_surface_new (const gchar* path) {
+sdxgraphicsSurface* sdx_graphics_surface_new (void) {
 	sdxgraphicsSurface* self;
-	const gchar* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
-	sdxfilesFileHandle* file = NULL;
-	const gchar* _tmp2_ = NULL;
-	sdxfilesFileHandle* _tmp3_ = NULL;
-	SDL_RWops* _tmp4_ = NULL;
-	SDL_RWops* _tmp5_ = NULL;
-	SDL_Surface* _tmp6_ = NULL;
-	SDL_Surface* _tmp7_ = NULL;
-	SDL_Surface* _tmp8_ = NULL;
-	gint _tmp9_ = 0;
-	SDL_Surface* _tmp10_ = NULL;
-	gint _tmp11_ = 0;
-	g_return_val_if_fail (path != NULL, NULL);
 	self = g_slice_new0 (sdxgraphicsSurface);
 	sdx_graphics_surface_instance_init (self);
-	_tmp0_ = path;
-	_tmp1_ = g_strdup (_tmp0_);
-	_g_free0 (self->path);
-	self->path = _tmp1_;
-	_tmp2_ = path;
-	_tmp3_ = sdx_files_default (_tmp2_);
-	file = _tmp3_;
-	_tmp4_ = sdx_files_file_handle_getRWops (file);
-	_tmp5_ = _tmp4_;
-	_tmp6_ = IMG_LoadPNG_RW (_tmp5_);
-	_SDL_FreeSurface0 (self->surface);
-	self->surface = _tmp6_;
-	_SDL_FreeRW0 (_tmp5_);
-	_tmp7_ = self->surface;
-	SDL_SetSurfaceAlphaMod (_tmp7_, (guint8) 0xff);
-	_tmp8_ = self->surface;
-	_tmp9_ = _tmp8_->w;
-	self->width = _tmp9_;
-	_tmp10_ = self->surface;
-	_tmp11_ = _tmp10_->h;
-	self->height = _tmp11_;
-	_sdx_files_file_handle_release0 (file);
 	return self;
 }
 
 
-gint sdx_graphics_surface_indexOfPath (const gchar* path) {
-	gint result = 0;
-	sdxgraphicsSurface** _tmp0_ = NULL;
-	gint _tmp0__length1 = 0;
-	GError* _tmp19_ = NULL;
-	gint _tmp20_ = 0;
-	GError * _inner_error_ = NULL;
-	g_return_val_if_fail (path != NULL, 0);
-	_tmp0_ = sdx_graphics_surface_cache;
-	_tmp0__length1 = sdx_graphics_surface_cache_length1;
-	if (_tmp0__length1 == 0) {
-		sdxgraphicsSurface** _tmp1_ = NULL;
-		_tmp1_ = g_new0 (sdxgraphicsSurface*, POOL_Count + 1);
-		sdx_graphics_surface_cache = (_vala_array_free (sdx_graphics_surface_cache, sdx_graphics_surface_cache_length1, (GDestroyNotify) sdx_graphics_surface_release), NULL);
-		sdx_graphics_surface_cache = _tmp1_;
-		sdx_graphics_surface_cache_length1 = POOL_Count;
-	}
-	{
-		gint i = 0;
-		i = 0;
-		{
-			gboolean _tmp2_ = FALSE;
-			_tmp2_ = TRUE;
-			while (TRUE) {
-				gint _tmp4_ = 0;
-				sdxgraphicsSurface** _tmp5_ = NULL;
-				gint _tmp5__length1 = 0;
-				sdxgraphicsSurface** _tmp6_ = NULL;
-				gint _tmp6__length1 = 0;
-				gint _tmp7_ = 0;
-				sdxgraphicsSurface* _tmp8_ = NULL;
-				sdxgraphicsSurface** _tmp14_ = NULL;
-				gint _tmp14__length1 = 0;
-				gint _tmp15_ = 0;
-				sdxgraphicsSurface* _tmp16_ = NULL;
-				const gchar* _tmp17_ = NULL;
-				const gchar* _tmp18_ = NULL;
-				if (!_tmp2_) {
-					gint _tmp3_ = 0;
-					_tmp3_ = i;
-					i = _tmp3_ + 1;
-				}
-				_tmp2_ = FALSE;
-				_tmp4_ = i;
-				_tmp5_ = sdx_graphics_surface_cache;
-				_tmp5__length1 = sdx_graphics_surface_cache_length1;
-				if (!(_tmp4_ < _tmp5__length1)) {
-					break;
-				}
-				_tmp6_ = sdx_graphics_surface_cache;
-				_tmp6__length1 = sdx_graphics_surface_cache_length1;
-				_tmp7_ = i;
-				_tmp8_ = _tmp6_[_tmp7_];
-				if (_tmp8_ == NULL) {
-					sdxgraphicsSurface** _tmp9_ = NULL;
-					gint _tmp9__length1 = 0;
-					gint _tmp10_ = 0;
-					const gchar* _tmp11_ = NULL;
-					sdxgraphicsSurface* _tmp12_ = NULL;
-					sdxgraphicsSurface* _tmp13_ = NULL;
-					_tmp9_ = sdx_graphics_surface_cache;
-					_tmp9__length1 = sdx_graphics_surface_cache_length1;
-					_tmp10_ = i;
-					_tmp11_ = path;
-					_tmp12_ = sdx_graphics_surface_new (_tmp11_);
-					_sdx_graphics_surface_release0 (_tmp9_[_tmp10_]);
-					_tmp9_[_tmp10_] = _tmp12_;
-					_tmp13_ = _tmp9_[_tmp10_];
-					result = i;
-					return result;
-				}
-				_tmp14_ = sdx_graphics_surface_cache;
-				_tmp14__length1 = sdx_graphics_surface_cache_length1;
-				_tmp15_ = i;
-				_tmp16_ = _tmp14_[_tmp15_];
-				_tmp17_ = _tmp16_->path;
-				_tmp18_ = path;
-				if (g_strcmp0 (_tmp17_, _tmp18_) == 0) {
-					result = i;
-					return result;
-				}
-			}
-		}
-	}
-	_tmp19_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_UnableToLoadSurface, "Cache is full");
-	_inner_error_ = _tmp19_;
-	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-	g_clear_error (&_inner_error_);
-	return _tmp20_;
+gint sdx_graphics_surface_get_width (sdxgraphicsSurface* self) {
+	gint result;
+	SDL_Surface* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	g_return_val_if_fail (self != NULL, 0);
+	_tmp0_ = self->surface;
+	_tmp1_ = _tmp0_->w;
+	result = _tmp1_;
+	return result;
+}
+
+
+gint sdx_graphics_surface_get_height (sdxgraphicsSurface* self) {
+	gint result;
+	SDL_Surface* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	g_return_val_if_fail (self != NULL, 0);
+	_tmp0_ = self->surface;
+	_tmp1_ = _tmp0_->h;
+	result = _tmp1_;
+	return result;
 }
 
 
@@ -261,6 +167,588 @@ void sdx_graphics_surface_free (sdxgraphicsSurface* self) {
 	_SDL_FreeSurface0 (self->surface);
 	_g_free0 (self->path);
 	g_slice_free (sdxgraphicsSurface, self);
+}
+
+
+sdxgraphicsCachedSurface* sdx_graphics_cached_surface_new (sdxfilesFileHandle* file) {
+	sdxgraphicsCachedSurface* self;
+	gchar* ext = NULL;
+	sdxfilesFileHandle* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	SDL_RWops* raw = NULL;
+	sdxfilesFileHandle* _tmp2_ = NULL;
+	SDL_RWops* _tmp3_ = NULL;
+	sdxfilesFileHandle* _tmp4_ = NULL;
+	gchar* _tmp5_ = NULL;
+	SDL_Surface* _tmp6_ = NULL;
+	SDL_Surface* _tmp7_ = NULL;
+	g_return_val_if_fail (file != NULL, NULL);
+	self = (sdxgraphicsCachedSurface*) sdx_graphics_surface_new ();
+	_tmp0_ = file;
+	_tmp1_ = sdx_files_file_handle_getExt (_tmp0_);
+	ext = _tmp1_;
+	_tmp2_ = file;
+	_tmp3_ = sdx_files_file_handle_getRWops (_tmp2_);
+	raw = _tmp3_;
+	_tmp4_ = file;
+	_tmp5_ = sdx_files_file_handle_getPath (_tmp4_);
+	_g_free0 (((sdxgraphicsSurface*) self)->path);
+	((sdxgraphicsSurface*) self)->path = _tmp5_;
+	_tmp6_ = sdx_graphics_cached_surface_getSurface (ext, raw);
+	_SDL_FreeSurface0 (((sdxgraphicsSurface*) self)->surface);
+	((sdxgraphicsSurface*) self)->surface = _tmp6_;
+	_tmp7_ = ((sdxgraphicsSurface*) self)->surface;
+	SDL_SetSurfaceAlphaMod (_tmp7_, (guint8) 0xff);
+	_SDL_FreeRW0 (raw);
+	_g_free0 (ext);
+	return self;
+}
+
+
+gint sdx_graphics_cached_surface_indexOfPath (const gchar* path) {
+	gint result = 0;
+	sdxgraphicsSurface** _tmp0_ = NULL;
+	gint _tmp0__length1 = 0;
+	GError* _tmp21_ = NULL;
+	gint _tmp22_ = 0;
+	GError * _inner_error_ = NULL;
+	g_return_val_if_fail (path != NULL, 0);
+	_tmp0_ = sdx_graphics_cached_surface_cache;
+	_tmp0__length1 = sdx_graphics_cached_surface_cache_length1;
+	if (_tmp0__length1 == 0) {
+		sdxgraphicsSurface** _tmp1_ = NULL;
+		_tmp1_ = g_new0 (sdxgraphicsSurface*, POOL_Count + 1);
+		sdx_graphics_cached_surface_cache = (_vala_array_free (sdx_graphics_cached_surface_cache, sdx_graphics_cached_surface_cache_length1, (GDestroyNotify) sdx_graphics_surface_release), NULL);
+		sdx_graphics_cached_surface_cache = _tmp1_;
+		sdx_graphics_cached_surface_cache_length1 = POOL_Count;
+	}
+	{
+		gint i = 0;
+		i = 0;
+		{
+			gboolean _tmp2_ = FALSE;
+			_tmp2_ = TRUE;
+			while (TRUE) {
+				gint _tmp4_ = 0;
+				sdxgraphicsSurface** _tmp5_ = NULL;
+				gint _tmp5__length1 = 0;
+				sdxgraphicsSurface** _tmp6_ = NULL;
+				gint _tmp6__length1 = 0;
+				gint _tmp7_ = 0;
+				sdxgraphicsSurface* _tmp8_ = NULL;
+				sdxgraphicsSurface** _tmp16_ = NULL;
+				gint _tmp16__length1 = 0;
+				gint _tmp17_ = 0;
+				sdxgraphicsSurface* _tmp18_ = NULL;
+				const gchar* _tmp19_ = NULL;
+				const gchar* _tmp20_ = NULL;
+				if (!_tmp2_) {
+					gint _tmp3_ = 0;
+					_tmp3_ = i;
+					i = _tmp3_ + 1;
+				}
+				_tmp2_ = FALSE;
+				_tmp4_ = i;
+				_tmp5_ = sdx_graphics_cached_surface_cache;
+				_tmp5__length1 = sdx_graphics_cached_surface_cache_length1;
+				if (!(_tmp4_ < _tmp5__length1)) {
+					break;
+				}
+				_tmp6_ = sdx_graphics_cached_surface_cache;
+				_tmp6__length1 = sdx_graphics_cached_surface_cache_length1;
+				_tmp7_ = i;
+				_tmp8_ = _tmp6_[_tmp7_];
+				if (_tmp8_ == NULL) {
+					sdxgraphicsSurface** _tmp9_ = NULL;
+					gint _tmp9__length1 = 0;
+					gint _tmp10_ = 0;
+					const gchar* _tmp11_ = NULL;
+					sdxfilesFileHandle* _tmp12_ = NULL;
+					sdxfilesFileHandle* _tmp13_ = NULL;
+					sdxgraphicsCachedSurface* _tmp14_ = NULL;
+					sdxgraphicsSurface* _tmp15_ = NULL;
+					_tmp9_ = sdx_graphics_cached_surface_cache;
+					_tmp9__length1 = sdx_graphics_cached_surface_cache_length1;
+					_tmp10_ = i;
+					_tmp11_ = path;
+					_tmp12_ = sdx_files_default (_tmp11_);
+					_tmp13_ = _tmp12_;
+					_tmp14_ = sdx_graphics_cached_surface_new (_tmp13_);
+					_sdx_graphics_surface_release0 (_tmp9_[_tmp10_]);
+					_tmp9_[_tmp10_] = (sdxgraphicsSurface*) _tmp14_;
+					_tmp15_ = _tmp9_[_tmp10_];
+					_sdx_files_file_handle_release0 (_tmp13_);
+					result = i;
+					return result;
+				}
+				_tmp16_ = sdx_graphics_cached_surface_cache;
+				_tmp16__length1 = sdx_graphics_cached_surface_cache_length1;
+				_tmp17_ = i;
+				_tmp18_ = _tmp16_[_tmp17_];
+				_tmp19_ = _tmp18_->path;
+				_tmp20_ = path;
+				if (g_strcmp0 (_tmp19_, _tmp20_) == 0) {
+					result = i;
+					return result;
+				}
+			}
+		}
+	}
+	_tmp21_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_UnableToLoadSurface, "Cache is full");
+	_inner_error_ = _tmp21_;
+	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+	g_clear_error (&_inner_error_);
+	return _tmp22_;
+}
+
+
+SDL_Surface* sdx_graphics_cached_surface_getSurface (const gchar* ext, SDL_RWops* raw) {
+	SDL_Surface* result = NULL;
+	const gchar* _tmp0_ = NULL;
+	GError * _inner_error_ = NULL;
+	g_return_val_if_fail (ext != NULL, NULL);
+	g_return_val_if_fail (raw != NULL, NULL);
+	_tmp0_ = ext;
+	if (g_strcmp0 (_tmp0_, ".png") == 0) {
+		SDL_RWops* _tmp1_ = NULL;
+		SDL_Surface* _tmp2_ = NULL;
+		_tmp1_ = raw;
+		_tmp2_ = IMG_LoadPNG_RW (_tmp1_);
+		result = _tmp2_;
+		return result;
+	} else {
+		const gchar* _tmp3_ = NULL;
+		_tmp3_ = ext;
+		if (g_strcmp0 (_tmp3_, ".cur") == 0) {
+			SDL_RWops* _tmp4_ = NULL;
+			SDL_Surface* _tmp5_ = NULL;
+			_tmp4_ = raw;
+			_tmp5_ = IMG_LoadCUR_RW (_tmp4_);
+			result = _tmp5_;
+			return result;
+		} else {
+			const gchar* _tmp6_ = NULL;
+			_tmp6_ = ext;
+			if (g_strcmp0 (_tmp6_, ".ico") == 0) {
+				SDL_RWops* _tmp7_ = NULL;
+				SDL_Surface* _tmp8_ = NULL;
+				_tmp7_ = raw;
+				_tmp8_ = IMG_LoadICO_RW (_tmp7_);
+				result = _tmp8_;
+				return result;
+			} else {
+				const gchar* _tmp9_ = NULL;
+				_tmp9_ = ext;
+				if (g_strcmp0 (_tmp9_, ".bmp") == 0) {
+					SDL_RWops* _tmp10_ = NULL;
+					SDL_Surface* _tmp11_ = NULL;
+					_tmp10_ = raw;
+					_tmp11_ = IMG_LoadBMP_RW (_tmp10_);
+					result = _tmp11_;
+					return result;
+				} else {
+					const gchar* _tmp12_ = NULL;
+					_tmp12_ = ext;
+					if (g_strcmp0 (_tmp12_, ".pnm") == 0) {
+						SDL_RWops* _tmp13_ = NULL;
+						SDL_Surface* _tmp14_ = NULL;
+						_tmp13_ = raw;
+						_tmp14_ = IMG_LoadPNM_RW (_tmp13_);
+						result = _tmp14_;
+						return result;
+					} else {
+						const gchar* _tmp15_ = NULL;
+						_tmp15_ = ext;
+						if (g_strcmp0 (_tmp15_, ".xpm") == 0) {
+							SDL_RWops* _tmp16_ = NULL;
+							SDL_Surface* _tmp17_ = NULL;
+							_tmp16_ = raw;
+							_tmp17_ = IMG_LoadXPM_RW (_tmp16_);
+							result = _tmp17_;
+							return result;
+						} else {
+							const gchar* _tmp18_ = NULL;
+							_tmp18_ = ext;
+							if (g_strcmp0 (_tmp18_, ".xcf") == 0) {
+								SDL_RWops* _tmp19_ = NULL;
+								SDL_Surface* _tmp20_ = NULL;
+								_tmp19_ = raw;
+								_tmp20_ = IMG_LoadXCF_RW (_tmp19_);
+								result = _tmp20_;
+								return result;
+							} else {
+								const gchar* _tmp21_ = NULL;
+								_tmp21_ = ext;
+								if (g_strcmp0 (_tmp21_, ".pvx") == 0) {
+									SDL_RWops* _tmp22_ = NULL;
+									SDL_Surface* _tmp23_ = NULL;
+									_tmp22_ = raw;
+									_tmp23_ = IMG_LoadPCX_RW (_tmp22_);
+									result = _tmp23_;
+									return result;
+								} else {
+									const gchar* _tmp24_ = NULL;
+									_tmp24_ = ext;
+									if (g_strcmp0 (_tmp24_, ".gif") == 0) {
+										SDL_RWops* _tmp25_ = NULL;
+										SDL_Surface* _tmp26_ = NULL;
+										_tmp25_ = raw;
+										_tmp26_ = IMG_LoadGIF_RW (_tmp25_);
+										result = _tmp26_;
+										return result;
+									} else {
+										const gchar* _tmp27_ = NULL;
+										_tmp27_ = ext;
+										if (g_strcmp0 (_tmp27_, ".jpg") == 0) {
+											SDL_RWops* _tmp28_ = NULL;
+											SDL_Surface* _tmp29_ = NULL;
+											_tmp28_ = raw;
+											_tmp29_ = IMG_LoadJPG_RW (_tmp28_);
+											result = _tmp29_;
+											return result;
+										} else {
+											const gchar* _tmp30_ = NULL;
+											_tmp30_ = ext;
+											if (g_strcmp0 (_tmp30_, ".tif") == 0) {
+												SDL_RWops* _tmp31_ = NULL;
+												SDL_Surface* _tmp32_ = NULL;
+												_tmp31_ = raw;
+												_tmp32_ = IMG_LoadTIF_RW (_tmp31_);
+												result = _tmp32_;
+												return result;
+											} else {
+												const gchar* _tmp33_ = NULL;
+												_tmp33_ = ext;
+												if (g_strcmp0 (_tmp33_, ".tga") == 0) {
+													SDL_RWops* _tmp34_ = NULL;
+													SDL_Surface* _tmp35_ = NULL;
+													_tmp34_ = raw;
+													_tmp35_ = IMG_LoadTGA_RW (_tmp34_);
+													result = _tmp35_;
+													return result;
+												} else {
+													const gchar* _tmp36_ = NULL;
+													_tmp36_ = ext;
+													if (g_strcmp0 (_tmp36_, ".lbm") == 0) {
+														SDL_RWops* _tmp37_ = NULL;
+														SDL_Surface* _tmp38_ = NULL;
+														_tmp37_ = raw;
+														_tmp38_ = IMG_LoadLBM_RW (_tmp37_);
+														result = _tmp38_;
+														return result;
+													} else {
+														const gchar* _tmp39_ = NULL;
+														_tmp39_ = ext;
+														if (g_strcmp0 (_tmp39_, ".xv") == 0) {
+															SDL_RWops* _tmp40_ = NULL;
+															SDL_Surface* _tmp41_ = NULL;
+															_tmp40_ = raw;
+															_tmp41_ = IMG_LoadXV_RW (_tmp40_);
+															result = _tmp41_;
+															return result;
+														} else {
+															const gchar* _tmp42_ = NULL;
+															_tmp42_ = ext;
+															if (g_strcmp0 (_tmp42_, ".webp") == 0) {
+																SDL_RWops* _tmp43_ = NULL;
+																SDL_Surface* _tmp44_ = NULL;
+																_tmp43_ = raw;
+																_tmp44_ = IMG_LoadWEBP_RW (_tmp43_);
+																result = _tmp44_;
+																return result;
+															} else {
+																const gchar* _tmp45_ = NULL;
+																GError* _tmp46_ = NULL;
+																_tmp45_ = ext;
+																_tmp46_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_UnableToLoadSurface, _tmp45_);
+																_inner_error_ = _tmp46_;
+																g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+																g_clear_error (&_inner_error_);
+																return NULL;
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+sdxgraphicsTextureSurface* sdx_graphics_texture_surface_new (sdxfilesFileHandle* file) {
+	sdxgraphicsTextureSurface* self;
+	sdxfilesFileHandle* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	SDL_RWops* raw = NULL;
+	sdxfilesFileHandle* _tmp2_ = NULL;
+	SDL_RWops* _tmp3_ = NULL;
+	sdxfilesFileHandle* _tmp4_ = NULL;
+	gchar* _tmp5_ = NULL;
+	gchar* _tmp6_ = NULL;
+	SDL_Surface* _tmp7_ = NULL;
+	g_return_val_if_fail (file != NULL, NULL);
+	self = (sdxgraphicsTextureSurface*) sdx_graphics_surface_new ();
+	_tmp0_ = file;
+	_tmp1_ = sdx_files_file_handle_getPath (_tmp0_);
+	_g_free0 (((sdxgraphicsSurface*) self)->path);
+	((sdxgraphicsSurface*) self)->path = _tmp1_;
+	_tmp2_ = file;
+	_tmp3_ = sdx_files_file_handle_getRWops (_tmp2_);
+	raw = _tmp3_;
+	_tmp4_ = file;
+	_tmp5_ = sdx_files_file_handle_getExt (_tmp4_);
+	_tmp6_ = _tmp5_;
+	_tmp7_ = sdx_graphics_texture_surface_getSurface (_tmp6_, raw);
+	_SDL_FreeSurface0 (((sdxgraphicsSurface*) self)->surface);
+	((sdxgraphicsSurface*) self)->surface = _tmp7_;
+	_g_free0 (_tmp6_);
+	_SDL_FreeRW0 (raw);
+	return self;
+}
+
+
+void sdx_graphics_texture_surface_setFilter (sdxgraphicsTextureSurface* self, gint minFilter, gint magFilter) {
+	g_return_if_fail (self != NULL);
+}
+
+
+void sdx_graphics_texture_surface_setWrap (sdxgraphicsTextureSurface* self, gint u, gint v) {
+	g_return_if_fail (self != NULL);
+}
+
+
+/**
+         *  Load a Surface from raw memory
+         *
+         * @param ext file extension (encoding)
+         * @param raw RWops memory ptr
+         * @param the new Surface
+         */
+SDL_Surface* sdx_graphics_texture_surface_getSurface (const gchar* ext, SDL_RWops* raw) {
+	SDL_Surface* result = NULL;
+	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	GQuark _tmp3_ = 0U;
+	static GQuark _tmp2_label0 = 0;
+	static GQuark _tmp2_label1 = 0;
+	static GQuark _tmp2_label2 = 0;
+	static GQuark _tmp2_label3 = 0;
+	static GQuark _tmp2_label4 = 0;
+	static GQuark _tmp2_label5 = 0;
+	static GQuark _tmp2_label6 = 0;
+	static GQuark _tmp2_label7 = 0;
+	static GQuark _tmp2_label8 = 0;
+	static GQuark _tmp2_label9 = 0;
+	static GQuark _tmp2_label10 = 0;
+	static GQuark _tmp2_label11 = 0;
+	static GQuark _tmp2_label12 = 0;
+	static GQuark _tmp2_label13 = 0;
+	static GQuark _tmp2_label14 = 0;
+	const gchar* _tmp34_ = NULL;
+	GError* _tmp35_ = NULL;
+	GError * _inner_error_ = NULL;
+	g_return_val_if_fail (ext != NULL, NULL);
+	g_return_val_if_fail (raw != NULL, NULL);
+	_tmp0_ = ext;
+	_tmp1_ = _tmp0_;
+	_tmp3_ = (NULL == _tmp1_) ? 0 : g_quark_from_string (_tmp1_);
+	if (_tmp3_ == ((0 != _tmp2_label0) ? _tmp2_label0 : (_tmp2_label0 = g_quark_from_static_string (".cur")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp4_ = NULL;
+				SDL_Surface* _tmp5_ = NULL;
+				_tmp4_ = raw;
+				_tmp5_ = IMG_LoadCUR_RW (_tmp4_);
+				result = _tmp5_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label1) ? _tmp2_label1 : (_tmp2_label1 = g_quark_from_static_string (".ico")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp6_ = NULL;
+				SDL_Surface* _tmp7_ = NULL;
+				_tmp6_ = raw;
+				_tmp7_ = IMG_LoadICO_RW (_tmp6_);
+				result = _tmp7_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label2) ? _tmp2_label2 : (_tmp2_label2 = g_quark_from_static_string (".bmp")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp8_ = NULL;
+				SDL_Surface* _tmp9_ = NULL;
+				_tmp8_ = raw;
+				_tmp9_ = IMG_LoadBMP_RW (_tmp8_);
+				result = _tmp9_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label3) ? _tmp2_label3 : (_tmp2_label3 = g_quark_from_static_string (".pnm")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp10_ = NULL;
+				SDL_Surface* _tmp11_ = NULL;
+				_tmp10_ = raw;
+				_tmp11_ = IMG_LoadPNM_RW (_tmp10_);
+				result = _tmp11_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label4) ? _tmp2_label4 : (_tmp2_label4 = g_quark_from_static_string (".xpm")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp12_ = NULL;
+				SDL_Surface* _tmp13_ = NULL;
+				_tmp12_ = raw;
+				_tmp13_ = IMG_LoadXPM_RW (_tmp12_);
+				result = _tmp13_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label5) ? _tmp2_label5 : (_tmp2_label5 = g_quark_from_static_string (".xcf")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp14_ = NULL;
+				SDL_Surface* _tmp15_ = NULL;
+				_tmp14_ = raw;
+				_tmp15_ = IMG_LoadXCF_RW (_tmp14_);
+				result = _tmp15_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label6) ? _tmp2_label6 : (_tmp2_label6 = g_quark_from_static_string (".pvx")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp16_ = NULL;
+				SDL_Surface* _tmp17_ = NULL;
+				_tmp16_ = raw;
+				_tmp17_ = IMG_LoadPCX_RW (_tmp16_);
+				result = _tmp17_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label7) ? _tmp2_label7 : (_tmp2_label7 = g_quark_from_static_string (".gif")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp18_ = NULL;
+				SDL_Surface* _tmp19_ = NULL;
+				_tmp18_ = raw;
+				_tmp19_ = IMG_LoadGIF_RW (_tmp18_);
+				result = _tmp19_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label8) ? _tmp2_label8 : (_tmp2_label8 = g_quark_from_static_string (".jpg")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp20_ = NULL;
+				SDL_Surface* _tmp21_ = NULL;
+				_tmp20_ = raw;
+				_tmp21_ = IMG_LoadJPG_RW (_tmp20_);
+				result = _tmp21_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label9) ? _tmp2_label9 : (_tmp2_label9 = g_quark_from_static_string (".tif")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp22_ = NULL;
+				SDL_Surface* _tmp23_ = NULL;
+				_tmp22_ = raw;
+				_tmp23_ = IMG_LoadTIF_RW (_tmp22_);
+				result = _tmp23_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label10) ? _tmp2_label10 : (_tmp2_label10 = g_quark_from_static_string (".png")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp24_ = NULL;
+				SDL_Surface* _tmp25_ = NULL;
+				_tmp24_ = raw;
+				_tmp25_ = IMG_LoadPNG_RW (_tmp24_);
+				result = _tmp25_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label11) ? _tmp2_label11 : (_tmp2_label11 = g_quark_from_static_string (".tga")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp26_ = NULL;
+				SDL_Surface* _tmp27_ = NULL;
+				_tmp26_ = raw;
+				_tmp27_ = IMG_LoadTGA_RW (_tmp26_);
+				result = _tmp27_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label12) ? _tmp2_label12 : (_tmp2_label12 = g_quark_from_static_string (".lbm")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp28_ = NULL;
+				SDL_Surface* _tmp29_ = NULL;
+				_tmp28_ = raw;
+				_tmp29_ = IMG_LoadLBM_RW (_tmp28_);
+				result = _tmp29_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label13) ? _tmp2_label13 : (_tmp2_label13 = g_quark_from_static_string (".xv")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp30_ = NULL;
+				SDL_Surface* _tmp31_ = NULL;
+				_tmp30_ = raw;
+				_tmp31_ = IMG_LoadXV_RW (_tmp30_);
+				result = _tmp31_;
+				return result;
+			}
+		}
+	} else if (_tmp3_ == ((0 != _tmp2_label14) ? _tmp2_label14 : (_tmp2_label14 = g_quark_from_static_string (".webp")))) {
+		switch (0) {
+			default:
+			{
+				SDL_RWops* _tmp32_ = NULL;
+				SDL_Surface* _tmp33_ = NULL;
+				_tmp32_ = raw;
+				_tmp33_ = IMG_LoadWEBP_RW (_tmp32_);
+				result = _tmp33_;
+				return result;
+			}
+		}
+	}
+	_tmp34_ = ext;
+	_tmp35_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_UnableToLoadSurface, _tmp34_);
+	_inner_error_ = _tmp35_;
+	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+	g_clear_error (&_inner_error_);
+	return NULL;
+	result = NULL;
+	return result;
 }
 
 

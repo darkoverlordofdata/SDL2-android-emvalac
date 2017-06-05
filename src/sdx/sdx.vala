@@ -25,6 +25,11 @@ namespace sdx {
 	SDL.Video.Color fpsColor;
 	SDL.Video.Color bgdColor;
 	sdx.graphics.Sprite.TextSprite fpsSprite;
+	sdx.graphics.Sprite.AnimatedSprite fps1;
+	sdx.graphics.Sprite.AnimatedSprite fps2;
+	sdx.graphics.Sprite.AnimatedSprite fps3;
+	sdx.graphics.Sprite.AnimatedSprite fps4;
+	sdx.graphics.Sprite.AnimatedSprite fps5;
 	long pixelFactor;
 	bool showFps;
 	double fps;
@@ -98,6 +103,7 @@ namespace sdx {
 		fpsColor = sdx.Color.AntiqueWhite;
 		bgdColor = { 0, 0, 0, 0 };
 
+		fps = 60;
 		MersenneTwister.init_genrand((ulong)SDL.Timer.get_performance_counter());
 		return window;
 	}
@@ -125,8 +131,13 @@ namespace sdx {
 	void setShowFps(bool value) {
 		showFps = value;
 		if (showFps == true) {
-			fpsSprite = new sdx.graphics.Sprite.TextSprite("%2.2f".printf(60), font, fpsColor);
-			fpsSprite.centered = false;
+
+			fps1 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps2 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps3 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps4 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps5 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+
 		} else {
 			fpsSprite = null;
 		}
@@ -134,8 +145,18 @@ namespace sdx {
 
 	void drawFps() {
 		if (showFps) {
-			fpsSprite.setText("%2.2f".printf(fps), font, fpsColor);
-			fpsSprite.render(0, 0);
+
+			var f = "%2.2f".printf(fps);
+			fps1.setFrame(f[0]);
+			fps1.render(20, 12);
+			fps2.setFrame(f[1]);
+			fps2.render(35, 12);
+			fps3.setFrame(f[2]);
+			fps3.render(50, 12);
+			fps4.setFrame(f[3]);
+			fps4.render(65, 12);
+			fps5.setFrame(f[4]);
+			fps5.render(80, 12);
 		}
 	}
 
