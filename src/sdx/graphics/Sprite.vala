@@ -13,27 +13,31 @@ namespace sdx.graphics {
 			AnimatedSprite, TextureSprite, AtlasSprite, CompositeSprite, TextSprite
 		}
 		public static int uniqueId = 0;
+		public int id = ++uniqueId;
 		public SDL.Video.Texture texture;
-		public SDL.Video.Surface surface;
 		public int width;
 		public int height;
 		public int x;
 		public int y;
 		public int index;
-		public int frame;
+		public int frame = -1;
 		public Scale scale = Scale() { x = 1.0, y = 1.0 };
 		public SDL.Video.Color color = sdx.Color.White;
 		public bool centered = true;
 		public int layer = 0;
-		public int id = ++uniqueId;
 		public string path;
 		public Kind kind;
 
-		/**
-		 * For each character in text, the ascii value is the frame#
-		 * for character as animated sprite
-		 */
 		public class AnimatedSprite : Sprite {
+			/**
+			 * Animated Sprite
+			 * 
+			 * @param path to sprite sheet
+			 * @param width count of sprites horizontally on sheet
+			 * @param height count of sprites vertially on sheet
+			 * 
+			 * For each cell in spritesheet, draw the image from a cell
+			 */
 			public AnimatedSprite(string path, int width, int height) {
 				index = Surface.CachedSurface.indexOfPath(path);
 				this.height = height;
@@ -42,7 +46,14 @@ namespace sdx.graphics {
 				this.kind = Kind.AnimatedSprite;
 				setFrame(0);
 			}
+			/**
+			 * setFrame
+			 * 
+			 * @param frame index of frame to draw
+			 */
 			public void setFrame(int frame) {
+				if (frame == this.frame) return;
+				this.frame = frame;
 				var rmask = (uint32)0x000000ff; 
 				var gmask = (uint32)0x0000ff00;
 				var bmask = (uint32)0x00ff0000;
@@ -59,11 +70,15 @@ namespace sdx.graphics {
 			}
 
 		}
-		/**
-		 * Create sprite from a single texture
-		 */
-		public class TextureSprite : Sprite {
 
+		public class TextureSprite : Sprite {
+			/**
+			 * TextureSprite
+			 * 
+			 * @param path to single surface
+			 * 
+			 * Simple sprite, 1 image per file
+			 */
 			public TextureSprite(string path) {
 				var index = Surface.CachedSurface.indexOfPath(path);
 				texture = SDL.Video.Texture.create_from_surface(renderer, Surface.CachedSurface.cache[index].surface);
@@ -76,11 +91,13 @@ namespace sdx.graphics {
 			}
 		}
 		
-		/**
-		 * Create sprite from an atlas region
-		 */
 		public class AtlasSprite : Sprite {
-
+			/**
+			 * AtlasSprite
+			 * 
+			 * @param path to LibGDX TexturePacker Atlas
+			 * 
+			 */
 			public AtlasSprite(AtlasRegion region) {
 
 				var path = region.rg.texture.path;
@@ -103,11 +120,14 @@ namespace sdx.graphics {
 			}
 		}
 
-		/**
-		 * Create sprite as a composite of regions 
-		 */
 		public class CompositeSprite : Sprite {
-
+			/**
+			 * CompositeSprite
+			 * 
+			 * @param path to custom atlas
+			 * @param function that returns a list of rectangles
+			 * 
+			 */
 			public CompositeSprite(string path, Compositor builder) {
 				var h = 0;
 				var w = 0;
@@ -124,37 +144,27 @@ namespace sdx.graphics {
 				foreach (var segment in builder(h/2, w/2)) {
 					Surface.CachedSurface.cache[index].surface.blit_scaled(segment.source, surface, segment.dest);
 				}
-				this.texture = SDL.Video.Texture.create_from_surface(renderer, surface);
-				this.width = w;
-				this.height = h;
+				texture = SDL.Video.Texture.create_from_surface(renderer, surface);
+				width = w;
+				height = h;
 				this.path = path;
-				this.kind = Kind.CompositeSprite;
+				kind = Kind.CompositeSprite;
 			}
 		}
 
-		/**
-		 * Create sprite from text and ttf font
-		 */
 		public class TextSprite : Sprite {
-
-			public TextSprite(string path, sdx.Font font, SDL.Video.Color color) {
-				this.centered = false;
-				var surface = font.render(path, color);
-				if (surface == null) {
-					throw new SdlException.UnableToLoadSurface(SDL.get_error());
-				} else {
-					surface.set_alphamod(color.a);
-					this.texture = SDL.Video.Texture.create_from_surface(renderer, surface);
-					if (this.texture == null) {
-						throw new SdlException.UnableToLoadTexture(SDL.get_error());
-					} else {
-						this.texture.set_blend_mode(SDL.Video.BlendMode.BLEND);
-						this.width = surface.w;
-						this.height = surface.h;
-						this.path = path;
-					}
-				}
-				this.kind = Kind.TextSprite;
+			/**
+			 * TextSprite
+			 * 
+			 * @param text string of text to generate
+			 * @param font used to generate text
+			 * @param color foregound text color (background transparent)
+			 * 
+			 */
+			public TextSprite(string text, sdx.Font font, SDL.Video.Color color) {
+				setText(text, font, color);
+				centered = false;
+				kind = Kind.TextSprite;
 			}
 
 			/**
@@ -166,22 +176,14 @@ namespace sdx.graphics {
 			 */
 			public void setText(string text, sdx.Font font, SDL.Video.Color color) {
 				var surface = font.render(text, color);
-				if (surface == null) {
-					stdout.printf("Unable to set font surface %s\n", font.path);
-				} else {
-					texture = SDL.Video.Texture.create_from_surface(renderer, surface);
-					if (texture == null) {
-						stdout.printf("Unable to set image text %s\n", text);
-					} else {
-						texture.set_blend_mode(SDL.Video.BlendMode.BLEND);
-						width = surface.w;
-						height = surface.h;
-						path = text;
-					}
-				}
+				texture = SDL.Video.Texture.create_from_surface(renderer, surface);
+				texture.set_blend_mode(SDL.Video.BlendMode.BLEND);
+				width = surface.w;
+				height = surface.h;
+				path = text;
+
 			}
 		}
-		
 		
 		/**
 		 *  Render the sprite on the Video.Renderer context

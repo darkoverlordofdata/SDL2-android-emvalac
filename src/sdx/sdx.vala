@@ -101,7 +101,7 @@ namespace sdx {
 
 		_freq = SDL.Timer.get_performance_frequency();
 		fpsColor = sdx.Color.AntiqueWhite;
-		bgdColor = { 0, 0, 0, 0 };
+		bgdColor = sdx.Color.Black; //{ 0, 0, 0, 0 };
 
 		fps = 60;
 		MersenneTwister.init_genrand((ulong)SDL.Timer.get_performance_counter());

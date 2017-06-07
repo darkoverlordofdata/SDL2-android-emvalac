@@ -108,7 +108,6 @@ sed  "s/#include <SDL2/#include <SDL2\\/SDL.h>\\n#include <SDL2/g"  ./build/src/
 cd ./android/jni && ndk-build
 cd ./android && ant debug 
 """
-
 ##
 ## Template: emscripten build script
 ##
@@ -123,7 +122,7 @@ emvalac  \
     --pkg emscripten \
     #{vapis} \
     #{pkgs} \
-    -X -O2 \
+    -X -O3 \
     -o web/#{path.basename(__dirname)}.html  \
     #{list}
 """

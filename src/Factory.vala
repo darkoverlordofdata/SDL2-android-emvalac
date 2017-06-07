@@ -29,8 +29,7 @@ public class Factory : World {
 	public static sdx.graphics.TextureAtlas atlas;
 
 	public Factory() {
-		base();
-		
+		base();		
 		atlas = new sdx.graphics.TextureAtlas(sdx.files.@default("assets/assets.atlas"));
 		setPool(256, Pool.Count, {
 			Buffer(Pool.BULLET, 	 20, createBullet),
@@ -56,6 +55,7 @@ public class Factory : World {
             .addScale(scale*sdx.pixelFactor, scale*sdx.pixelFactor)
 			.addSprite(sprite, sprite.width, sprite.height);
 	}
+
 	/** 
 	 *	factory methods:
 	 */
