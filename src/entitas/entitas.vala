@@ -26,20 +26,22 @@ namespace entitas {
 		}
 	}
 
-//  def health(curHealth: int, maxHealth: int): Health
-//  	health: Health = {curHealth, maxHealth}
-//  	return health
-
-
 	public delegate void SystemInitialize();
 	public delegate void SystemExecute(double delta);
 
-	[SimpleType]
-	[Immutable]
+	[SimpleType, Immutable]
 	public struct ISystem { 
 		public unowned SystemInitialize initialize;
 		public unowned SystemExecute execute;
 	}
+
+	public class System : Object {
+		public ISystem _ISystem { 
+			get { return { initialize, execute }; } 
+		}
+		public SystemInitialize initialize = () => {};
+		public SystemExecute execute = (delta) => {};
+	}	
 
 	/**
 	 * Bit array masks

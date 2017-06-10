@@ -96,6 +96,7 @@ emvalac --builddir build \
     --cc=jni \
     #{defines} \
     --vapidir src/vapis \
+    --fast-vapi project.vapi \
     --pkg android \
     #{vapis} \
     #{pkgs} \

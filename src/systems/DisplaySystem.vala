@@ -21,21 +21,12 @@ namespace systems {
 	* game systems
 	*/
 	public class DisplaySystem : Object {
-		public ISystem _ISystem { get { return { initialize, execute }; } }
-
 		public static DisplaySystem instance; 
-		public Game game;
-		public Factory world;
 		public List<Entity*> sprites = new List<Entity*>();
 
-		public DisplaySystem(Game game, Factory world) {
+		public DisplaySystem() {
 			instance = this;
-			this.game = game;
-			this.world = world;
 		}
-
-		public void initialize(){}
-		public void execute(double delta){}
 
 		public void remove(Entity* e) {
 			sprites.remove(e);

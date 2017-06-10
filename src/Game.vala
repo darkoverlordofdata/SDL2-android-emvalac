@@ -4,14 +4,12 @@
 using entitas;
 using systems;
 
-
 public class Game : Object {
 
 	public static Game instance;
 	public int width;
 	public int height;
 	public Factory world;
-
 	public CollisionSystem collision;
 	public ExpireSystem expire;
 	public InputSystem input;
@@ -26,9 +24,11 @@ public class Game : Object {
 		instance = this;
 		this.width = width;
 		this.height = height;
-
 	}
 
+	/**
+	 * setup the game
+	 */
 	public void initialize() {
 
 		sdx.setResource("/darkoverlordofdata/shmupwarz");
@@ -36,42 +36,48 @@ public class Game : Object {
 		sdx.setDefaultFont("assets/fonts/OpenDyslexic-Bold.otf", 24);
 		sdx.setShowFps(true);
 
-		world = new Factory();
+		world = (Factory)createSystems();
 		world.setEntityRemovedListener(entityRemoved);
-
-		spawn = new SpawnSystem(this, world);
-		input = new InputSystem(this, world);
-		collision = new CollisionSystem(this, world);
-		physics = new PhysicsSystem(this, world);
-		expire = new ExpireSystem(this, world);
-		remove = new RemoveSystem(this, world);
-		animate = new AnimationSystem(this, world);
-		display = new DisplaySystem(this, world);
-		score = new ScoreSystem(this, world);
-
-		world.addSystem(spawn._ISystem);
-		world.addSystem(input._ISystem);
-		world.addSystem(physics._ISystem);
-		world.addSystem(collision._ISystem);
-		world.addSystem(animate._ISystem);
-		world.addSystem(expire._ISystem);
-		world.addSystem(remove._ISystem);
-		world.addSystem(score._ISystem);
-		world.addSystem(display._ISystem);
 		world.initialize();
 		world.createBackground();
 	}
 
+	/**
+	 * createSystems
+	 * 
+	 */
+	public World createSystems() {
+		display = new DisplaySystem();
+		var world = new Factory();
+		return world.addSystem(spawn = new SpawnSystem(this, world))
+					.addSystem(input = new InputSystem(this, world))
+					.addSystem(physics = new PhysicsSystem(this, world))
+					.addSystem(collision = new CollisionSystem(this, world))
+					.addSystem(animate = new AnimationSystem(this, world))
+					.addSystem(expire = new ExpireSystem(this, world))
+					.addSystem(remove = new RemoveSystem(this, world))
+					.addSystem(score = new ScoreSystem(this, world));
+	}
+
+	/**
+	 * start the game
+	 */
 	public void start() {
 		sdx.start();
 	}
 
+	/**
+	 * update each frame
+	 */
 	public void update() {
 		sdx.update();	
 		sdx.processEvents();
 		world.execute(sdx.delta);
 	}
 
+	/**
+	 * draw each frame
+	 */
 	public void draw() {
 		sdx.begin();
 		foreach (var sprite in display.sprites) {

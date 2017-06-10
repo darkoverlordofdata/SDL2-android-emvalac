@@ -4,12 +4,12 @@
 namespace entitas {
 
 	
-	public class Cache : Object {
+	public class EntityCache : Object {
 
 		public Entity*[] items;
 		public int size;
 		
-		public Cache(int capacity = 4) {
+		public EntityCache(int capacity = 4) {
 			items = new Entity*[capacity];
 			size = 0;
 		}

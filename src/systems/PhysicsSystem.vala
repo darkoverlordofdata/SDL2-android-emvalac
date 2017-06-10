@@ -4,39 +4,32 @@ namespace systems {
 	/**
 	* game systems
 	*/
-	public class PhysicsSystem : Object {
-		public ISystem _ISystem { get { return { initialize, execute }; } }
-
-		public Game game;
-		public Factory world;
-		public Group physics;
-
+	public class PhysicsSystem : System {
 		public PhysicsSystem(Game game, Factory world) {
-			this.game = game;
-			this.world = world;
-		}
+			Group? physics = null;
 
-		public void initialize() {
-			physics = world.getGroup(Matcher.AllOf({Components.VelocityComponent}));
-		}
+			initialize = () => {
+				physics = world.getGroup(Matcher.AllOf({Components.VelocityComponent}));
+			};
 
-		/**
-		* physics system
-		* model movement
-		*/
-		public void execute(double delta) {
+			/**
+			* physics system
+			* model movement
+			*/
+			execute = (delta) => {
 
-			foreach (var entity in physics.entities)  {
-				if (entity.isActive()) {
+				foreach (var entity in physics.entities)  {
+					if (entity.isActive()) {
 
-					var x = entity.position.x + entity.velocity.x * delta;
-					var y = entity.position.y + entity.velocity.y * delta;
+						var x = entity.position.x + entity.velocity.x * delta;
+						var y = entity.position.y + entity.velocity.y * delta;
 
-					entity.setPosition(x, y);
-					entity.bounds.x = (int)x;
-					entity.bounds.y = (int)y;
+						entity.setPosition(x, y);
+						entity.bounds.x = (int)x;
+						entity.bounds.y = (int)y;
+					}
 				}
-			}
+			};
 		}
 	}
 }

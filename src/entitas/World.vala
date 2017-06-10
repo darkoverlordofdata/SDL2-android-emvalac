@@ -4,7 +4,7 @@ namespace entitas {
 		public static World instance;
 		public List<Group> groups;
 		public Entity[] pool;
-		public Cache[] cache;
+		public EntityCache[] cache;
 		public int id = 0;
 		public ISystem?[] systems = new ISystem?[100];
 		public int count = 0;
@@ -24,21 +24,21 @@ namespace entitas {
 
 		public void setPool(int size, int count, Buffer[] buffers) {
 			pool = new Entity[size];
-			cache = new Cache[count];
+			cache = new EntityCache[count];
 			for (var i=0;  i < buffers.length; i++) {
 				var iPool = buffers[i].pool;
 				var iSize = buffers[i].size;
-				cache[iPool] = new Cache(); //iSize) 
+				cache[iPool] = new EntityCache(); //iSize) 
 				for (var k=0;  k < iSize; k++) {
 					cache[iPool].enque(buffers[i].factory());
 				}
 			}
 		}
 				
-		public void addSystem(ISystem iface) {
-			systems[count++] = iface;
+		public World addSystem(System system) {
+			systems[count++] = system._ISystem;
+			return this;
 		}
-
 		public void initialize() {
 			for (var i=0; i < count; i++)
 				systems[i].initialize();
@@ -72,7 +72,7 @@ namespace entitas {
 		*/
 		public Entity* createEntity(string name, int pool, bool active) {
 			var id = this.id++;
-			return  (this.pool[id]
+			return (this.pool[id]
 				.setId(id)
 				.setName(name)
 				.setPool(pool)
