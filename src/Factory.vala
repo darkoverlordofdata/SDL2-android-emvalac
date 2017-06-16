@@ -27,7 +27,6 @@ enum Pool {
 public class Factory : World {
 
 	public static sdx.graphics.TextureAtlas atlas;
-
 	public Factory() {
 		base();		
 		atlas = new sdx.graphics.TextureAtlas(sdx.files.@default("assets/assets.atlas"));
@@ -40,6 +39,15 @@ public class Factory : World {
 			Buffer(Pool.BANG,      	 12, createBang),
 			Buffer(Pool.PARTICLE,  	100, createParticle)
 		});
+	}
+
+	/**
+	 * added to display system
+	 */
+	public Entity* entityAdded(Entity* e) {
+		if (!e.hasSprite()) return e;
+		DisplaySystem.instance.add(e);
+		return e;
 	}
 
 	/**

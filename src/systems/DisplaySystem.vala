@@ -1,21 +1,5 @@
 using entitas;
 
-/**
-* add to sprites 
-*/
-public Entity* entityAdded(Entity* e) {
-	if (!e.hasSprite()) return e;
-	systems.DisplaySystem.instance.add(e);
-	return e;
-}
-
-/**
-* remove from sprites
-*/
-public Entity* entityRemoved(Entity* e) {
-	systems.DisplaySystem.instance.remove(e);
-	return e;
-}
 namespace systems {
 	/**
 	* game systems
@@ -54,11 +38,11 @@ namespace systems {
 		public bool draw(Entity* e) {
 			if (e.hasSprite()) {
 
-				e.bounds.w = (int)((double)e.sprite.width * e.scale.x);
-				e.bounds.h = (int)((double)e.sprite.height * e.scale.y);
+				e.bounds.w = (int)((float)e.sprite.width * e.scale.x);
+				e.bounds.h = (int)((float)e.sprite.height * e.scale.y);
 				if (!e.isBackground()) {
-					e.bounds.x = (int)((double)e.position.x - e.bounds.w / 2);
-					e.bounds.y = (int)((double)e.position.y - e.bounds.h / 2);
+					e.bounds.x = (int)((float)e.position.x - e.bounds.w / 2);
+					e.bounds.y = (int)((float)e.position.y - e.bounds.h / 2);
 					if (e.hasTint()) {
 						e.sprite.sprite.texture.set_color_mod((uint8)e.tint.r, (uint8)e.tint.g, (uint8)e.tint.b);
 						e.sprite.sprite.texture.set_alpha_mod((uint8)e.tint.a);

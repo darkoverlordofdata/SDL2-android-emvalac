@@ -8,9 +8,9 @@ namespace sdx {
 		public int width;
 		public int height;
 		public delegate void AbstractUpdate(int tick);
-		public delegate void AbstractRender(int tick);
+		public delegate void AbstractDraw(int tick);
 		public AbstractUpdate update = (tick) => {};
-		public AbstractRender render = (tick) => {};
+		public AbstractDraw draw = (tick) => {};
 		public AbstractPlatform() {
 			// forces the subclassed lambda context to be reference counted
 			var r = new LambdaReference();
@@ -21,9 +21,9 @@ namespace sdx {
 		public int width;
 		public int height;
 		public delegate void AbstractUpdate();
-		public delegate void AbstractRender();
+		public delegate void AbstractDraw();
 		public AbstractUpdate update = () => {};
-		public AbstractRender render = () => {};
+		public AbstractDraw draw = () => {};
 		public AbstractGame() {
 			// forces the subclassed lambda context to be reference counted
 			var r = new LambdaReference();

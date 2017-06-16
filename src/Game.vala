@@ -7,6 +7,14 @@ using systems;
 public class Game : AbstractGame {
 	public static DisplaySystem display;
 
+	/**
+	 * Removed from display system
+	 */
+	public Entity* entityRemoved(Entity* e) {
+		DisplaySystem.instance.remove(e);
+		return e;
+	}
+
 	public Game(int w, int h) {
 
 		width = w;
@@ -46,7 +54,7 @@ public class Game : AbstractGame {
 		 * Render
 		 * 
 		 */
-		render = () => {
+		draw = () => {
 			sdx.begin();
 			foreach (var sprite in display.sprites) {
 				if (sprite.isActive()) display.draw(sprite);

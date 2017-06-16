@@ -28,8 +28,8 @@ namespace systems {
 						foreach (var bullet in bullets.entities) {
 							if (bullet.isActive()) {
 								if (bullet.bounds.is_intersecting(enemy.bounds)) {
-									var x = (int)((double)bullet.position.x);
-									var y = (int)((double)bullet.position.y);
+									var x = (int)((float)bullet.position.x);
+									var y = (int)((float)bullet.position.y);
 									world.bang(x, y);
 									world.deleteEntity(bullet);
 									for (var i=0; i<3; i++) 

@@ -6,7 +6,7 @@ namespace systems {
 	*/
 	public class InputSystem : System {
 
-		const double FIRE_RATE = 0.1;
+		const float FIRE_RATE = 0.1f;
 		public InputSystem(Game game, Factory world) {
 
 			Entity* player = null;

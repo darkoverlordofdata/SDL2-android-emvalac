@@ -33,7 +33,7 @@ public void gameloop(Game game) {
 		t = 0;
 	}
 #endif
-	game.render();
+	game.draw();
 }
 
 #if (EMSCRIPTEN)

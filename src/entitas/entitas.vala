@@ -27,7 +27,7 @@ namespace entitas {
 	}
 
 	public delegate void SystemInitialize();
-	public delegate void SystemExecute(double delta);
+	public delegate void SystemExecute(float delta);
 
 	[SimpleType, Immutable]
 	public struct ISystem { 

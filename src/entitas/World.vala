@@ -44,7 +44,7 @@ namespace entitas {
 				systems[i].initialize();
 		}
 
-		public void execute(double delta) {
+		public void execute(float delta) {
 			for (var i=0; i < count; i++)
 				systems[i].execute(delta);
 		}
