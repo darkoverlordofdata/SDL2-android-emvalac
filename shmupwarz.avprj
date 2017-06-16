@@ -6,6 +6,7 @@ project_name: shmupwarz
 define: ANDROID
 define: PROFILING
 define: EMSCRIPTEN
+*define: DESKTOP
 
 gresource: resources_gresource_xml data/resources.gresource.xml
 
@@ -43,12 +44,15 @@ c_library: m
 *vala_source: sdx/files/FileHandle.vala
 *vala_source: sdx/files/files.vala
 *vala_source: sdx/graphics/BitmapFont.vala
+*vala_source: sdx/graphics/Camera.vala
 *vala_source: sdx/graphics/Sprite.vala
 *vala_source: sdx/graphics/Surface.vala
 *vala_source: sdx/graphics/TextureAtlas.vala
 *vala_source: sdx/graphics/TextureEnums.vala
 *vala_source: sdx/graphics/TextureRegion.vala
 *vala_source: sdx/graphics/graphics.vala
+*vala_source: sdx/math/AABB.vala
+*vala_source: sdx/math/Vector2.vala
 *vala_source: sdx/sdx.vala
 *vala_source: sdx/utils/Cache.vala
 *vala_source: sdx/utils/File.vala
@@ -65,6 +69,8 @@ c_library: m
 *vala_source: systems/RemoveSystem.vala
 *vala_source: systems/ScoreSystem.vala
 *vala_source: systems/SpawnSystem.vala
+*c_source: mt19937ar.c
+*h_folder: .
 
 
 *po: po
@@ -78,6 +84,7 @@ c_library: m
 *translate: vala src/entitas/World.vala
 *translate: vala src/entitas/entitas.vala
 *translate: vala src/main.vala
+*translate: c src/mt19937ar.c
 *translate: genie src/sdx/Color.gs
 *translate: vala src/sdx/Files.vala
 *translate: vala src/sdx/Font.vala
@@ -87,12 +94,15 @@ c_library: m
 *translate: vala src/sdx/files/FileHandle.vala
 *translate: vala src/sdx/files/files.vala
 *translate: vala src/sdx/graphics/BitmapFont.vala
+*translate: vala src/sdx/graphics/Camera.vala
 *translate: vala src/sdx/graphics/Sprite.vala
 *translate: vala src/sdx/graphics/Surface.vala
 *translate: vala src/sdx/graphics/TextureAtlas.vala
 *translate: vala src/sdx/graphics/TextureEnums.vala
 *translate: vala src/sdx/graphics/TextureRegion.vala
 *translate: vala src/sdx/graphics/graphics.vala
+*translate: vala src/sdx/math/AABB.vala
+*translate: vala src/sdx/math/Vector2.vala
 *translate: vala src/sdx/sdx.vala
 *translate: vala src/sdx/utils/Cache.vala
 *translate: vala src/sdx/utils/File.vala

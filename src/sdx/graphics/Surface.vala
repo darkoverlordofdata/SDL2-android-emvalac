@@ -74,6 +74,9 @@ namespace sdx.graphics {
 
 		public class CachedSurface : Surface {
 			public static sdx.graphics.Surface[] cache;
+			public static void initialize(int size) {
+				if (cache.length == 0) cache = new sdx.graphics.Surface[size];
+			}
 
 			public CachedSurface(sdx.files.FileHandle file) {
 
@@ -85,7 +88,7 @@ namespace sdx.graphics {
 			}
 
 			public static int indexOfPath(string path) {
-				if (cache.length == 0) cache = new sdx.graphics.Surface[Pool.Count];
+				if (cache.length == 0) cache = new sdx.graphics.Surface[10];//Pool.Count];
 				for (var i=0; i<cache.length; i++) {
 					if (cache[i] == null) {
 						cache[i] = new CachedSurface(sdx.files.@default(path));

@@ -1,8 +1,8 @@
 namespace sdx.graphics {
 
 	public struct Scale {
-		double x;
-		double y;
+		float x;
+		float y;
 	}
 	/**
 	 * base Sprite
@@ -21,7 +21,7 @@ namespace sdx.graphics {
 		public int y;
 		public int index;
 		public int frame = -1;
-		public Scale scale = Scale() { x = 1.0, y = 1.0 };
+		public Scale scale = Scale() { x = 1, y = 1 };
 		public SDL.Video.Color color = sdx.Color.White;
 		public bool centered = true;
 		public int layer = 0;

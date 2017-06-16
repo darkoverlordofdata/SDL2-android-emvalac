@@ -33,7 +33,7 @@ public void gameloop(Game game) {
 		t = 0;
 	}
 #endif
-	game.draw();
+	game.render();
 }
 
 #if (EMSCRIPTEN)
@@ -49,7 +49,6 @@ public void gameloop(Game game) {
 public void game() {
 	var window = sdx.initialize(720, 512, "Shmupwarz");
 	var game = new Game(720, 512);
-	game.initialize();
 	game.start();
 	Emscripten.emscripten_set_main_loop_arg(mainloop, game, 0, 1);
 	return;
@@ -75,7 +74,6 @@ public int main(string args[]) {
 	var window = sdx.initialize(720, 512, "Shmupwarz");
 	var game = new Game(720, 512);
 #endif
-	game.initialize();
 	game.start();
 	while (sdx.running) {
 		gameloop(game);

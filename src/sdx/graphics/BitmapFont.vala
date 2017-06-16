@@ -30,10 +30,10 @@ namespace sdx.graphics {
         public int y;
         public int width;
         public int height;
-        public double u;
-        public double v;
-        public double u2;
-        public double v2;
+        public float u;
+        public float v;
+        public float u2;
+        public float v2;
         public int xoffset;
         public int yoffset;
         public int xadvance;
@@ -62,24 +62,24 @@ namespace sdx.graphics {
         public string[] imagePaths;
         public FileHandle fontFile;
         public bool flipped;
-        public double padTop;
-        public double padRight;
-        public double padBottom;
-        public double padLeft;
-        public double lineHeight;
-        public double capHeight = 1;
-        public double ascent;
-        public double descent;
-        public double down;
-        public double blankLineScale = 1;
-        public double scaleX = 1;
-        public double scaleY = 1;
+        public float padTop;
+        public float padRight;
+        public float padBottom;
+        public float padLeft;
+        public float lineHeight;
+        public float capHeight = 1;
+        public float ascent;
+        public float descent;
+        public float down;
+        public float blankLineScale = 1;
+        public float scaleX = 1;
+        public float scaleY = 1;
         public bool markupEnabled;
-        public double cursorX;
+        public float cursorX;
         public Glyph[,] glyphs = new Glyph[BitmapFont.PAGES,BitmapFont.PAGE_SIZE];
         public Glyph missingGlyph;
-        public double spaceWidth;
-        public double xHeight = 1;
+        public float spaceWidth;
+        public float xHeight = 1;
         public char[] breakChars;
         public char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
         public char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
@@ -132,7 +132,7 @@ namespace sdx.graphics {
                         glyph.yoffset = -(glyph.height + int.parse(ch.member("yoffset").@string));
                     glyph.xadvance = int.parse(ch.member("xadvance").@string);
 
-                    if (glyph.width > 0 && glyph.height > 0) descent = Math.fmin(baseLine + glyph.yoffset, descent);
+                    if (glyph.width > 0 && glyph.height > 0) descent = Math.fminf(baseLine + glyph.yoffset, descent);
             }
             descent += padBottom;
                 
@@ -172,7 +172,7 @@ namespace sdx.graphics {
                     for (var g = 0; g<BitmapFont.PAGE_SIZE; g++) {
                         var glyph = glyphs[p,g];
                         if (glyph == null || glyph.height == 0 || glyph.width == 0) continue;
-                        capHeight = Math.fmax(capHeight, glyph.height);
+                        capHeight = Math.fmaxf(capHeight, glyph.height);
                     }
                 }
             } else {
@@ -190,8 +190,8 @@ namespace sdx.graphics {
 
         public void setGlyphRegion(Glyph glyph, TextureRegion region) {
             var texture = region.texture;
-            var invTexWidth = 1.0 / texture.width;
-            var invTexHeight = 1.0 / texture.height;
+            var invTexWidth = 1.0f / texture.width;
+            var invTexHeight = 1.0f / texture.height;
 
             var offsetX = 0;
             var offsetY = 0;
@@ -251,7 +251,7 @@ namespace sdx.graphics {
             }
         }
 
-        public void setLineHeight(double height) {
+        public void setLineHeight(float height) {
             lineHeight = height * scaleY;
             down = flipped ? lineHeight : -lineHeight;
         }
@@ -296,10 +296,10 @@ namespace sdx.graphics {
             return imagePaths[index];
         }
 
-        //  public setScale(scaleX: double, scaleY: double)
+        //  public setScale(scaleX: float, scaleY: float)
         //      pass
 
-        //  public scale(amount: double)
+        //  public scale(amount: float)
         //      pass
     }
     //  }

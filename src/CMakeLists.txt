@@ -49,12 +49,15 @@ set (APP_SOURCES ${APP_SOURCES} sdx/exceptions.gs)
 set (APP_SOURCES ${APP_SOURCES} sdx/files/FileHandle.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/files/files.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/graphics/BitmapFont.vala)
+set (APP_SOURCES ${APP_SOURCES} sdx/graphics/Camera.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/graphics/Sprite.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/graphics/Surface.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/graphics/TextureAtlas.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/graphics/TextureEnums.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/graphics/TextureRegion.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/graphics/graphics.vala)
+set (APP_SOURCES ${APP_SOURCES} sdx/math/AABB.vala)
+set (APP_SOURCES ${APP_SOURCES} sdx/math/Vector2.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/sdx.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/utils/Cache.vala)
 set (APP_SOURCES ${APP_SOURCES} sdx/utils/File.vala)
@@ -90,6 +93,11 @@ if (EMSCRIPTEN)
 	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DEMSCRIPTEN " )
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DEMSCRIPTEN " )
 endif ()
+if (DESKTOP)
+	set (COMPILE_OPTIONS ${COMPILE_OPTIONS} -D DESKTOP)
+	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDESKTOP " )
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDESKTOP " )
+endif ()
 set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --vapidir=${CMAKE_SOURCE_DIR}/src/vapis )
 
 if ((${CMAKE_BUILD_TYPE} STREQUAL "Debug") OR (${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo"))
@@ -100,6 +108,7 @@ set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --disable-warnings --cc=clang )
 set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --gresources=${CMAKE_SOURCE_DIR}/data/resources.gresource.xml )
 
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Og" )
+include_directories (AFTER . )
 
 vala_precompile(VALA_C shmupwarz
 	${APP_SOURCES}
@@ -110,6 +119,8 @@ CUSTOM_VAPIS
 OPTIONS
 	${COMPILE_OPTIONS}
 )
+
+set (VALA_C ${VALA_C} mt19937ar.c)
 
 SET (VALA_C ${VALA_C} ${resources_gresource_xml_C_FILE})
 add_executable(shmupwarz ${VALA_C})

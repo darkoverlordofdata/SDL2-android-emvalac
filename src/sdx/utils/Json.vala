@@ -1,5 +1,12 @@
 namespace sdx.utils {
 
+    /**
+     * Simple Json Parser
+     * 
+     * based on JSON.parse
+     * 
+     * @see https://github.com/douglascrockford/JSON-js
+     */
     public errordomain JsonException {
         SyntaxError,
         UnexpectedCharacter,
@@ -20,9 +27,6 @@ namespace sdx.utils {
 
     public delegate JsVariant JsDelegate(JsVariant holder, string key, JsVariant value);
 
-    /**
-     * @see https://github.com/douglascrockford/JSON-js
-     */
     public class Json : Object {
 
         public static const string HEX_DIGIT = "0123456789abcdef";
@@ -226,7 +230,7 @@ namespace sdx.utils {
                     next();
                 }
             }
-            return JsVariant.Number(double.parse(string));
+            return JsVariant.Number((double)double.parse(string));
         }
 
         public JsVariant getString() {
@@ -402,7 +406,7 @@ namespace sdx.utils {
                 boolean = false;
                 break;
             case JsType.JS_NUMBER:
-                number = 0.0;
+                number = 0;
                 break;
             case JsType.JS_STRING:
                 string = "";

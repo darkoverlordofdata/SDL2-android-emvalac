@@ -30,8 +30,8 @@ namespace systems {
 							active = false;
 						}
 						
-						entity.scale.x = x; 
-						entity.scale.y = y;
+						entity.scale.x = (float)x; 
+						entity.scale.y = (float)y;
 						entity.tween.active = active;
 					}
 				}

@@ -15,10 +15,10 @@ namespace sdx.graphics {
         public int height;
         public int regionWidth;
         public int regionHeight;
-        public double u;
-        public double v;
-        public double u2;
-        public double v2;
+        public float u;
+        public float v;
+        public float u2;
+        public float v2;
 
         public TextureRegion(Surface.TextureSurface texture, int x=0, int y=0, int width=0, int height=0) {
             width = width == 0 ? texture.width : width;
@@ -31,16 +31,16 @@ namespace sdx.graphics {
             setRegionXY(x, y, width, height);
         }
 
-        public void setRegion(double u, double v, double u2, double v2) {
+        public void setRegion(float u, float v, float u2, float v2) {
             var texWidth = this.width;
             var texHeight = this.height;
             regionWidth =(int)Math.round(Math.fabs(u2 - u) * texWidth);
             regionHeight =(int)Math.round(Math.fabs(v2 - v) * texHeight);
             if (regionWidth == 1 && regionHeight == 1) {
-                var adjustX = 0.25 / texWidth;
+                var adjustX = 0.25f / texWidth;
                 u = adjustX;
                 u2 = adjustX;
-                var adjustY = 0.25 / texHeight;
+                var adjustY = 0.25f / texHeight;
                 v = adjustY;
                 v2 = adjustY;
             }
@@ -77,38 +77,38 @@ namespace sdx.graphics {
             }
         }
 
-        public double getU() { 
+        public float getU() { 
             return u;
         }
 
-        public void setU(double u) { 
+        public void setU(float u) { 
             this.u = u;
             regionWidth = (int)Math.round(Math.fabs(u2 - u) * this.width);
         }
 
-        public double getV() {
+        public float getV() {
             return v;
         }
 
-        public void setV(double v) { 
+        public void setV(float v) { 
             this.v = v;
             regionHeight = (int)Math.round(Math.fabs(v2 - v) * this.height);
         }
 
-        public double getU2() {
+        public float getU2() {
             return u2;
         }
 
-        public void setU2(double u2) { 
+        public void setU2(float u2) { 
             this.u2 = u2;
             regionWidth = (int)Math.round(Math.fabs(u2 - u) * this.width);
         }
 
-        public double getV2() {
+        public float getV2() {
             return v2;
         }
 
-        public void setV2(double v2) { 
+        public void setV2(float v2) { 
             this.v2 = v2;
             regionHeight = (int)Math.round(Math.fabs(v2 - v) * this.height);
         }
@@ -118,7 +118,7 @@ namespace sdx.graphics {
         }
 
         public void setRegionX(int x) {
-            setU(x /(double)this.width);
+            setU(x /(float)this.width);
         }
 
         public int getRegionY() {
@@ -136,9 +136,9 @@ namespace sdx.graphics {
 
         public void setRegionWidth(int width) {
             if (isFlipX())
-                setU(u2 + width /(double)this.width);
+                setU(u2 + width /(float)this.width);
              else 
-                setU2(u + width /(double)this.width);
+                setU2(u + width /(float)this.width);
         }
         
 
@@ -149,9 +149,9 @@ namespace sdx.graphics {
 
         public void setRegionHeight(int height) { 
             if (isFlipY())
-                setV(v2 + height /(double)this.height);	
+                setV(v2 + height /(float)this.height);	
              else 
-                setV2(v + height /(double)this.height);
+                setV2(v + height /(float)this.height);
         }
         
         public bool isFlipX() {

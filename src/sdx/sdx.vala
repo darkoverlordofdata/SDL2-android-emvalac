@@ -4,18 +4,48 @@ using SDLImage;
 
 namespace sdx {
 
-	public struct Blit {
-		SDL.Video.Rect source;
-		SDL.Video.Rect dest;
-		SDL.Video.RendererFlip flip;
+	public class AbstractPlatform : Object {
+		public int width;
+		public int height;
+		public delegate void AbstractUpdate(int tick);
+		public delegate void AbstractRender(int tick);
+		public AbstractUpdate update = (tick) => {};
+		public AbstractRender render = (tick) => {};
+		public AbstractPlatform() {
+			// forces the subclassed lambda context to be reference counted
+			var r = new LambdaReference();
+		}
 	}
-	
-	public delegate Blit[] Compositor(int x, int y);	
+
+	public class AbstractGame : Object {
+		public int width;
+		public int height;
+		public delegate void AbstractUpdate();
+		public delegate void AbstractRender();
+		public AbstractUpdate update = () => {};
+		public AbstractRender render = () => {};
+		public AbstractGame() {
+			// forces the subclassed lambda context to be reference counted
+			var r = new LambdaReference();
+		}
+		public void start() {
+			sdx.start();
+		}
+	}
+
+	public class LambdaReference: Object {}
 
 	/**
 	 * Global vars
 	 * 
 	 */
+#if (DESKTOP)
+	FileType platform = FileType.Resource;
+#elif (ANDROID)
+	FileType platform = FileType.Asset;
+#else
+	FileType platform = FileType.Relative;
+#endif
 	Renderer renderer;
 	sdx.Font font;
 	sdx.Font smallFont;
@@ -30,12 +60,12 @@ namespace sdx {
 	sdx.graphics.Sprite.AnimatedSprite fps3;
 	sdx.graphics.Sprite.AnimatedSprite fps4;
 	sdx.graphics.Sprite.AnimatedSprite fps5;
-	long pixelFactor;
+	int pixelFactor;
 	bool showFps;
-	double fps;
-	double delta;
-	double mouseX;
-	double mouseY;
+	float fps;
+	float delta;
+	int mouseX;
+	int mouseY;
 	bool mouseDown;
 	bool running;
 	uint8[] keys;
@@ -48,8 +78,8 @@ namespace sdx {
 	double _freq;
 	double _mark1;
 	double _mark2;
-	int _width;
-	int _height;
+	int width;
+	int height;
 
 	public enum Direction {
 		NONE, LEFT, RIGHT, UP, DOWN
@@ -60,12 +90,13 @@ namespace sdx {
 	 * 
 	 */
 	Window initialize(int width, int height, string name) {
+		sdx.height = height;
+		sdx.width = width;
 		keys = new uint8[256];
 		direction = new bool[5];
 
 		if (SDL.init(SDL.InitFlag.VIDEO | SDL.InitFlag.TIMER | SDL.InitFlag.EVENTS) < 0)
 			throw new SdlException.Initialization(SDL.get_error());
- 
 
 		if (SDLImage.init(SDLImage.InitFlags.PNG) < 0)
 			throw new SdlException.ImageInitialization(SDL.get_error());
@@ -86,8 +117,8 @@ namespace sdx {
 
 #if (ANDROID)    
 
-		_width = displayMode.w;
-		_height = displayMode.h;
+		width = displayMode.w;
+		height = displayMode.h;
 		var window = new Window(name, Window.POS_CENTERED, Window.POS_CENTERED, 0, 0, WindowFlags.SHOWN);
 #else
 		var window = new Window(name, Window.POS_CENTERED, Window.POS_CENTERED, width, height, WindowFlags.SHOWN);
@@ -112,7 +143,7 @@ namespace sdx {
 		return MersenneTwister.genrand_real2();
 	}
 
-	void setResource(string path) {
+	void setResourceBase(string path) {
 		sdx.resourceBase = path;
 	}
 
@@ -171,13 +202,13 @@ namespace sdx {
 
 	void update() {
 		_mark2 = (double)SDL.Timer.get_performance_counter()/_freq;
-		delta = _mark2 - _mark1;
+		delta = (float)(_mark2 - _mark1);
 		_mark1 = _mark2;
 		_frames++;
 		_elapsed = _elapsed + delta;
-		if (_elapsed > 1.0) {
+		if (_elapsed > 1) {
 			fps = (int)((double)_frames / _elapsed);
-			_elapsed = 0.0;
+			_elapsed = 0;
 			_frames = 0;
 		}
 	}
@@ -221,11 +252,11 @@ namespace sdx {
 #if (!ANDROID)
 				case SDL.EventType.FINGERMOTION:
 #if (EMSCRIPTEN)					
-					mouseX = _evt.tfinger.x * (double)_width;
-					mouseY = _evt.tfinger.y * (double)_height;
+					mouseX = (int)(_evt.tfinger.x * (float)width);
+					mouseY = (int)(_evt.tfinger.y * (float)height);
 #else
-					mouseX = _evt.tfinger.x;
-					mouseY = _evt.tfinger.y;
+					mouseX = (int)_evt.tfinger.x;
+					mouseY = (int)_evt.tfinger.y;
 #endif
 					break;
 				case SDL.EventType.FINGERDOWN:

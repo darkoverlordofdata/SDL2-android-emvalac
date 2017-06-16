@@ -124,6 +124,8 @@ emvalac  \
     #{vapis} \
     #{pkgs} \
     -X -O3 \
+    -X -I/usr/local/include \
+    -X -I/home/bruce/.local/include/ \
     -o web/#{path.basename(__dirname)}.html  \
     #{list}
 """
@@ -160,7 +162,7 @@ task 'build:emscripten', 'build emscripten project', ->
     prj = avprjParse()
     vapis = getVapis(prj.vala_vapi)
     pkgs = getPkgs(prj.vala_check_package)
-    list = getSrc(prj.vala_source).join(' ')
+    list = getSrc(prj.vala_source).join(' ') + ' ' + getSrc(prj.c_source).join(' ')
 
     cmd = emscriptenTemplate('--define EMSCRIPTEN --define PROFILING', vapis, pkgs, list) 
     console.log cmd

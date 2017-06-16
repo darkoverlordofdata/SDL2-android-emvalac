@@ -24,7 +24,7 @@ namespace systems {
 						var x = entity.position.x + entity.velocity.x * delta;
 						var y = entity.position.y + entity.velocity.y * delta;
 
-						entity.setPosition(x, y);
+						entity.setPosition((float)x, (float)y);
 						entity.bounds.x = (int)x;
 						entity.bounds.y = (int)y;
 					}

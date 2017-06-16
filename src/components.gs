@@ -114,12 +114,12 @@ namespace entitas
 
 	[SimpleType]
 	struct Expires
-		value : double 
+		value : float 
 
 	[SimpleType]
 	struct Health
-		current : double 
-		maximum : double 
+		current : float 
+		maximum : float 
 
 	[SimpleType, Immutable]
 	struct Hud
@@ -137,13 +137,13 @@ namespace entitas
 
 	[SimpleType]
 	struct Position
-		x : double 
-		y : double 
+		x : float 
+		y : float 
 
 	[SimpleType]
 	struct Scale
-		x : double 
-		y : double 
+		x : float 
+		y : float 
 
 	// struct Sound
 	// 	sound : SDL.Chunk 
@@ -166,16 +166,16 @@ namespace entitas
 
 	[SimpleType]
 	struct Tween
-		min : double 
-		max : double 
-		speed : double 
+		min : float 
+		max : float 
+		speed : float 
 		repeat : bool 
 		active : bool 
 
 	[SimpleType]
 	struct Velocity
-		x : double 
-		y : double 
+		x : float 
+		y : float 
 
 	struct Entity					   	/* Core component: */  
 		id		  	: int			   	/* sequentially assigned id# */
@@ -347,14 +347,14 @@ namespace entitas
 		def hasExpires():bool
 			return (mask & EXPIRES) != 0
 
-		def addExpires(value:double):Entity* 
+		def addExpires(value:float):Entity* 
 			if (mask & EXPIRES) != 0 do raise new Exception.EntityAlreadyHasComponent("Expires")
 			this.expires = { value }
 			mask |= EXPIRES
 			World.onComponentAdded(&this, Components.ExpiresComponent)
 			return &this
 
-		def setExpires(value:double):Entity*
+		def setExpires(value:float):Entity*
 			if (mask & EXPIRES) == 0 do raise new Exception.EntityDoesNotHaveComponent("Expires")
 			this.expires.value = value
 			return &this
@@ -369,14 +369,14 @@ namespace entitas
 		def hasHealth():bool
 			return (mask & HEALTH) != 0
 
-		def addHealth(current:double,maximum:double):Entity* 
+		def addHealth(current:float,maximum:float):Entity* 
 			if (mask & HEALTH) != 0 do raise new Exception.EntityAlreadyHasComponent("Health")
 			this.health = { current, maximum }
 			mask |= HEALTH
 			World.onComponentAdded(&this, Components.HealthComponent)
 			return &this
 
-		def setHealth(current:double,maximum:double):Entity*
+		def setHealth(current:float,maximum:float):Entity*
 			if (mask & HEALTH) == 0 do raise new Exception.EntityDoesNotHaveComponent("Health")
 			this.health.current = current
 			this.health.maximum = maximum
@@ -453,14 +453,14 @@ namespace entitas
 		def hasPosition():bool
 			return (mask & POSITION) != 0
 
-		def addPosition(x:double,y:double):Entity* 
+		def addPosition(x:float,y:float):Entity* 
 			if (mask & POSITION) != 0 do raise new Exception.EntityAlreadyHasComponent("Unable to add Position")
 			this.position = { x, y }
 			mask |= POSITION
 			World.onComponentAdded(&this, Components.PositionComponent)
 			return &this
 
-		def setPosition(x:double,y:double):Entity*
+		def setPosition(x:float,y:float):Entity*
 			if (mask & POSITION) == 0 do raise new Exception.EntityDoesNotHaveComponent("Unable to set Position")
 			this.position.x = x
 			this.position.y = y
@@ -476,14 +476,14 @@ namespace entitas
 		def hasScale():bool
 			return (mask & SCALE) != 0
 
-		def addScale(x:double,y:double):Entity* 
+		def addScale(x:float,y:float):Entity* 
 			if (mask & SCALE) != 0 do raise new Exception.EntityAlreadyHasComponent("Scale")
 			this.scale = { x, y }
 			mask |= SCALE
 			World.onComponentAdded(&this, Components.ScaleComponent)
 			return &this
 
-		def setScale(x:double,y:double):Entity*
+		def setScale(x:float,y:float):Entity*
 			if (mask & SCALE) == 0 do raise new Exception.EntityDoesNotHaveComponent("Scale")
 			this.scale.x = x
 			this.scale.y = y
@@ -593,14 +593,14 @@ namespace entitas
 		def hasTween():bool
 			return (mask & TWEEN) != 0
 
-		def addTween(min:double,max:double,speed:double,repeat:bool,active:bool):Entity* 
+		def addTween(min:float,max:float,speed:float,repeat:bool,active:bool):Entity* 
 			if (mask & TWEEN) != 0 do raise new Exception.EntityAlreadyHasComponent("Tween")
 			this.tween = { min, max, speed, repeat, active }
 			mask |= TWEEN
 			World.onComponentAdded(&this, Components.TweenComponent)
 			return &this
 
-		def setTween(min:double,max:double,speed:double,repeat:bool,active:bool):Entity*
+		def setTween(min:float,max:float,speed:float,repeat:bool,active:bool):Entity*
 			if (mask & TWEEN) == 0 do raise new Exception.EntityDoesNotHaveComponent("Tween")
 			this.tween.min = min
 			this.tween.max = max
@@ -619,14 +619,14 @@ namespace entitas
 		def hasVelocity():bool
 			return (mask & VELOCITY) != 0
 
-		def addVelocity(x:double,y:double):Entity* 
+		def addVelocity(x:float,y:float):Entity* 
 			if (mask & VELOCITY) != 0 do raise new Exception.EntityAlreadyHasComponent("Velocity")
 			this.velocity = { x, y }
 			mask |= VELOCITY
 			World.onComponentAdded(&this, Components.VelocityComponent)
 			return &this
 
-		def setVelocity(x:double,y:double):Entity*
+		def setVelocity(x:float,y:float):Entity*
 			if (mask & VELOCITY) == 0 do raise new Exception.EntityDoesNotHaveComponent("Velocity")
 			this.velocity.x = x
 			this.velocity.y = y
