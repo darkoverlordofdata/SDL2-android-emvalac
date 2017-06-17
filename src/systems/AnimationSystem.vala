@@ -7,12 +7,8 @@ namespace systems {
 
 		public AnimationSystem(Game game, Factory world) {
 
-			Group? tweens = null;
-
-			initialize = () => {
-				tweens = world.getGroup(Matcher.AllOf({Components.TweenComponent}));
-			};
-
+			var tweens = world.getGroup(Matcher.AllOf({Components.TweenComponent}));
+			
 			execute = (delta) => {
 				foreach (var entity in tweens.entities) {
 					if (entity.isActive()) {

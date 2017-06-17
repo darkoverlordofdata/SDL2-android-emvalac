@@ -7,12 +7,8 @@ namespace systems {
 	public class RemoveSystem : System {
 		public RemoveSystem(Game game, Factory world) {
 
-			Group? movable = null;
+			var movable = world.getGroup(Matcher.AllOf({Components.PositionComponent}));
 			
-			initialize = () => {
-				movable = world.getGroup(Matcher.AllOf({Components.PositionComponent}));
-			};
-
 			/**
 			 * Remove entities that have gone off-screen
 			 */

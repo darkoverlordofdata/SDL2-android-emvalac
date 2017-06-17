@@ -1,11 +1,12 @@
 src/Factory.vala
 src/Game.vala
-src/components.gs
+src/components.vala
 src/entitas/Cache.vala
 src/entitas/Group.vala
 src/entitas/Matcher.vala
 src/entitas/World.vala
 src/entitas/entitas.vala
+src/entity.gs
 src/main.vala
 src/sdx/Color.gs
 src/sdx/Files.vala

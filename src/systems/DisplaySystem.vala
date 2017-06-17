@@ -38,18 +38,18 @@ namespace systems {
 		public bool draw(Entity* e) {
 			if (e.hasSprite()) {
 
-				e.bounds.w = (int)((float)e.sprite.width * e.scale.x);
-				e.bounds.h = (int)((float)e.sprite.height * e.scale.y);
+				e.aabb.w = (int)((float)e.sprite.width * e.scale.x);
+				e.aabb.h = (int)((float)e.sprite.height * e.scale.y);
 				if (!e.isBackground()) {
-					e.bounds.x = (int)((float)e.position.x - e.bounds.w / 2);
-					e.bounds.y = (int)((float)e.position.y - e.bounds.h / 2);
+					e.aabb.x = (int)((float)e.position.x - e.aabb.w / 2);
+					e.aabb.y = (int)((float)e.position.y - e.aabb.h / 2);
 					if (e.hasTint()) {
 						e.sprite.sprite.texture.set_color_mod((uint8)e.tint.r, (uint8)e.tint.g, (uint8)e.tint.b);
 						e.sprite.sprite.texture.set_alpha_mod((uint8)e.tint.a);
 					}
 				}
 				sdx.renderer.copy(e.sprite.sprite.texture, null, 
-					{ e.bounds.x, e.bounds.y, (uint)e.bounds.w, (uint)e.bounds.h });
+					{ e.aabb.x, e.aabb.y, (uint)e.aabb.w, (uint)e.aabb.h });
 
 			if (e.hasText())
 				sdx.renderer.copy(e.text.sprite.texture, null, 

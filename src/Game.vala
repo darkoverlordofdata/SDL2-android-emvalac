@@ -7,14 +7,6 @@ using systems;
 public class Game : AbstractGame {
 	public static DisplaySystem display;
 
-	/**
-	 * Removed from display system
-	 */
-	public Entity* entityRemoved(Entity* e) {
-		DisplaySystem.instance.remove(e);
-		return e;
-	}
-
 	public Game(int w, int h) {
 
 		width = w;
@@ -36,7 +28,13 @@ public class Game : AbstractGame {
 			.addSystem(new RemoveSystem(this, world))
 			.addSystem(new ScoreSystem(this, world));
 
-		world.setEntityRemovedListener(entityRemoved);
+		/**
+		 * Removed from display system
+		 */
+		world.setEntityRemovedListener(e => {
+			DisplaySystem.instance.remove(e);
+			return e;
+		});
 		world.initialize();
 		world.createBackground();
 

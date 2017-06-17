@@ -6,11 +6,8 @@ namespace systems {
 	*/
 	public class PhysicsSystem : System {
 		public PhysicsSystem(Game game, Factory world) {
-			Group? physics = null;
 
-			initialize = () => {
-				physics = world.getGroup(Matcher.AllOf({Components.VelocityComponent}));
-			};
+			var physics = world.getGroup(Matcher.AllOf({Components.VelocityComponent}));
 
 			/**
 			* physics system
@@ -25,8 +22,8 @@ namespace systems {
 						var y = entity.position.y + entity.velocity.y * delta;
 
 						entity.setPosition((float)x, (float)y);
-						entity.bounds.x = (int)x;
-						entity.bounds.y = (int)y;
+						entity.aabb.x = (int)x;
+						entity.aabb.y = (int)y;
 					}
 				}
 			};

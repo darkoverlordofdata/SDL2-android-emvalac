@@ -28,12 +28,13 @@ vala_check_package: sdl2
 c_library: m
 *vala_source: Factory.vala
 *vala_source: Game.vala
-*vala_source: components.gs
+*vala_source: components.vala
 *vala_source: entitas/Cache.vala
 *vala_source: entitas/Group.vala
 *vala_source: entitas/Matcher.vala
 *vala_source: entitas/World.vala
 *vala_source: entitas/entitas.vala
+*vala_source: entity.gs
 *vala_source: main.vala
 *vala_source: sdx/Color.gs
 *vala_source: sdx/Files.vala
@@ -77,12 +78,13 @@ c_library: m
 
 *translate: vala src/Factory.vala
 *translate: vala src/Game.vala
-*translate: genie src/components.gs
+*translate: vala src/components.vala
 *translate: vala src/entitas/Cache.vala
 *translate: vala src/entitas/Group.vala
 *translate: vala src/entitas/Matcher.vala
 *translate: vala src/entitas/World.vala
 *translate: vala src/entitas/entitas.vala
+*translate: genie src/entity.gs
 *translate: vala src/main.vala
 *translate: c src/mt19937ar.c
 *translate: genie src/sdx/Color.gs

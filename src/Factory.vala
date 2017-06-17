@@ -118,11 +118,11 @@ public class Factory : World {
 	}
 
 	public Entity* createBang() {
-		return createBase("bang", Pool.BANG, 0.3f)
+		return createBase("explosion", Pool.BANG, 0.1f)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/smallasplode.wav")))
 			.addTint(0xd2, 0xfa, 0xd2, 0x9f)
 			.addExpires(0.2f)
-			.addTween(0.003f, 0.3f, -3f, false, true);
+			.addTween(0.001f, 0.1f, -3f, false, true);
 	}
 
 	public Entity* createParticle() {
@@ -185,7 +185,7 @@ public class Factory : World {
 		}
 		var entity = cache[Pool.EXPLOSION].deque();
 		entityAdded(entity
-			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
+			.setBounds(x, y, (int)entity.aabb.w, (int)entity.aabb.h)
 			.setTween(0.006f, 0.6f, -3f, false, true)
 			.setPosition(x, y)
 			.setScale(0.6f*sdx.pixelFactor, 0.6f*sdx.pixelFactor)
@@ -201,7 +201,7 @@ public class Factory : World {
 		}
 		var entity = cache[Pool.BANG].deque();
 		entityAdded(entity
-			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
+			.setBounds(x, y, (int)entity.aabb.w, (int)entity.aabb.h)
 			.setTween(0.003f, 0.3f, -3f, false, true)
 			.setPosition(x, y)
 			.setScale(0.3f*sdx.pixelFactor, 0.3f*sdx.pixelFactor)
@@ -222,7 +222,7 @@ public class Factory : World {
 		var scale = (float)sdx.getRandom();
 		var entity = cache[Pool.PARTICLE].deque();
 		entityAdded(entity
-			.setBounds(x, y, (int)entity.bounds.w, (int)entity.bounds.h)
+			.setBounds(x, y, (int)entity.aabb.w, (int)entity.aabb.h)
 			.setPosition(x, y)
 			.setScale(scale*sdx.pixelFactor, scale*sdx.pixelFactor)
 			.setVelocity((float)velocityX, (float)velocityY)

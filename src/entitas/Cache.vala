@@ -3,7 +3,6 @@
  */
 namespace entitas {
 
-	
 	public class EntityCache : Object {
 
 		public Entity*[] items;

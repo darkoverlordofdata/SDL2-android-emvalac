@@ -6,17 +6,12 @@ namespace systems {
 	public class CollisionSystem : System {
 		public CollisionSystem(Game game, Factory world) {
 
-			Group? bullets = null;
-			Group? enemies = null;
-
-			initialize = () => {
-				bullets = world.getGroup(Matcher.AllOf({ Components.BulletComponent }));
-				enemies = world.getGroup(Matcher.AnyOf({
-					Components.Enemy1Component, 
-					Components.Enemy2Component, 
-					Components.Enemy3Component
-				}));
-			};
+			var bullets = world.getGroup(Matcher.AllOf({ Components.BulletComponent }));
+			var enemies = world.getGroup(Matcher.AnyOf({
+				Components.Enemy1Component, 
+				Components.Enemy2Component, 
+				Components.Enemy3Component
+			}));
 
 			/**
 			* physics system
@@ -27,7 +22,7 @@ namespace systems {
 					if (enemy.isActive()) {
 						foreach (var bullet in bullets.entities) {
 							if (bullet.isActive()) {
-								if (bullet.bounds.is_intersecting(enemy.bounds)) {
+								if (bullet.aabb.is_intersecting(enemy.aabb)) {
 									var x = (int)((float)bullet.position.x);
 									var y = (int)((float)bullet.position.y);
 									world.bang(x, y);

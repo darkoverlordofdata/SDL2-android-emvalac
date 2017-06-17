@@ -7,13 +7,9 @@ namespace systems {
 	*/
 	public class ExpireSystem : System {
 		public ExpireSystem(Game game, Factory world) {
-			Group? expiring = null;
 
-			initialize = () => {
-				expiring = world.getGroup(Matcher.AllOf({Components.ExpiresComponent}));
-			};
-
-
+			var expiring = world.getGroup(Matcher.AllOf({Components.ExpiresComponent}));
+			
 			/**
 			 * Remove exired entities
 			 */
