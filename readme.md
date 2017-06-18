@@ -9,7 +9,7 @@ vala-entitas running on android, emscripten and linux desktop.
 ### deskstop:
 mkdir install
 cd install
-cmake .. -DDESKTOP=ON -DPROFILING=ON
+cmake .. 
 make
 cp assets install/src
 cd install/src
