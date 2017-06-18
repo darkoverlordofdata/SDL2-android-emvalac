@@ -6,14 +6,21 @@
 #include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL2/SDL_rect.h>
 #include <float.h>
 #include <math.h>
+#include <SDL2/SDL_rect.h>
 #include <stdio.h>
 
-typedef struct _entitasCache entitasCache;
+typedef struct _entitasEntityCache entitasEntityCache;
 
 #define ENTITAS_TYPE_ENTITY (entitas_entity_get_type ())
+
+#define ENTITAS_TYPE_TRANSFORM (entitas_transform_get_type ())
+
+#define SDX_MATH_TYPE_VECTOR2 (sdx_math_vector2_get_type ())
+typedef struct _sdxmathVector2 sdxmathVector2;
+typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
+typedef struct _entitasTransform entitasTransform;
 
 #define ENTITAS_TYPE_BACKGROUND (entitas_background_get_type ())
 typedef struct _entitasBackground entitasBackground;
@@ -45,15 +52,9 @@ typedef struct _entitasIndex entitasIndex;
 #define ENTITAS_TYPE_LAYER (entitas_layer_get_type ())
 typedef struct _entitasLayer entitasLayer;
 
-#define ENTITAS_TYPE_POSITION (entitas_position_get_type ())
-typedef struct _entitasPosition entitasPosition;
-
-#define ENTITAS_TYPE_SCALE (entitas_scale_get_type ())
-typedef struct _entitasScale entitasScale;
-
-#define ENTITAS_TYPE_SPRITE (entitas_sprite_get_type ())
-typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
-typedef struct _entitasSprite entitasSprite;
+#define ENTITAS_TYPE_SOUND (entitas_sound_get_type ())
+typedef struct _sdxaudioSound sdxaudioSound;
+typedef struct _entitasSound entitasSound;
 
 #define ENTITAS_TYPE_TEXT (entitas_text_get_type ())
 typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
@@ -69,6 +70,18 @@ typedef struct _entitasTween entitasTween;
 typedef struct _entitasVelocity entitasVelocity;
 typedef struct _entitasEntity entitasEntity;
 #define _g_list_free0(var) ((var == NULL) ? NULL : (var = (g_list_free (var), NULL)))
+
+struct _sdxmathVector2 {
+	gfloat x;
+	gfloat y;
+};
+
+struct _entitasTransform {
+	sdxmathVector2* scale;
+	sdxmathVector2* position;
+	SDL_Rect* aabb;
+	sdxgraphicsSprite* sprite;
+};
 
 struct _entitasBackground {
 	gboolean active;
@@ -91,12 +104,12 @@ struct _entitasEnemy3 {
 };
 
 struct _entitasExpires {
-	gdouble value;
+	gfloat value;
 };
 
 struct _entitasHealth {
-	gdouble current;
-	gdouble maximum;
+	gfloat current;
+	gfloat maximum;
 };
 
 struct _entitasHud {
@@ -113,20 +126,8 @@ struct _entitasLayer {
 	gint value;
 };
 
-struct _entitasPosition {
-	gdouble x;
-	gdouble y;
-};
-
-struct _entitasScale {
-	gdouble x;
-	gdouble y;
-};
-
-struct _entitasSprite {
-	sdxgraphicsSprite* sprite;
-	gint width;
-	gint height;
+struct _entitasSound {
+	sdxaudioSound* sound;
 };
 
 struct _entitasText {
@@ -142,16 +143,16 @@ struct _entitasTint {
 };
 
 struct _entitasTween {
-	gdouble min;
-	gdouble max;
-	gdouble speed;
+	gfloat min;
+	gfloat max;
+	gfloat speed;
 	gboolean repeat;
 	gboolean active;
 };
 
 struct _entitasVelocity {
-	gdouble x;
-	gdouble y;
+	gfloat x;
+	gfloat y;
 };
 
 struct _entitasEntity {
@@ -159,8 +160,8 @@ struct _entitasEntity {
 	gchar* name;
 	gint pool;
 	guint64 mask;
+	entitasTransform transform;
 	entitasBackground* background;
-	SDL_Rect* bounds;
 	entitasBullet* bullet;
 	entitasEnemy1* enemy1;
 	entitasEnemy2* enemy2;
@@ -170,16 +171,14 @@ struct _entitasEntity {
 	entitasHud* hud;
 	entitasIndex* index;
 	entitasLayer* layer;
-	entitasPosition* position;
-	entitasScale* scale;
-	entitasSprite* sprite;
+	entitasSound* sound;
 	entitasText* text;
 	entitasTint* tint;
 	entitasTween* tween;
 	entitasVelocity* velocity;
 };
 
-struct _entitasCache {
+struct _entitasEntityCache {
 	gint _retainCount;
 	entitasEntity** items;
 	gint items_length1;
@@ -188,8 +187,17 @@ struct _entitasCache {
 
 
 
-void entitas_cache_free (entitasCache* self);
+void entitas_entity_cache_free (entitasEntityCache* self);
 GType entitas_entity_get_type (void) G_GNUC_CONST;
+GType entitas_transform_get_type (void) G_GNUC_CONST;
+GType sdx_math_vector2_get_type (void) G_GNUC_CONST;
+sdxmathVector2* sdx_math_vector2_dup (const sdxmathVector2* self);
+void sdx_math_vector2_free (sdxmathVector2* self);
+void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
+entitasTransform* entitas_transform_dup (const entitasTransform* self);
+void entitas_transform_free (entitasTransform* self);
+void entitas_transform_copy (const entitasTransform* self, entitasTransform* dest);
+void entitas_transform_destroy (entitasTransform* self);
 GType entitas_background_get_type (void) G_GNUC_CONST;
 entitasBackground* entitas_background_dup (const entitasBackground* self);
 void entitas_background_free (entitasBackground* self);
@@ -220,18 +228,12 @@ void entitas_index_free (entitasIndex* self);
 GType entitas_layer_get_type (void) G_GNUC_CONST;
 entitasLayer* entitas_layer_dup (const entitasLayer* self);
 void entitas_layer_free (entitasLayer* self);
-GType entitas_position_get_type (void) G_GNUC_CONST;
-entitasPosition* entitas_position_dup (const entitasPosition* self);
-void entitas_position_free (entitasPosition* self);
-GType entitas_scale_get_type (void) G_GNUC_CONST;
-entitasScale* entitas_scale_dup (const entitasScale* self);
-void entitas_scale_free (entitasScale* self);
-GType entitas_sprite_get_type (void) G_GNUC_CONST;
-void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
-entitasSprite* entitas_sprite_dup (const entitasSprite* self);
-void entitas_sprite_free (entitasSprite* self);
-void entitas_sprite_copy (const entitasSprite* self, entitasSprite* dest);
-void entitas_sprite_destroy (entitasSprite* self);
+GType entitas_sound_get_type (void) G_GNUC_CONST;
+void sdx_audio_sound_free (sdxaudioSound* self);
+entitasSound* entitas_sound_dup (const entitasSound* self);
+void entitas_sound_free (entitasSound* self);
+void entitas_sound_copy (const entitasSound* self, entitasSound* dest);
+void entitas_sound_destroy (entitasSound* self);
 GType entitas_text_get_type (void) G_GNUC_CONST;
 entitasText* entitas_text_dup (const entitasText* self);
 void entitas_text_free (entitasText* self);
@@ -250,21 +252,21 @@ entitasEntity* entitas_entity_dup (const entitasEntity* self);
 void entitas_entity_free (entitasEntity* self);
 void entitas_entity_copy (const entitasEntity* self, entitasEntity* dest);
 void entitas_entity_destroy (entitasEntity* self);
-static void entitas_cache_instance_init (entitasCache * self);
-entitasCache* entitas_cache_retain (entitasCache* self);
-void entitas_cache_release (entitasCache* self);
-void entitas_cache_free (entitasCache* self);
-entitasCache* entitas_cache_new (gint capacity);
-gboolean entitas_cache_isEmpty (entitasCache* self);
-entitasEntity* entitas_cache_get (entitasCache* self, gint index);
-void entitas_cache_put (entitasCache* self, gint index, entitasEntity* entity);
-void entitas_cache_enque (entitasCache* self, entitasEntity* entity);
-void entitas_cache_grow (entitasCache* self, gint newSize);
-entitasEntity* entitas_cache_deque (entitasCache* self);
+static void entitas_entity_cache_instance_init (entitasEntityCache * self);
+entitasEntityCache* entitas_entity_cache_retain (entitasEntityCache* self);
+void entitas_entity_cache_release (entitasEntityCache* self);
+void entitas_entity_cache_free (entitasEntityCache* self);
+entitasEntityCache* entitas_entity_cache_new (gint capacity);
+gboolean entitas_entity_cache_isEmpty (entitasEntityCache* self);
+entitasEntity* entitas_entity_cache_get (entitasEntityCache* self, gint index);
+void entitas_entity_cache_put (entitasEntityCache* self, gint index, entitasEntity* entity);
+void entitas_entity_cache_enque (entitasEntityCache* self, entitasEntity* entity);
+void entitas_entity_cache_grow (entitasEntityCache* self, gint newSize);
+entitasEntity* entitas_entity_cache_deque (entitasEntityCache* self);
 
 
-entitasCache* entitas_cache_retain (entitasCache* self) {
-	entitasCache* result = NULL;
+entitasEntityCache* entitas_entity_cache_retain (entitasEntityCache* self) {
+	entitasEntityCache* result = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_atomic_int_add ((volatile gint *) (&self->_retainCount), 1);
 	result = self;
@@ -272,22 +274,22 @@ entitasCache* entitas_cache_retain (entitasCache* self) {
 }
 
 
-void entitas_cache_release (entitasCache* self) {
+void entitas_entity_cache_release (entitasEntityCache* self) {
 	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = g_atomic_int_dec_and_test ((volatile gint *) (&self->_retainCount));
 	if (_tmp0_) {
-		entitas_cache_free (self);
+		entitas_entity_cache_free (self);
 	}
 }
 
 
-entitasCache* entitas_cache_new (gint capacity) {
-	entitasCache* self;
+entitasEntityCache* entitas_entity_cache_new (gint capacity) {
+	entitasEntityCache* self;
 	gint _tmp0_ = 0;
 	entitasEntity** _tmp1_ = NULL;
-	self = g_slice_new0 (entitasCache);
-	entitas_cache_instance_init (self);
+	self = g_slice_new0 (entitasEntityCache);
+	entitas_entity_cache_instance_init (self);
 	_tmp0_ = capacity;
 	_tmp1_ = g_new0 (entitasEntity*, _tmp0_);
 	self->items = (g_free (self->items), NULL);
@@ -298,7 +300,7 @@ entitasCache* entitas_cache_new (gint capacity) {
 }
 
 
-gboolean entitas_cache_isEmpty (entitasCache* self) {
+gboolean entitas_entity_cache_isEmpty (entitasEntityCache* self) {
 	gboolean result = FALSE;
 	gint _tmp0_ = 0;
 	g_return_val_if_fail (self != NULL, FALSE);
@@ -308,7 +310,7 @@ gboolean entitas_cache_isEmpty (entitasCache* self) {
 }
 
 
-entitasEntity* entitas_cache_get (entitasCache* self, gint index) {
+entitasEntity* entitas_entity_cache_get (entitasEntityCache* self, gint index) {
 	entitasEntity* result = NULL;
 	gboolean _tmp0_ = FALSE;
 	gint _tmp1_ = 0;
@@ -345,7 +347,7 @@ entitasEntity* entitas_cache_get (entitasCache* self, gint index) {
 }
 
 
-void entitas_cache_put (entitasCache* self, gint index, entitasEntity* entity) {
+void entitas_entity_cache_put (entitasEntityCache* self, gint index, entitasEntity* entity) {
 	gboolean _tmp0_ = FALSE;
 	gint _tmp1_ = 0;
 	entitasEntity** _tmp6_ = NULL;
@@ -381,7 +383,7 @@ void entitas_cache_put (entitasCache* self, gint index, entitasEntity* entity) {
 }
 
 
-void entitas_cache_enque (entitasCache* self, entitasEntity* entity) {
+void entitas_entity_cache_enque (entitasEntityCache* self, entitasEntity* entity) {
 	gint _tmp0_ = 0;
 	entitasEntity** _tmp1_ = NULL;
 	gint _tmp1__length1 = 0;
@@ -399,7 +401,7 @@ void entitas_cache_enque (entitasCache* self, entitasEntity* entity) {
 		gint _tmp2__length1 = 0;
 		_tmp2_ = self->items;
 		_tmp2__length1 = self->items_length1;
-		entitas_cache_grow (self, _tmp2__length1 * 2);
+		entitas_entity_cache_grow (self, _tmp2__length1 * 2);
 	}
 	_tmp3_ = self->items;
 	_tmp3__length1 = self->items_length1;
@@ -411,7 +413,7 @@ void entitas_cache_enque (entitasCache* self, entitasEntity* entity) {
 }
 
 
-entitasEntity* entitas_cache_deque (entitasCache* self) {
+entitasEntity* entitas_entity_cache_deque (entitasEntityCache* self) {
 	entitasEntity* result = NULL;
 	gint _tmp0_ = 0;
 	entitasEntity** _tmp2_ = NULL;
@@ -439,7 +441,7 @@ entitasEntity* entitas_cache_deque (entitasCache* self) {
 }
 
 
-void entitas_cache_grow (entitasCache* self, gint newSize) {
+void entitas_entity_cache_grow (entitasEntityCache* self, gint newSize) {
 	GList* temp = NULL;
 	entitasEntity** _tmp0_ = NULL;
 	gint _tmp0__length1 = 0;
@@ -502,14 +504,14 @@ void entitas_cache_grow (entitasCache* self, gint newSize) {
 }
 
 
-static void entitas_cache_instance_init (entitasCache * self) {
+static void entitas_entity_cache_instance_init (entitasEntityCache * self) {
 	self->_retainCount = 1;
 }
 
 
-void entitas_cache_free (entitasCache* self) {
+void entitas_entity_cache_free (entitasEntityCache* self) {
 	self->items = (g_free (self->items), NULL);
-	g_slice_free (entitasCache, self);
+	g_slice_free (entitasEntityCache, self);
 }
 
 

@@ -4,33 +4,19 @@
  * 
  */
 namespace entitas { 
-    // wtf vala?
-	public SDL.Video.Rect unused0;	
-    // doesn't compile without the dummy declaration
-	public struct Bounds : SDL.Video.Rect {}
-
-	public struct Vector2 {
-		public float x;
-		public float y;
-
-		public Vector2(float x = 0, float y = 0) {
-			this.x = x;
-			this.y = y;
-		}
-	}
 
 	public struct Transform {
-		public Vector2 scale;
-		public Vector2 position;
-		public SDL.Video.Rect aabb;
+		public sdx.math.Vector2? scale;
+		public sdx.math.Vector2? position;
+		public SDL.Video.Rect? aabb;
  		public sdx.graphics.Sprite? sprite;
 
-		public Transform(int width=0, int height=0) {
+		public Transform(sdx.graphics.Sprite sprite) {
+			this.sprite = sprite;
 			position = { 0, 0 };
-			scale = { 1, 1 };
-			aabb = { 0, 0, width, height };
+			scale = { sprite.scale.x, sprite.scale.y };
+			aabb = { 0, 0, sprite.width, sprite.height };
 		}
-
 	}
 
 	[SimpleType, Immutable]
@@ -86,28 +72,9 @@ namespace entitas {
 		public int value; 
     }
 
-	[SimpleType]
-	public struct Position {
-		public float x; 
-		public float y; 
-    }
-
-	[SimpleType]
-	public struct Scale {
-		public float x; 
-		public float y; 
-    }
-
-
-	// public struct Sound {
-	// 	public SDL.Chunk sound;
-    // } 
-
-	public struct Sprite {
- 		public sdx.graphics.Sprite sprite;
-		public int width;
-		public int height;
-    }
+	public struct Sound {
+		public sdx.audio.Sound sound;
+    } 
 
 	public struct Text {
         public string text;
@@ -141,34 +108,30 @@ namespace entitas {
 	/**
 	 *  Component bit masks
 	 */
-	const uint64 BACKGROUND 	= 0x0001;
-	const uint64 BOUNDS 		= 0x0002;
-	const uint64 BULLET 		= 0x0004;
-	const uint64 ENEMY1 		= 0x0008;
-	const uint64 ENEMY2 		= 0x0010;
-	const uint64 ENEMY3 		= 0x0020;
-	const uint64 EXPIRES 		= 0x0040;
-	const uint64 HEALTH 		= 0x0080;
-	const uint64 HUD 			= 0x0100;
-	const uint64 INDEX 			= 0x0200;
-	const uint64 LAYER 			= 0x0400;
-	const uint64 POSITION 		= 0x0800;
-	const uint64 SCALE 			= 0x1000;
-	// const uint64 SOUND 			= 0x2000;
-	const uint64 SPRITE 		= 0x4000;
-	const uint64 TEXT 			= 0x8000;
-	const uint64 TINT 			= 0x10000;
-	const uint64 TWEEN 			= 0x20000;
-	const uint64 VELOCITY 		= 0x40000;
+	const uint64 UNKNOWN		= 0x00000;
+	const uint64 BACKGROUND 	= 0x00001;
+	const uint64 BULLET 		= 0x00002;
+	const uint64 ENEMY1 		= 0x00004;
+	const uint64 ENEMY2 		= 0x00008;
+	const uint64 ENEMY3 		= 0x00010;
+	const uint64 EXPIRES 		= 0x00020;
+	const uint64 HEALTH 		= 0x00040;
+	const uint64 HUD 			= 0x00080;
+	const uint64 INDEX 			= 0x00100;
+	const uint64 LAYER 			= 0x00200;
+	const uint64 SOUND 			= 0x00400;
+	const uint64 TEXT 			= 0x00800;
+	const uint64 TINT 			= 0x01000;
+	const uint64 TWEEN 			= 0x02000;
+	const uint64 VELOCITY 		= 0x04000;
 	const uint64 ACTIVE 		= 0x8000000000000000;
 
 	/**
 	* Component names
 	*/
 	const string[] ComponentString = {
-		"",
+		"Unknown",
 		"Background",
-		"Bounds",
 		"Bullet",
 		"Enemy1",
 		"Enemy2",
@@ -178,10 +141,7 @@ namespace entitas {
 		"Hud",
 		"Index",
 		"Layer",
-		"Position",
-		"Scale",
 		"Sound",
-		"Sprite",
 		"Text",
 		"Tint",
 		"Tween",
@@ -192,8 +152,8 @@ namespace entitas {
 	* Components
 	*/
 	public enum Components {
-		BackgroundComponent = 1,
-		BoundsComponent,
+		UnknownComponent,
+		BackgroundComponent,
 		BulletComponent,
 		Enemy1Component,
 		Enemy2Component,
@@ -203,16 +163,10 @@ namespace entitas {
 		HudComponent,
 		IndexComponent,
 		LayerComponent,
-		PositionComponent,
-		ScaleComponent,
 		SoundComponent,
-		SpriteComponent,
 		TextComponent,
 		TintComponent,
 		TweenComponent,
-		VelocityComponent,
-		COUNT = 19
+		VelocityComponent
     }
-
-    
 }

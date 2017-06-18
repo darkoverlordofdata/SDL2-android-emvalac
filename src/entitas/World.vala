@@ -9,7 +9,7 @@ namespace entitas {
 		public int id = 0;
 		public ISystem?[] systems = new ISystem?[100];
 		public int count = 0;
-		public  EntityRemovedListener entityRemoved;
+		public EntityRemovedListener entityRemoved;
 
 		public World() {
 			instance = this;

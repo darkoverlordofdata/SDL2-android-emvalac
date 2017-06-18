@@ -6,6 +6,8 @@ using systems;
 using GLib.Math;
 
 const double TAU = 2.0 * Math.PI; 
+
+/* entity types - each gets a pool partition  */
 enum Pool {
 	BACKGROUND,
 	ENEMY1,
@@ -45,7 +47,7 @@ public class Factory : World {
 	 * added to display system
 	 */
 	public Entity* entityAdded(Entity* e) {
-		if (!e.hasSprite()) return e;
+		if (e.transform.sprite == null) return e;
 		DisplaySystem.instance.add(e);
 		return e;
 	}
@@ -53,27 +55,22 @@ public class Factory : World {
 	/**
 	 * The stuff that all entities have
 	 */
-	public Entity* createBase(string name, int pool, float scale = 1, bool active = false) {
-
-		var sprite = atlas.createSprite(name);
+	public Entity* createBase(string name, int pool, float scale = sdx.pixelFactor, bool active = false, bool centered = true) {
 		return createEntity(name, pool, active)
-			.addPosition(0, 0)
-			.addLayer(pool)
-			.addBounds(0, 0, sprite.width, sprite.height)
-            .addScale(scale*sdx.pixelFactor, scale*sdx.pixelFactor)
-			.addSprite(sprite, sprite.width, sprite.height);
+			.setTransform(atlas.createSprite(name).setScale(scale, scale).setCentered(centered))
+			.addLayer(pool);
 	}
 
 	/** 
 	 *	factory methods:
 	 */
 	public Entity* createBackground() {
-		return entityAdded(createBase("background", Pool.BACKGROUND, 2, true)
+		return entityAdded(createBase("background", Pool.BACKGROUND, 2*sdx.pixelFactor, true, false)
 			.setBackground(true));
 	}
 
 	public Entity* createPlayer() {
-		return entityAdded(createBase("spaceshipspr", Pool.PLAYER, 1, true));
+		return entityAdded(createBase("spaceshipspr", Pool.PLAYER, sdx.pixelFactor, true));
 	}
 
 	public Entity* createBullet() {
@@ -185,7 +182,7 @@ public class Factory : World {
 		}
 		var entity = cache[Pool.EXPLOSION].deque();
 		entityAdded(entity
-			.setBounds(x, y, (int)entity.aabb.w, (int)entity.aabb.h)
+			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setTween(0.006f, 0.6f, -3f, false, true)
 			.setPosition(x, y)
 			.setScale(0.6f*sdx.pixelFactor, 0.6f*sdx.pixelFactor)
@@ -201,7 +198,7 @@ public class Factory : World {
 		}
 		var entity = cache[Pool.BANG].deque();
 		entityAdded(entity
-			.setBounds(x, y, (int)entity.aabb.w, (int)entity.aabb.h)
+			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setTween(0.003f, 0.3f, -3f, false, true)
 			.setPosition(x, y)
 			.setScale(0.3f*sdx.pixelFactor, 0.3f*sdx.pixelFactor)
@@ -222,7 +219,7 @@ public class Factory : World {
 		var scale = (float)sdx.getRandom();
 		var entity = cache[Pool.PARTICLE].deque();
 		entityAdded(entity
-			.setBounds(x, y, (int)entity.aabb.w, (int)entity.aabb.h)
+			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setPosition(x, y)
 			.setScale(scale*sdx.pixelFactor, scale*sdx.pixelFactor)
 			.setVelocity((float)velocityX, (float)velocityY)

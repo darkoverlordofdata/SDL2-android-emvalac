@@ -10,7 +10,6 @@
 
 
 
-const SDL_Color SDX_COLOR_LiteSlateBlue = {(guint8) 0x6e, (guint8) 0x84, (guint8) 0xae, (guint8) 0xff};
 const SDL_Color SDX_COLOR_AliceBlue = {(guint8) 0xf0, (guint8) 0xf8, (guint8) 0xff, (guint8) 0xff};
 const SDL_Color SDX_COLOR_AntiqueWhite = {(guint8) 0xfa, (guint8) 0xeb, (guint8) 0xd7, (guint8) 0xff};
 const SDL_Color SDX_COLOR_Aqua = {(guint8) 0x00, (guint8) 0xFF, (guint8) 0x00, (guint8) 0xFF};
@@ -85,6 +84,7 @@ const SDL_Color SDX_COLOR_LightSalmon = {(guint8) 0xff, (guint8) 0xa0, (guint8) 
 const SDL_Color SDX_COLOR_LightSeaGreen = {(guint8) 0x20, (guint8) 0xb2, (guint8) 0xaa, (guint8) 0xff};
 const SDL_Color SDX_COLOR_LightSkyBlue = {(guint8) 0x87, (guint8) 0xce, (guint8) 0xfa, (guint8) 0xff};
 const SDL_Color SDX_COLOR_LightSlateGray = {(guint8) 0x77, (guint8) 0x88, (guint8) 0x99, (guint8) 0xff};
+const SDL_Color SDX_COLOR_LightSlateBlue = {(guint8) 0x6e, (guint8) 0x84, (guint8) 0xae, (guint8) 0xff};
 const SDL_Color SDX_COLOR_LightSteelBlue = {(guint8) 0xb0, (guint8) 0xc4, (guint8) 0xde, (guint8) 0xff};
 const SDL_Color SDX_COLOR_LightYellow = {(guint8) 0xff, (guint8) 0xff, (guint8) 0xe0, (guint8) 0xff};
 const SDL_Color SDX_COLOR_Lime = {(guint8) 0x00, (guint8) 0xff, (guint8) 0x00, (guint8) 0xff};

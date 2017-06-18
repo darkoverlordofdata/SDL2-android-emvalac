@@ -12,8 +12,8 @@ namespace systems {
 			execute = (delta) => {
 				foreach (var entity in tweens.entities) {
 					if (entity.isActive()) {
-						var x = entity.scale.x + (entity.tween.speed * delta);
-						var y = entity.scale.y + (entity.tween.speed * delta);
+						var x = entity.transform.scale.x + (entity.tween.speed * delta);
+						var y = entity.transform.scale.y + (entity.tween.speed * delta);
 						var active = entity.tween.active;
 
 						if (x > entity.tween.max) {
@@ -25,9 +25,8 @@ namespace systems {
 							y = entity.tween.min;
 							active = false;
 						}
-						
-						entity.scale.x = (float)x; 
-						entity.scale.y = (float)y;
+						entity.transform.scale.x = (float)x; 
+						entity.transform.scale.y = (float)y;
 						entity.tween.active = active;
 					}
 				}

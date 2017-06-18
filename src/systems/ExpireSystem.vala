@@ -1,7 +1,6 @@
 using entitas;
 namespace systems {
 
-	public delegate Group Lazy(World w);
 	/**
 	* game systems
 	*/
@@ -16,8 +15,7 @@ namespace systems {
 			execute = (delta) => {
 				foreach (var entity in expiring.entities) {
 					if (entity.isActive()) {
-						var exp = entity.expires.value - delta;
-						entity.expires.value = (float)exp;
+						entity.expires.value -= delta; 
 						if (entity.expires.value < 0)	
 							world.deleteEntity(entity);
 					}

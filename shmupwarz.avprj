@@ -34,7 +34,7 @@ c_library: m
 *vala_source: entitas/Matcher.vala
 *vala_source: entitas/World.vala
 *vala_source: entitas/entitas.vala
-*vala_source: entity.gs
+*vala_source: entity.vala
 *vala_source: main.vala
 *vala_source: sdx/Color.gs
 *vala_source: sdx/Files.vala
@@ -52,7 +52,6 @@ c_library: m
 *vala_source: sdx/graphics/TextureEnums.vala
 *vala_source: sdx/graphics/TextureRegion.vala
 *vala_source: sdx/graphics/graphics.vala
-*vala_source: sdx/math/AABB.vala
 *vala_source: sdx/math/Vector2.vala
 *vala_source: sdx/sdx.vala
 *vala_source: sdx/utils/Cache.vala
@@ -84,7 +83,7 @@ c_library: m
 *translate: vala src/entitas/Matcher.vala
 *translate: vala src/entitas/World.vala
 *translate: vala src/entitas/entitas.vala
-*translate: genie src/entity.gs
+*translate: vala src/entity.vala
 *translate: vala src/main.vala
 *translate: c src/mt19937ar.c
 *translate: genie src/sdx/Color.gs
@@ -103,7 +102,6 @@ c_library: m
 *translate: vala src/sdx/graphics/TextureEnums.vala
 *translate: vala src/sdx/graphics/TextureRegion.vala
 *translate: vala src/sdx/graphics/graphics.vala
-*translate: vala src/sdx/math/AABB.vala
 *translate: vala src/sdx/math/Vector2.vala
 *translate: vala src/sdx/sdx.vala
 *translate: vala src/sdx/utils/Cache.vala

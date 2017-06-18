@@ -35,25 +35,25 @@ namespace systems {
 			}
 		}
 
-		public bool draw(Entity* e) {
-			if (e.hasSprite()) {
+		public bool draw(Entity* e, ref Transform t) {
+			if (t.sprite != null) {
 
-				e.aabb.w = (int)((float)e.sprite.width * e.scale.x);
-				e.aabb.h = (int)((float)e.sprite.height * e.scale.y);
-				if (!e.isBackground()) {
-					e.aabb.x = (int)((float)e.position.x - e.aabb.w / 2);
-					e.aabb.y = (int)((float)e.position.y - e.aabb.h / 2);
-					if (e.hasTint()) {
-						e.sprite.sprite.texture.set_color_mod((uint8)e.tint.r, (uint8)e.tint.g, (uint8)e.tint.b);
-						e.sprite.sprite.texture.set_alpha_mod((uint8)e.tint.a);
-					}
+				t.aabb.w = (int)((float)t.sprite.width * t.scale.x);
+				t.aabb.h = (int)((float)t.sprite.height * t.scale.y);
+				if (t.sprite.centered) {
+					t.aabb.x = (int)((float)t.position.x - t.aabb.w / 2);
+					t.aabb.y = (int)((float)t.position.y - t.aabb.h / 2);
 				}
-				sdx.renderer.copy(e.sprite.sprite.texture, null, 
-					{ e.aabb.x, e.aabb.y, (uint)e.aabb.w, (uint)e.aabb.h });
+				if (e.hasTint()) {
+					t.sprite.texture.set_color_mod((uint8)e.tint.r, (uint8)e.tint.g, (uint8)e.tint.b);
+					t.sprite.texture.set_alpha_mod((uint8)e.tint.a);
+				}
+				sdx.renderer.copy(t.sprite.texture, null, 
+					{ t.aabb.x, t.aabb.y, (uint)t.aabb.w, (uint)t.aabb.h });
 
 			if (e.hasText())
 				sdx.renderer.copy(e.text.sprite.texture, null, 
-					{ (int)e.position.x, (int)e.position.y, e.text.sprite.width, e.text.sprite.height });
+					{ (int)t.position.x, (int)t.position.y, e.text.sprite.width, e.text.sprite.height });
 			}
 			return true;
 		}

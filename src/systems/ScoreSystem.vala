@@ -20,8 +20,8 @@ namespace systems {
 						if (pct != entity.text.text) {
 							entity.text.text = pct;
 							entity.text.sprite.setText(pct, sdx.smallFont, sdx.Color.LimeGreen);
-							entity.text.sprite.x = (int)entity.position.x;
-							entity.text.sprite.y = (int)entity.position.y;
+							entity.text.sprite.x = (int)entity.transform.position.x;
+							entity.text.sprite.y = (int)entity.transform.position.y;
 						}
 					}
 				}

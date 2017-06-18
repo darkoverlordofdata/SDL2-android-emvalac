@@ -17,9 +17,8 @@ namespace systems {
 			execute = (delta) => {
 				var x = (int)sdx.mouseX;
 				var y = (int)sdx.mouseY;
+				
 				player.setPosition(x, y);
-				player.aabb.x = x;
-				player.aabb.y = y;
 				shoot = sdx.mouseDown || (sdx.keys[122] == 1);
 				if (shoot) timeToFire -= delta;
 				if (timeToFire < 0) {

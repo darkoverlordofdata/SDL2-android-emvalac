@@ -96,7 +96,6 @@ emvalac --builddir build \
     --cc=jni \
     #{defines} \
     --vapidir src/vapis \
-    --fast-vapi project.vapi \
     --pkg android \
     #{vapis} \
     #{pkgs} \
@@ -107,7 +106,7 @@ emvalac --builddir build \
 sed  "s/#include <SDL2/#include <SDL2\\/SDL.h>\\n#include <SDL2/g"  ./build/src/main.c >  ./android/jni/src/main.c
 #{copy}
 cd ./android/jni && ndk-build
-cd ./android && ant debug 
+cd ./android && ant debug # install
 """
 ##
 ## Template: emscripten build script

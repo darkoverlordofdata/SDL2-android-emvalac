@@ -1,40 +1,3 @@
-/**
- *	profiling data
- */
-public int k;
-public double t;
-public double t1;
-public double t2;
-public double t3;
-
-/**
- * gameloop
- * 
- * process each frame
- * 
- * @param game Game object
- * 
- */
-public void gameloop(Game game) {
-
-#if (PROFILING)
-	t1 = sdx.getNow();
-#endif
-	game.update();
-#if (PROFILING)
-	t2 = sdx.getNow();
-	t3 = t2 - t1;
-	t = t + t3;
-	k += 1;
-	if (k == 1000) {
-		k = 0;
-		t = t / 1000.0;
-		stdout.printf("%f\n", t);
-		t = 0;
-	}
-#endif
-	game.draw();
-}
 
 #if (EMSCRIPTEN)
 /**
@@ -57,7 +20,7 @@ public void game() {
  * the main loop
  */
 public void mainloop(void* arg) {
-	gameloop((Game*)arg);
+	sdx.gameloop((Game*)arg);
 }
 
 
@@ -76,7 +39,7 @@ public int main(string args[]) {
 #endif
 	game.start();
 	while (sdx.running) {
-		gameloop(game);
+		sdx.gameloop(game);
 	}
 	return 0;
 }

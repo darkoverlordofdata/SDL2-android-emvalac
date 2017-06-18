@@ -20,7 +20,6 @@ struct _sdxutilsStringTokenizer {
 	gboolean retDelims;
 	gboolean delimsChanged;
 	gint maxDelimCodePoint;
-	gboolean hasSurrogates;
 	gint* delimiterCodePoints;
 	gint delimiterCodePoints_length1;
 };
@@ -637,7 +636,6 @@ gint sdx_utils_string_tokenizer_countTokens (sdxutilsStringTokenizer* self) {
 
 static void sdx_utils_string_tokenizer_instance_init (sdxutilsStringTokenizer * self) {
 	self->_retainCount = 1;
-	self->hasSurrogates = FALSE;
 }
 
 

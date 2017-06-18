@@ -41,9 +41,12 @@ namespace sdx {
 	 */
 #if (DESKTOP)
 	FileType platform = FileType.Resource;
+	const int pixelFactor = 1;
 #elif (ANDROID)
+	const int pixelFactor = 2;
 	FileType platform = FileType.Asset;
 #else
+	const int pixelFactor = 1;
 	FileType platform = FileType.Relative;
 #endif
 	Renderer renderer;
@@ -60,10 +63,9 @@ namespace sdx {
 	sdx.graphics.Sprite.AnimatedSprite fps3;
 	sdx.graphics.Sprite.AnimatedSprite fps4;
 	sdx.graphics.Sprite.AnimatedSprite fps5;
-	int pixelFactor;
 	bool showFps;
 	float fps;
-	float delta;
+	float delta = 1.0f/60.0f;
 	int mouseX;
 	int mouseY;
 	bool mouseDown;
@@ -71,15 +73,13 @@ namespace sdx {
 	uint8[] keys;
 	bool[] direction;
 	string resourceBase;
-
-	int _frames;
-	Event _evt;
-	double _elapsed;
-	double _freq;
-	double _mark1;
-	double _mark2;
+	double currentTime;
+	double accumulator;
+	const double MS_PER_UPDATE = 1.0/60.0;
+	double freq;
 	int width;
 	int height;
+	Event _evt;
 
 	public enum Direction {
 		NONE, LEFT, RIGHT, UP, DOWN
@@ -109,11 +109,11 @@ namespace sdx {
 
 		display = 0;
 		display.get_mode(0, out displayMode);
-		if (display.get_dpi(null, null, null) == -1) {
-			pixelFactor = 1;
-		} else {
-			pixelFactor = 1;
-		}
+		//  if (display.get_dpi(null, null, null) == -1) {
+		//  	pixelFactor = 1;
+		//  } else {
+		//  	pixelFactor = 1;
+		//  }
 
 #if (ANDROID)    
 
@@ -130,7 +130,7 @@ namespace sdx {
 		if (sdx.renderer == null)
 			throw new SdlException.CreateRenderer(SDL.get_error());
 
-		_freq = SDL.Timer.get_performance_frequency();
+		freq = SDL.Timer.get_performance_frequency();
 		fpsColor = sdx.Color.AntiqueWhite;
 		bgdColor = sdx.Color.Black; //{ 0, 0, 0, 0 };
 
@@ -176,7 +176,6 @@ namespace sdx {
 
 	void drawFps() {
 		if (showFps) {
-
 			var f = "%2.2f".printf(fps);
 			fps1.setFrame(f[0]);
 			fps1.render(20, 12);
@@ -192,26 +191,31 @@ namespace sdx {
 	}
 
 	double getNow() {
-		return (double)SDL.Timer.get_performance_counter()/_freq;
+		return (double)SDL.Timer.get_performance_counter()/freq;
 	} 
 
 	void start() {
+		currentTime = getNow();
 		running = true;
-		_mark1 = (double)SDL.Timer.get_performance_counter()/_freq;
 	}
 
-	void update() {
-		_mark2 = (double)SDL.Timer.get_performance_counter()/_freq;
-		delta = (float)(_mark2 - _mark1);
-		_mark1 = _mark2;
-		_frames++;
-		_elapsed = _elapsed + delta;
-		if (_elapsed > 1) {
-			fps = (int)((double)_frames / _elapsed);
-			_elapsed = 0;
-			_frames = 0;
+	void gameloop(AbstractGame game) {
+		
+		double newTime = getNow();
+		double frameTime = newTime - currentTime;
+		if (frameTime > 0.25) frameTime = 0.25;
+		currentTime = newTime;
+
+		accumulator += frameTime;
+
+		processEvents();
+		while (accumulator >= MS_PER_UPDATE) {
+			game.update();
+			accumulator -= MS_PER_UPDATE;
 		}
+		game.draw();
 	}
+
 
 	void processEvents() {
 		while (SDL.Event.poll(out _evt) != 0) {
@@ -276,6 +280,7 @@ namespace sdx {
 	}
 
 	void end() {
+		// sdx.drawFps();
 		sdx.renderer.present();
 	}
 

@@ -6,7 +6,7 @@ src/entitas/Group.vala
 src/entitas/Matcher.vala
 src/entitas/World.vala
 src/entitas/entitas.vala
-src/entity.gs
+src/entity.vala
 src/main.vala
 src/sdx/Color.gs
 src/sdx/Files.vala
@@ -24,7 +24,6 @@ src/sdx/graphics/TextureAtlas.vala
 src/sdx/graphics/TextureEnums.vala
 src/sdx/graphics/TextureRegion.vala
 src/sdx/graphics/graphics.vala
-src/sdx/math/AABB.vala
 src/sdx/math/Vector2.vala
 src/sdx/sdx.vala
 src/sdx/utils/Cache.vala

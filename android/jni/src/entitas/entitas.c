@@ -6,12 +6,19 @@
 #include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL2/SDL_rect.h>
 #include <float.h>
 #include <math.h>
+#include <SDL2/SDL_rect.h>
 
 
 #define ENTITAS_TYPE_ENTITY (entitas_entity_get_type ())
+
+#define ENTITAS_TYPE_TRANSFORM (entitas_transform_get_type ())
+
+#define SDX_MATH_TYPE_VECTOR2 (sdx_math_vector2_get_type ())
+typedef struct _sdxmathVector2 sdxmathVector2;
+typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
+typedef struct _entitasTransform entitasTransform;
 
 #define ENTITAS_TYPE_BACKGROUND (entitas_background_get_type ())
 typedef struct _entitasBackground entitasBackground;
@@ -43,15 +50,9 @@ typedef struct _entitasIndex entitasIndex;
 #define ENTITAS_TYPE_LAYER (entitas_layer_get_type ())
 typedef struct _entitasLayer entitasLayer;
 
-#define ENTITAS_TYPE_POSITION (entitas_position_get_type ())
-typedef struct _entitasPosition entitasPosition;
-
-#define ENTITAS_TYPE_SCALE (entitas_scale_get_type ())
-typedef struct _entitasScale entitasScale;
-
-#define ENTITAS_TYPE_SPRITE (entitas_sprite_get_type ())
-typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
-typedef struct _entitasSprite entitasSprite;
+#define ENTITAS_TYPE_SOUND (entitas_sound_get_type ())
+typedef struct _sdxaudioSound sdxaudioSound;
+typedef struct _entitasSound entitasSound;
 
 #define ENTITAS_TYPE_TEXT (entitas_text_get_type ())
 typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
@@ -72,6 +73,7 @@ typedef struct _entitasBuffer entitasBuffer;
 
 #define ENTITAS_TYPE_ISYSTEM (entitas_isystem_get_type ())
 typedef struct _entitasISystem entitasISystem;
+typedef struct _entitasSystem entitasSystem;
 
 typedef enum  {
 	ENTITAS_EXCEPTION_EntityIsNotEnabled,
@@ -83,6 +85,18 @@ typedef enum  {
 	ENTITAS_EXCEPTION_WorldDoesNotContainEntity
 } entitasException;
 #define ENTITAS_EXCEPTION entitas_exception_quark ()
+struct _sdxmathVector2 {
+	gfloat x;
+	gfloat y;
+};
+
+struct _entitasTransform {
+	sdxmathVector2* scale;
+	sdxmathVector2* position;
+	SDL_Rect* aabb;
+	sdxgraphicsSprite* sprite;
+};
+
 struct _entitasBackground {
 	gboolean active;
 };
@@ -104,12 +118,12 @@ struct _entitasEnemy3 {
 };
 
 struct _entitasExpires {
-	gdouble value;
+	gfloat value;
 };
 
 struct _entitasHealth {
-	gdouble current;
-	gdouble maximum;
+	gfloat current;
+	gfloat maximum;
 };
 
 struct _entitasHud {
@@ -126,20 +140,8 @@ struct _entitasLayer {
 	gint value;
 };
 
-struct _entitasPosition {
-	gdouble x;
-	gdouble y;
-};
-
-struct _entitasScale {
-	gdouble x;
-	gdouble y;
-};
-
-struct _entitasSprite {
-	sdxgraphicsSprite* sprite;
-	gint width;
-	gint height;
+struct _entitasSound {
+	sdxaudioSound* sound;
 };
 
 struct _entitasText {
@@ -155,16 +157,16 @@ struct _entitasTint {
 };
 
 struct _entitasTween {
-	gdouble min;
-	gdouble max;
-	gdouble speed;
+	gfloat min;
+	gfloat max;
+	gfloat speed;
 	gboolean repeat;
 	gboolean active;
 };
 
 struct _entitasVelocity {
-	gdouble x;
-	gdouble y;
+	gfloat x;
+	gfloat y;
 };
 
 struct _entitasEntity {
@@ -172,8 +174,8 @@ struct _entitasEntity {
 	gchar* name;
 	gint pool;
 	guint64 mask;
+	entitasTransform transform;
 	entitasBackground* background;
-	SDL_Rect* bounds;
 	entitasBullet* bullet;
 	entitasEnemy1* enemy1;
 	entitasEnemy2* enemy2;
@@ -183,9 +185,7 @@ struct _entitasEntity {
 	entitasHud* hud;
 	entitasIndex* index;
 	entitasLayer* layer;
-	entitasPosition* position;
-	entitasScale* scale;
-	entitasSprite* sprite;
+	entitasSound* sound;
 	entitasText* text;
 	entitasTint* tint;
 	entitasTween* tween;
@@ -204,7 +204,7 @@ struct _entitasBuffer {
 };
 
 typedef void (*entitasSystemInitialize) (void* user_data);
-typedef void (*entitasSystemExecute) (gdouble delta, void* user_data);
+typedef void (*entitasSystemExecute) (gfloat delta, void* user_data);
 struct _entitasISystem {
 	entitasSystemInitialize initialize;
 	gpointer initialize_target;
@@ -212,10 +212,29 @@ struct _entitasISystem {
 	gpointer execute_target;
 };
 
+struct _entitasSystem {
+	gint _retainCount;
+	entitasSystemInitialize initialize;
+	gpointer initialize_target;
+	GDestroyNotify initialize_target_destroy_notify;
+	entitasSystemExecute execute;
+	gpointer execute_target;
+	GDestroyNotify execute_target_destroy_notify;
+};
+
 
 
 GQuark entitas_exception_quark (void);
 GType entitas_entity_get_type (void) G_GNUC_CONST;
+GType entitas_transform_get_type (void) G_GNUC_CONST;
+GType sdx_math_vector2_get_type (void) G_GNUC_CONST;
+sdxmathVector2* sdx_math_vector2_dup (const sdxmathVector2* self);
+void sdx_math_vector2_free (sdxmathVector2* self);
+void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
+entitasTransform* entitas_transform_dup (const entitasTransform* self);
+void entitas_transform_free (entitasTransform* self);
+void entitas_transform_copy (const entitasTransform* self, entitasTransform* dest);
+void entitas_transform_destroy (entitasTransform* self);
 GType entitas_background_get_type (void) G_GNUC_CONST;
 entitasBackground* entitas_background_dup (const entitasBackground* self);
 void entitas_background_free (entitasBackground* self);
@@ -246,18 +265,12 @@ void entitas_index_free (entitasIndex* self);
 GType entitas_layer_get_type (void) G_GNUC_CONST;
 entitasLayer* entitas_layer_dup (const entitasLayer* self);
 void entitas_layer_free (entitasLayer* self);
-GType entitas_position_get_type (void) G_GNUC_CONST;
-entitasPosition* entitas_position_dup (const entitasPosition* self);
-void entitas_position_free (entitasPosition* self);
-GType entitas_scale_get_type (void) G_GNUC_CONST;
-entitasScale* entitas_scale_dup (const entitasScale* self);
-void entitas_scale_free (entitasScale* self);
-GType entitas_sprite_get_type (void) G_GNUC_CONST;
-void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
-entitasSprite* entitas_sprite_dup (const entitasSprite* self);
-void entitas_sprite_free (entitasSprite* self);
-void entitas_sprite_copy (const entitasSprite* self, entitasSprite* dest);
-void entitas_sprite_destroy (entitasSprite* self);
+GType entitas_sound_get_type (void) G_GNUC_CONST;
+void sdx_audio_sound_free (sdxaudioSound* self);
+entitasSound* entitas_sound_dup (const entitasSound* self);
+void entitas_sound_free (entitasSound* self);
+void entitas_sound_copy (const entitasSound* self, entitasSound* dest);
+void entitas_sound_destroy (entitasSound* self);
 GType entitas_text_get_type (void) G_GNUC_CONST;
 entitasText* entitas_text_dup (const entitasText* self);
 void entitas_text_free (entitasText* self);
@@ -285,6 +298,17 @@ void entitas_buffer_init (entitasBuffer *self, gint pool, gint size, entitasFact
 GType entitas_isystem_get_type (void) G_GNUC_CONST;
 entitasISystem* entitas_isystem_dup (const entitasISystem* self);
 void entitas_isystem_free (entitasISystem* self);
+void entitas_system_free (entitasSystem* self);
+static void entitas_system_instance_init (entitasSystem * self);
+static void _entitas_system_initialize_lambda4_ (void);
+static void __entitas_system_initialize_lambda4__entitas_system_initialize (gpointer self);
+static void _entitas_system_execute_lambda5_ (gfloat delta);
+static void __entitas_system_execute_lambda5__entitas_system_execute (gfloat delta, gpointer self);
+entitasSystem* entitas_system_retain (entitasSystem* self);
+void entitas_system_release (entitasSystem* self);
+void entitas_system_free (entitasSystem* self);
+entitasSystem* entitas_system_new (void);
+entitasISystem entitas_system_get__ISystem (entitasSystem* self);
 
 const guint64 ENTITAS_POW2[65] = {(guint64) 0x0000000000000000, (guint64) 0x0000000000000001, (guint64) 0x0000000000000002, (guint64) 0x0000000000000004, (guint64) 0x0000000000000008, (guint64) 0x0000000000000010, (guint64) 0x0000000000000020, (guint64) 0x0000000000000040, (guint64) 0x0000000000000080, (guint64) 0x0000000000000100, (guint64) 0x0000000000000200, (guint64) 0x0000000000000400, (guint64) 0x0000000000000800, (guint64) 0x0000000000001000, (guint64) 0x0000000000002000, (guint64) 0x0000000000004000, (guint64) 0x0000000000008000, (guint64) 0x0000000000010000, (guint64) 0x0000000000020000, (guint64) 0x0000000000040000, (guint64) 0x0000000000080000, (guint64) 0x0000000000100000, (guint64) 0x0000000000200000, (guint64) 0x0000000000400000, (guint64) 0x0000000000800000, (guint64) 0x0000000001000000, (guint64) 0x0000000002000000, (guint64) 0x0000000004000000, (guint64) 0x0000000008000000, (guint64) 0x0000000010000000, (guint64) 0x0000000020000000, (guint64) 0x0000000040000000, (guint64) 0x0000000080000000LL, (guint64) 0x0000000100000000LL, (guint64) 0x0000000200000000LL, (guint64) 0x0000000400000000LL, (guint64) 0x0000000800000000LL, (guint64) 0x0000001000000000LL, (guint64) 0x0000002000000000LL, (guint64) 0x0000004000000000LL, (guint64) 0x0000008000000000LL, (guint64) 0x0000010000000000LL, (guint64) 0x0000020000000000LL, (guint64) 0x0000040000000000LL, (guint64) 0x0000080000000000LL, (guint64) 0x0000100000000000LL, (guint64) 0x0000200000000000LL, (guint64) 0x0000400000000000LL, (guint64) 0x0000800000000000LL, (guint64) 0x0001000000000000LL, (guint64) 0x0002000000000000LL, (guint64) 0x0004000000000000LL, (guint64) 0x0008000000000000LL, (guint64) 0x0010000000000000LL, (guint64) 0x0020000000000000LL, (guint64) 0x0040000000000000LL, (guint64) 0x0080000000000000LL, (guint64) 0x0100000000000000LL, (guint64) 0x0200000000000000LL, (guint64) 0x0400000000000000LL, (guint64) 0x0800000000000000LL, (guint64) 0x1000000000000000LL, (guint64) 0x2000000000000000LL, (guint64) 0x4000000000000000LL, (guint64) 0x8000000000000000LL};
 
@@ -390,6 +414,95 @@ GType entitas_isystem_get_type (void) {
 		g_once_init_leave (&entitas_isystem_type_id__volatile, entitas_isystem_type_id);
 	}
 	return entitas_isystem_type_id__volatile;
+}
+
+
+static void _entitas_system_initialize_lambda4_ (void) {
+}
+
+
+static void __entitas_system_initialize_lambda4__entitas_system_initialize (gpointer self) {
+	_entitas_system_initialize_lambda4_ ();
+}
+
+
+static void _entitas_system_execute_lambda5_ (gfloat delta) {
+}
+
+
+static void __entitas_system_execute_lambda5__entitas_system_execute (gfloat delta, gpointer self) {
+	_entitas_system_execute_lambda5_ (delta);
+}
+
+
+entitasSystem* entitas_system_retain (entitasSystem* self) {
+	entitasSystem* result = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_atomic_int_add ((volatile gint *) (&self->_retainCount), 1);
+	result = self;
+	return result;
+}
+
+
+void entitas_system_release (entitasSystem* self) {
+	gboolean _tmp0_ = FALSE;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = g_atomic_int_dec_and_test ((volatile gint *) (&self->_retainCount));
+	if (_tmp0_) {
+		entitas_system_free (self);
+	}
+}
+
+
+entitasSystem* entitas_system_new (void) {
+	entitasSystem* self;
+	self = g_slice_new0 (entitasSystem);
+	entitas_system_instance_init (self);
+	return self;
+}
+
+
+entitasISystem entitas_system_get__ISystem (entitasSystem* self) {
+	entitasISystem result;
+	entitasSystemInitialize _tmp0_ = NULL;
+	void* _tmp0__target = NULL;
+	entitasSystemExecute _tmp1_ = NULL;
+	void* _tmp1__target = NULL;
+	entitasISystem _tmp2_ = {0};
+	_tmp0_ = self->initialize;
+	_tmp0__target = self->initialize_target;
+	_tmp1_ = self->execute;
+	_tmp1__target = self->execute_target;
+	_tmp2_.initialize = _tmp0_;
+	_tmp2_.initialize_target = _tmp0__target;
+	_tmp2_.execute = _tmp1_;
+	_tmp2_.execute_target = _tmp1__target;
+	result = _tmp2_;
+	return result;
+}
+
+
+static void entitas_system_instance_init (entitasSystem * self) {
+	self->_retainCount = 1;
+	self->initialize = __entitas_system_initialize_lambda4__entitas_system_initialize;
+	self->initialize_target = self;
+	self->initialize_target_destroy_notify = NULL;
+	self->execute = __entitas_system_execute_lambda5__entitas_system_execute;
+	self->execute_target = self;
+	self->execute_target_destroy_notify = NULL;
+}
+
+
+void entitas_system_free (entitasSystem* self) {
+	(self->initialize_target_destroy_notify == NULL) ? NULL : (self->initialize_target_destroy_notify (self->initialize_target), NULL);
+	self->initialize = NULL;
+	self->initialize_target = NULL;
+	self->initialize_target_destroy_notify = NULL;
+	(self->execute_target_destroy_notify == NULL) ? NULL : (self->execute_target_destroy_notify (self->execute_target), NULL);
+	self->execute = NULL;
+	self->execute_target = NULL;
+	self->execute_target_destroy_notify = NULL;
+	g_slice_free (entitasSystem, self);
 }
 
 

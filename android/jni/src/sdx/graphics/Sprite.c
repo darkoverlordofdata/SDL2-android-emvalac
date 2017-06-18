@@ -8,57 +8,64 @@
 #include <math.h>
 #include <string.h>
 #include <SDL2/SDL_render.h>
-#include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_pixels.h>
 #include <stdlib.h>
 #include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_video.h>
-#include <SDL2/SDL.h>
-#include <stdio.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_rwops.h>
 
 
 #define SDX_GRAPHICS_TYPE_SCALE (sdx_graphics_scale_get_type ())
 typedef struct _sdxgraphicsScale sdxgraphicsScale;
 typedef struct _sdxgraphicsSprite sdxgraphicsSprite;
+
+#define SDX_GRAPHICS_SPRITE_TYPE_KIND (sdx_graphics_sprite_kind_get_type ())
 #define _SDL_DestroyTexture0(var) ((var == NULL) ? NULL : (var = (SDL_DestroyTexture (var), NULL)))
-#define _SDL_FreeSurface0(var) ((var == NULL) ? NULL : (var = (SDL_FreeSurface (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
-typedef sdxgraphicsSprite sdxgraphicsSpriteTextureSprite;
+typedef sdxgraphicsSprite sdxgraphicsSpriteAnimatedSprite;
 typedef struct _sdxgraphicsSurface sdxgraphicsSurface;
+#define _SDL_FreeSurface0(var) ((var == NULL) ? NULL : (var = (SDL_FreeSurface (var), NULL)))
+typedef sdxgraphicsSprite sdxgraphicsSpriteTextureSprite;
 typedef sdxgraphicsSprite sdxgraphicsSpriteAtlasSprite;
 typedef struct _sdxgraphicsAtlasRegion sdxgraphicsAtlasRegion;
 typedef struct _sdxgraphicsTextureRegion sdxgraphicsTextureRegion;
-typedef sdxgraphicsSurface sdxgraphicsTextureSurface;
+typedef sdxgraphicsSurface sdxgraphicsSurfaceTextureSurface;
 typedef sdxgraphicsSprite sdxgraphicsSpriteCompositeSprite;
 
-#define SDX_TYPE_BLIT (sdx_blit_get_type ())
-typedef struct _sdxBlit sdxBlit;
+#define SDX_GRAPHICS_TYPE_BLIT (sdx_graphics_blit_get_type ())
+typedef struct _sdxgraphicsBlit sdxgraphicsBlit;
 typedef sdxgraphicsSprite sdxgraphicsSpriteTextSprite;
 typedef struct _sdxFont sdxFont;
 
 struct _sdxgraphicsScale {
-	gdouble x;
-	gdouble y;
+	gfloat x;
+	gfloat y;
 };
+
+typedef enum  {
+	SDX_GRAPHICS_SPRITE_KIND_AnimatedSprite,
+	SDX_GRAPHICS_SPRITE_KIND_TextureSprite,
+	SDX_GRAPHICS_SPRITE_KIND_AtlasSprite,
+	SDX_GRAPHICS_SPRITE_KIND_CompositeSprite,
+	SDX_GRAPHICS_SPRITE_KIND_TextSprite
+} sdxgraphicsSpriteKind;
 
 struct _sdxgraphicsSprite {
 	gint _retainCount;
+	gint id;
 	SDL_Texture* texture;
-	SDL_Surface* surface;
 	gint width;
 	gint height;
 	gint x;
 	gint y;
 	gint index;
+	gint frame;
 	sdxgraphicsScale scale;
 	SDL_Color color;
 	gboolean centered;
 	gint layer;
-	gint id;
 	gchar* path;
-	gboolean isText;
+	sdxgraphicsSpriteKind kind;
 };
 
 struct _sdxgraphicsSurface {
@@ -106,70 +113,67 @@ struct _sdxgraphicsAtlasRegion {
 
 struct _sdxgraphicsTextureRegion {
 	gint _retainCount;
-	sdxgraphicsTextureSurface* texture;
+	sdxgraphicsSurfaceTextureSurface* texture;
 	gint top;
 	gint left;
 	gint width;
 	gint height;
 	gint regionWidth;
 	gint regionHeight;
-	gdouble u;
-	gdouble v;
-	gdouble u2;
-	gdouble v2;
+	gfloat u;
+	gfloat v;
+	gfloat u2;
+	gfloat v2;
 };
 
-struct _sdxBlit {
+struct _sdxgraphicsBlit {
 	SDL_Rect source;
 	SDL_Rect dest;
 	SDL_RendererFlip flip;
 };
 
-typedef sdxBlit* (*sdxCompositor) (gint x, gint y, int* result_length1, void* user_data);
-struct _sdxFont {
-	gint _retainCount;
-	gint id;
-	gchar* path;
-	gint size;
-	TTF_Font* innerFont;
-	SDL_RWops* raw;
-};
-
+typedef sdxgraphicsBlit* (*sdxgraphicsCompositor) (gint x, gint y, int* result_length1, void* user_data);
 
 extern gint sdx_graphics_sprite_uniqueId;
 gint sdx_graphics_sprite_uniqueId = 0;
 extern SDL_Renderer* sdx_renderer;
-extern sdxgraphicsSurface** sdx_graphics_cached_surface_cache;
-extern gint sdx_graphics_cached_surface_cache_length1;
+extern sdxgraphicsSurface** sdx_graphics_surface_cached_surface_cache;
+extern gint sdx_graphics_surface_cached_surface_cache_length1;
 
 GType sdx_graphics_scale_get_type (void) G_GNUC_CONST;
 sdxgraphicsScale* sdx_graphics_scale_dup (const sdxgraphicsScale* self);
 void sdx_graphics_scale_free (sdxgraphicsScale* self);
 void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
+GType sdx_graphics_sprite_kind_get_type (void) G_GNUC_CONST;
 static void sdx_graphics_sprite_instance_init (sdxgraphicsSprite * self);
 sdxgraphicsSprite* sdx_graphics_sprite_retain (sdxgraphicsSprite* self);
 void sdx_graphics_sprite_release (sdxgraphicsSprite* self);
 void sdx_graphics_sprite_free (sdxgraphicsSprite* self);
 void sdx_graphics_sprite_render (sdxgraphicsSprite* self, gint x, gint y, SDL_Rect* clip);
 void sdx_graphics_sprite_copy (sdxgraphicsSprite* self, SDL_Rect* src, SDL_Rect* dest);
+sdxgraphicsSprite* sdx_graphics_sprite_setScale (sdxgraphicsSprite* self, gfloat x, gfloat y);
+sdxgraphicsSprite* sdx_graphics_sprite_setPosition (sdxgraphicsSprite* self, gint x, gint y);
+sdxgraphicsSprite* sdx_graphics_sprite_setCentered (sdxgraphicsSprite* self, gboolean value);
 sdxgraphicsSprite* sdx_graphics_sprite_new (void);
-sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gchar* path);
-gint sdx_graphics_cached_surface_indexOfPath (const gchar* path);
+sdxgraphicsSpriteAnimatedSprite* sdx_graphics_sprite_animated_sprite_new (const gchar* path, gint width, gint height);
+gint sdx_graphics_surface_cached_surface_indexOfPath (const gchar* path);
+void sdx_graphics_sprite_animated_sprite_setFrame (sdxgraphicsSpriteAnimatedSprite* self, gint frame);
 void sdx_graphics_surface_free (sdxgraphicsSurface* self);
+sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gchar* path);
 GQuark sdx_sdl_exception_quark (void);
 gint sdx_graphics_surface_get_width (sdxgraphicsSurface* self);
 gint sdx_graphics_surface_get_height (sdxgraphicsSurface* self);
 void sdx_graphics_atlas_region_free (sdxgraphicsAtlasRegion* self);
 sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsAtlasRegion* region);
 void sdx_graphics_texture_region_free (sdxgraphicsTextureRegion* self);
-GType sdx_blit_get_type (void) G_GNUC_CONST;
-sdxBlit* sdx_blit_dup (const sdxBlit* self);
-void sdx_blit_free (sdxBlit* self);
-sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (const gchar* path, sdxCompositor builder, void* builder_target);
+GType sdx_graphics_blit_get_type (void) G_GNUC_CONST;
+sdxgraphicsBlit* sdx_graphics_blit_dup (const sdxgraphicsBlit* self);
+void sdx_graphics_blit_free (sdxgraphicsBlit* self);
+sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (const gchar* path, sdxgraphicsCompositor builder, void* builder_target);
 void sdx_font_free (sdxFont* self);
-sdxgraphicsSpriteTextSprite* sdx_graphics_sprite_text_sprite_new (const gchar* path, sdxFont* font, SDL_Color color);
-SDL_Surface* sdx_font_render (sdxFont* self, const gchar* text, SDL_Color color);
+sdxgraphicsSpriteTextSprite* sdx_graphics_sprite_text_sprite_new (const gchar* text, sdxFont* font, SDL_Color color);
 void sdx_graphics_sprite_text_sprite_setText (sdxgraphicsSpriteTextSprite* self, const gchar* text, sdxFont* font, SDL_Color color);
+SDL_Surface* sdx_font_render (sdxFont* self, const gchar* text, SDL_Color color);
 
 extern const SDL_Color SDX_COLOR_White;
 
@@ -194,6 +198,18 @@ GType sdx_graphics_scale_get_type (void) {
 		g_once_init_leave (&sdx_graphics_scale_type_id__volatile, sdx_graphics_scale_type_id);
 	}
 	return sdx_graphics_scale_type_id__volatile;
+}
+
+
+GType sdx_graphics_sprite_kind_get_type (void) {
+	static volatile gsize sdx_graphics_sprite_kind_type_id__volatile = 0;
+	if (g_once_init_enter (&sdx_graphics_sprite_kind_type_id__volatile)) {
+		static const GEnumValue values[] = {{SDX_GRAPHICS_SPRITE_KIND_AnimatedSprite, "SDX_GRAPHICS_SPRITE_KIND_AnimatedSprite", "animatedsprite"}, {SDX_GRAPHICS_SPRITE_KIND_TextureSprite, "SDX_GRAPHICS_SPRITE_KIND_TextureSprite", "texturesprite"}, {SDX_GRAPHICS_SPRITE_KIND_AtlasSprite, "SDX_GRAPHICS_SPRITE_KIND_AtlasSprite", "atlassprite"}, {SDX_GRAPHICS_SPRITE_KIND_CompositeSprite, "SDX_GRAPHICS_SPRITE_KIND_CompositeSprite", "compositesprite"}, {SDX_GRAPHICS_SPRITE_KIND_TextSprite, "SDX_GRAPHICS_SPRITE_KIND_TextSprite", "textsprite"}, {0, NULL, NULL}};
+		GType sdx_graphics_sprite_kind_type_id;
+		sdx_graphics_sprite_kind_type_id = g_enum_register_static ("sdxgraphicsSpriteKind", values);
+		g_once_init_leave (&sdx_graphics_sprite_kind_type_id__volatile, sdx_graphics_sprite_kind_type_id);
+	}
+	return sdx_graphics_sprite_kind_type_id__volatile;
 }
 
 
@@ -229,12 +245,12 @@ void sdx_graphics_sprite_render (sdxgraphicsSprite* self, gint x, gint y, SDL_Re
 	SDL_Rect* _tmp1_ = NULL;
 	gint w = 0;
 	sdxgraphicsScale _tmp5_ = {0};
-	gdouble _tmp6_ = 0.0;
+	gfloat _tmp6_ = 0.0F;
 	guint _tmp7_ = 0U;
 	SDL_Rect* _tmp8_ = NULL;
 	gint h = 0;
 	sdxgraphicsScale _tmp12_ = {0};
-	gdouble _tmp13_ = 0.0;
+	gfloat _tmp13_ = 0.0F;
 	gint _tmp14_ = 0;
 	gboolean _tmp15_ = FALSE;
 	gint _tmp19_ = 0;
@@ -348,6 +364,58 @@ void sdx_graphics_sprite_copy (sdxgraphicsSprite* self, SDL_Rect* src, SDL_Rect*
 }
 
 
+static gpointer _sdx_graphics_sprite_retain0 (gpointer self) {
+	return self ? sdx_graphics_sprite_retain (self) : NULL;
+}
+
+
+sdxgraphicsSprite* sdx_graphics_sprite_setScale (sdxgraphicsSprite* self, gfloat x, gfloat y) {
+	sdxgraphicsSprite* result = NULL;
+	gfloat _tmp0_ = 0.0F;
+	gfloat _tmp1_ = 0.0F;
+	sdxgraphicsScale _tmp2_ = {0};
+	sdxgraphicsSprite* _tmp3_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = x;
+	_tmp1_ = y;
+	_tmp2_.x = _tmp0_;
+	_tmp2_.y = _tmp1_;
+	self->scale = _tmp2_;
+	_tmp3_ = _sdx_graphics_sprite_retain0 (self);
+	result = _tmp3_;
+	return result;
+}
+
+
+sdxgraphicsSprite* sdx_graphics_sprite_setPosition (sdxgraphicsSprite* self, gint x, gint y) {
+	sdxgraphicsSprite* result = NULL;
+	gint _tmp0_ = 0;
+	gint _tmp1_ = 0;
+	sdxgraphicsSprite* _tmp2_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = x;
+	self->x = _tmp0_;
+	_tmp1_ = y;
+	self->y = _tmp1_;
+	_tmp2_ = _sdx_graphics_sprite_retain0 (self);
+	result = _tmp2_;
+	return result;
+}
+
+
+sdxgraphicsSprite* sdx_graphics_sprite_setCentered (sdxgraphicsSprite* self, gboolean value) {
+	sdxgraphicsSprite* result = NULL;
+	gboolean _tmp0_ = FALSE;
+	sdxgraphicsSprite* _tmp1_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = value;
+	self->centered = _tmp0_;
+	_tmp1_ = _sdx_graphics_sprite_retain0 (self);
+	result = _tmp1_;
+	return result;
+}
+
+
 sdxgraphicsSprite* sdx_graphics_sprite_new (void) {
 	sdxgraphicsSprite* self;
 	self = g_slice_new0 (sdxgraphicsSprite);
@@ -356,6 +424,183 @@ sdxgraphicsSprite* sdx_graphics_sprite_new (void) {
 }
 
 
+/**
+ * Animated Sprite
+ * 
+ * @param path to sprite sheet
+ * @param width count of sprites horizontally on sheet
+ * @param height count of sprites vertially on sheet
+ * 
+ * For each cell in spritesheet, draw the image from a cell
+ */
+sdxgraphicsSpriteAnimatedSprite* sdx_graphics_sprite_animated_sprite_new (const gchar* path, gint width, gint height) {
+	sdxgraphicsSpriteAnimatedSprite* self;
+	const gchar* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
+	const gchar* _tmp4_ = NULL;
+	gchar* _tmp5_ = NULL;
+	g_return_val_if_fail (path != NULL, NULL);
+	self = (sdxgraphicsSpriteAnimatedSprite*) sdx_graphics_sprite_new ();
+	_tmp0_ = path;
+	_tmp1_ = sdx_graphics_surface_cached_surface_indexOfPath (_tmp0_);
+	((sdxgraphicsSprite*) self)->index = _tmp1_;
+	_tmp2_ = height;
+	((sdxgraphicsSprite*) self)->height = _tmp2_;
+	_tmp3_ = width;
+	((sdxgraphicsSprite*) self)->width = _tmp3_;
+	_tmp4_ = path;
+	_tmp5_ = g_strdup (_tmp4_);
+	_g_free0 (((sdxgraphicsSprite*) self)->path);
+	((sdxgraphicsSprite*) self)->path = _tmp5_;
+	((sdxgraphicsSprite*) self)->kind = SDX_GRAPHICS_SPRITE_KIND_AnimatedSprite;
+	sdx_graphics_sprite_animated_sprite_setFrame (self, 0);
+	return self;
+}
+
+
+/**
+ * setFrame
+ * 
+ * @param frame index of frame to draw
+ */
+void sdx_graphics_sprite_animated_sprite_setFrame (sdxgraphicsSpriteAnimatedSprite* self, gint frame) {
+	gint _tmp0_ = 0;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
+	guint32 rmask = 0U;
+	guint32 gmask = 0U;
+	guint32 bmask = 0U;
+	guint32 amask = 0U;
+	gint wf = 0;
+	sdxgraphicsSurface** _tmp3_ = NULL;
+	gint _tmp3__length1 = 0;
+	gint _tmp4_ = 0;
+	sdxgraphicsSurface* _tmp5_ = NULL;
+	SDL_Surface* _tmp6_ = NULL;
+	gint _tmp7_ = 0;
+	gint _tmp8_ = 0;
+	gint hf = 0;
+	sdxgraphicsSurface** _tmp9_ = NULL;
+	gint _tmp9__length1 = 0;
+	gint _tmp10_ = 0;
+	sdxgraphicsSurface* _tmp11_ = NULL;
+	SDL_Surface* _tmp12_ = NULL;
+	gint _tmp13_ = 0;
+	gint _tmp14_ = 0;
+	gint _tmp15_ = 0;
+	gint _tmp16_ = 0;
+	gint _tmp17_ = 0;
+	gint _tmp18_ = 0;
+	gint _tmp19_ = 0;
+	gint _tmp20_ = 0;
+	SDL_Surface* surface = NULL;
+	gint _tmp21_ = 0;
+	gint _tmp22_ = 0;
+	guint32 _tmp23_ = 0U;
+	guint32 _tmp24_ = 0U;
+	guint32 _tmp25_ = 0U;
+	guint32 _tmp26_ = 0U;
+	SDL_Surface* _tmp27_ = NULL;
+	sdxgraphicsSurface** _tmp28_ = NULL;
+	gint _tmp28__length1 = 0;
+	gint _tmp29_ = 0;
+	sdxgraphicsSurface* _tmp30_ = NULL;
+	SDL_Surface* _tmp31_ = NULL;
+	gint _tmp32_ = 0;
+	gint _tmp33_ = 0;
+	gint _tmp34_ = 0;
+	gint _tmp35_ = 0;
+	SDL_Rect _tmp36_ = {0};
+	SDL_Surface* _tmp37_ = NULL;
+	gint _tmp38_ = 0;
+	gint _tmp39_ = 0;
+	SDL_Rect _tmp40_ = {0};
+	SDL_Renderer* _tmp41_ = NULL;
+	SDL_Surface* _tmp42_ = NULL;
+	SDL_Texture* _tmp43_ = NULL;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = frame;
+	_tmp1_ = ((sdxgraphicsSprite*) self)->frame;
+	if (_tmp0_ == _tmp1_) {
+		return;
+	}
+	_tmp2_ = frame;
+	((sdxgraphicsSprite*) self)->frame = _tmp2_;
+	rmask = (guint32) 0x000000ff;
+	gmask = (guint32) 0x0000ff00;
+	bmask = (guint32) 0x00ff0000;
+	amask = (guint32) 0xff000000LL;
+	_tmp3_ = sdx_graphics_surface_cached_surface_cache;
+	_tmp3__length1 = sdx_graphics_surface_cached_surface_cache_length1;
+	_tmp4_ = ((sdxgraphicsSprite*) self)->index;
+	_tmp5_ = _tmp3_[_tmp4_];
+	_tmp6_ = _tmp5_->surface;
+	_tmp7_ = _tmp6_->w;
+	_tmp8_ = ((sdxgraphicsSprite*) self)->width;
+	wf = _tmp7_ / _tmp8_;
+	_tmp9_ = sdx_graphics_surface_cached_surface_cache;
+	_tmp9__length1 = sdx_graphics_surface_cached_surface_cache_length1;
+	_tmp10_ = ((sdxgraphicsSprite*) self)->index;
+	_tmp11_ = _tmp9_[_tmp10_];
+	_tmp12_ = _tmp11_->surface;
+	_tmp13_ = _tmp12_->h;
+	_tmp14_ = ((sdxgraphicsSprite*) self)->height;
+	hf = _tmp13_ / _tmp14_;
+	_tmp15_ = frame;
+	_tmp16_ = wf;
+	_tmp17_ = ((sdxgraphicsSprite*) self)->width;
+	((sdxgraphicsSprite*) self)->x = (_tmp15_ % _tmp16_) * _tmp17_;
+	_tmp18_ = frame;
+	_tmp19_ = wf;
+	_tmp20_ = ((sdxgraphicsSprite*) self)->height;
+	((sdxgraphicsSprite*) self)->y = ((gint) (_tmp18_ / _tmp19_)) * _tmp20_;
+	_tmp21_ = ((sdxgraphicsSprite*) self)->width;
+	_tmp22_ = ((sdxgraphicsSprite*) self)->height;
+	_tmp23_ = rmask;
+	_tmp24_ = gmask;
+	_tmp25_ = bmask;
+	_tmp26_ = amask;
+	_tmp27_ = SDL_CreateRGBSurface ((guint32) 0, _tmp21_, _tmp22_, 32, _tmp23_, _tmp24_, _tmp25_, _tmp26_);
+	surface = _tmp27_;
+	_tmp28_ = sdx_graphics_surface_cached_surface_cache;
+	_tmp28__length1 = sdx_graphics_surface_cached_surface_cache_length1;
+	_tmp29_ = ((sdxgraphicsSprite*) self)->index;
+	_tmp30_ = _tmp28_[_tmp29_];
+	_tmp31_ = _tmp30_->surface;
+	_tmp32_ = ((sdxgraphicsSprite*) self)->x;
+	_tmp33_ = ((sdxgraphicsSprite*) self)->y;
+	_tmp34_ = ((sdxgraphicsSprite*) self)->width;
+	_tmp35_ = ((sdxgraphicsSprite*) self)->height;
+	_tmp36_.x = _tmp32_;
+	_tmp36_.y = _tmp33_;
+	_tmp36_.w = (guint) _tmp34_;
+	_tmp36_.h = (guint) _tmp35_;
+	_tmp37_ = surface;
+	_tmp38_ = ((sdxgraphicsSprite*) self)->width;
+	_tmp39_ = ((sdxgraphicsSprite*) self)->height;
+	_tmp40_.x = 0;
+	_tmp40_.y = 0;
+	_tmp40_.w = (guint) _tmp38_;
+	_tmp40_.h = (guint) _tmp39_;
+	SDL_BlitScaled (_tmp31_, &_tmp36_, _tmp37_, &_tmp40_);
+	_tmp41_ = sdx_renderer;
+	_tmp42_ = surface;
+	_tmp43_ = SDL_CreateTextureFromSurface (_tmp41_, _tmp42_);
+	_SDL_DestroyTexture0 (((sdxgraphicsSprite*) self)->texture);
+	((sdxgraphicsSprite*) self)->texture = _tmp43_;
+	_SDL_FreeSurface0 (surface);
+}
+
+
+/**
+ * TextureSprite
+ * 
+ * @param path to single surface
+ * 
+ * Simple sprite, 1 image per file
+ */
 sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gchar* path) {
 	sdxgraphicsSpriteTextureSprite* self;
 	gint index = 0;
@@ -387,13 +632,12 @@ sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gc
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (path != NULL, NULL);
 	self = (sdxgraphicsSpriteTextureSprite*) sdx_graphics_sprite_new ();
-	((sdxgraphicsSprite*) self)->isText = FALSE;
 	_tmp0_ = path;
-	_tmp1_ = sdx_graphics_cached_surface_indexOfPath (_tmp0_);
+	_tmp1_ = sdx_graphics_surface_cached_surface_indexOfPath (_tmp0_);
 	index = _tmp1_;
 	_tmp2_ = sdx_renderer;
-	_tmp3_ = sdx_graphics_cached_surface_cache;
-	_tmp3__length1 = sdx_graphics_cached_surface_cache_length1;
+	_tmp3_ = sdx_graphics_surface_cached_surface_cache;
+	_tmp3__length1 = sdx_graphics_surface_cached_surface_cache_length1;
 	_tmp4_ = index;
 	_tmp5_ = _tmp3_[_tmp4_];
 	_tmp6_ = _tmp5_->surface;
@@ -413,15 +657,15 @@ sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gc
 	}
 	_tmp11_ = ((sdxgraphicsSprite*) self)->texture;
 	SDL_SetTextureBlendMode (_tmp11_, SDL_BLENDMODE_BLEND);
-	_tmp12_ = sdx_graphics_cached_surface_cache;
-	_tmp12__length1 = sdx_graphics_cached_surface_cache_length1;
+	_tmp12_ = sdx_graphics_surface_cached_surface_cache;
+	_tmp12__length1 = sdx_graphics_surface_cached_surface_cache_length1;
 	_tmp13_ = index;
 	_tmp14_ = _tmp12_[_tmp13_];
 	_tmp15_ = sdx_graphics_surface_get_width (_tmp14_);
 	_tmp16_ = _tmp15_;
 	((sdxgraphicsSprite*) self)->width = _tmp16_;
-	_tmp17_ = sdx_graphics_cached_surface_cache;
-	_tmp17__length1 = sdx_graphics_cached_surface_cache_length1;
+	_tmp17_ = sdx_graphics_surface_cached_surface_cache;
+	_tmp17__length1 = sdx_graphics_surface_cached_surface_cache_length1;
 	_tmp18_ = index;
 	_tmp19_ = _tmp17_[_tmp18_];
 	_tmp20_ = sdx_graphics_surface_get_height (_tmp19_);
@@ -431,22 +675,29 @@ sdxgraphicsSpriteTextureSprite* sdx_graphics_sprite_texture_sprite_new (const gc
 	_tmp23_ = g_strdup (_tmp22_);
 	_g_free0 (((sdxgraphicsSprite*) self)->path);
 	((sdxgraphicsSprite*) self)->path = _tmp23_;
+	((sdxgraphicsSprite*) self)->kind = SDX_GRAPHICS_SPRITE_KIND_TextureSprite;
 	return self;
 }
 
 
+/**
+ * AtlasSprite
+ * 
+ * @param path to LibGDX TexturePacker Atlas
+ * 
+ */
 sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsAtlasRegion* region) {
 	sdxgraphicsSpriteAtlasSprite* self;
 	gchar* path = NULL;
 	sdxgraphicsAtlasRegion* _tmp0_ = NULL;
 	sdxgraphicsTextureRegion* _tmp1_ = NULL;
-	sdxgraphicsTextureSurface* _tmp2_ = NULL;
+	sdxgraphicsSurfaceTextureSurface* _tmp2_ = NULL;
 	const gchar* _tmp3_ = NULL;
 	gchar* _tmp4_ = NULL;
 	gint index = 0;
 	sdxgraphicsAtlasRegion* _tmp5_ = NULL;
 	sdxgraphicsTextureRegion* _tmp6_ = NULL;
-	sdxgraphicsTextureSurface* _tmp7_ = NULL;
+	sdxgraphicsSurfaceTextureSurface* _tmp7_ = NULL;
 	const gchar* _tmp8_ = NULL;
 	gint _tmp9_ = 0;
 	guint32 rmask = 0U;
@@ -494,7 +745,7 @@ sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsA
 	_tmp6_ = _tmp5_->rg;
 	_tmp7_ = _tmp6_->texture;
 	_tmp8_ = ((sdxgraphicsSurface*) _tmp7_)->path;
-	_tmp9_ = sdx_graphics_cached_surface_indexOfPath (_tmp8_);
+	_tmp9_ = sdx_graphics_surface_cached_surface_indexOfPath (_tmp8_);
 	index = _tmp9_;
 	rmask = (guint32) 0x000000ff;
 	gmask = (guint32) 0x0000ff00;
@@ -518,8 +769,8 @@ sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsA
 	h = _tmp21_;
 	_tmp22_ = SDL_CreateRGBSurface ((guint32) 0, w, h, 32, rmask, gmask, bmask, amask);
 	surface = _tmp22_;
-	_tmp23_ = sdx_graphics_cached_surface_cache;
-	_tmp23__length1 = sdx_graphics_cached_surface_cache_length1;
+	_tmp23_ = sdx_graphics_surface_cached_surface_cache;
+	_tmp23__length1 = sdx_graphics_surface_cached_surface_cache_length1;
 	_tmp24_ = _tmp23_[index];
 	_tmp25_ = _tmp24_->surface;
 	_tmp26_.x = x;
@@ -542,20 +793,28 @@ sdxgraphicsSpriteAtlasSprite* sdx_graphics_sprite_atlas_sprite_new (sdxgraphicsA
 	_tmp32_ = g_strdup (_tmp31_);
 	_g_free0 (((sdxgraphicsSprite*) self)->path);
 	((sdxgraphicsSprite*) self)->path = _tmp32_;
+	((sdxgraphicsSprite*) self)->kind = SDX_GRAPHICS_SPRITE_KIND_AtlasSprite;
 	_SDL_FreeSurface0 (surface);
 	_g_free0 (path);
 	return self;
 }
 
 
-sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (const gchar* path, sdxCompositor builder, void* builder_target) {
+/**
+ * CompositeSprite
+ * 
+ * @param path to custom atlas
+ * @param function that returns a list of rectangles
+ * 
+ */
+sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (const gchar* path, sdxgraphicsCompositor builder, void* builder_target) {
 	sdxgraphicsSpriteCompositeSprite* self;
 	gint h = 0;
 	gint w = 0;
-	sdxCompositor _tmp0_ = NULL;
+	sdxgraphicsCompositor _tmp0_ = NULL;
 	void* _tmp0__target = NULL;
 	gint _tmp1_ = 0;
-	sdxBlit* _tmp2_ = NULL;
+	sdxgraphicsBlit* _tmp2_ = NULL;
 	gint index = 0;
 	const gchar* _tmp17_ = NULL;
 	gint _tmp18_ = 0;
@@ -571,12 +830,12 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 	guint32 _tmp23_ = 0U;
 	guint32 _tmp24_ = 0U;
 	SDL_Surface* _tmp25_ = NULL;
-	sdxCompositor _tmp26_ = NULL;
+	sdxgraphicsCompositor _tmp26_ = NULL;
 	void* _tmp26__target = NULL;
 	gint _tmp27_ = 0;
 	gint _tmp28_ = 0;
 	gint _tmp29_ = 0;
-	sdxBlit* _tmp30_ = NULL;
+	sdxgraphicsBlit* _tmp30_ = NULL;
 	SDL_Renderer* _tmp40_ = NULL;
 	SDL_Surface* _tmp41_ = NULL;
 	SDL_Texture* _tmp42_ = NULL;
@@ -592,21 +851,21 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 	_tmp0__target = builder_target;
 	_tmp2_ = _tmp0_ (0, 0, &_tmp1_, _tmp0__target);
 	{
-		sdxBlit* segment_collection = NULL;
+		sdxgraphicsBlit* segment_collection = NULL;
 		gint segment_collection_length1 = 0;
 		gint _segment_collection_size_ = 0;
 		gint segment_it = 0;
 		segment_collection = _tmp2_;
 		segment_collection_length1 = _tmp1_;
 		for (segment_it = 0; segment_it < _tmp1_; segment_it = segment_it + 1) {
-			sdxBlit segment = {0};
+			sdxgraphicsBlit segment = {0};
 			segment = segment_collection[segment_it];
 			{
-				sdxBlit _tmp3_ = {0};
+				sdxgraphicsBlit _tmp3_ = {0};
 				SDL_Rect _tmp4_ = {0};
 				guint _tmp5_ = 0U;
 				gint _tmp6_ = 0;
-				sdxBlit _tmp10_ = {0};
+				sdxgraphicsBlit _tmp10_ = {0};
 				SDL_Rect _tmp11_ = {0};
 				guint _tmp12_ = 0U;
 				gint _tmp13_ = 0;
@@ -615,7 +874,7 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 				_tmp5_ = _tmp4_.h;
 				_tmp6_ = h;
 				if (_tmp5_ > ((guint) _tmp6_)) {
-					sdxBlit _tmp7_ = {0};
+					sdxgraphicsBlit _tmp7_ = {0};
 					SDL_Rect _tmp8_ = {0};
 					guint _tmp9_ = 0U;
 					_tmp7_ = segment;
@@ -628,7 +887,7 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 				_tmp12_ = _tmp11_.w;
 				_tmp13_ = w;
 				if (_tmp12_ > ((guint) _tmp13_)) {
-					sdxBlit _tmp14_ = {0};
+					sdxgraphicsBlit _tmp14_ = {0};
 					SDL_Rect _tmp15_ = {0};
 					guint _tmp16_ = 0U;
 					_tmp14_ = segment;
@@ -641,7 +900,7 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 		segment_collection = (g_free (segment_collection), NULL);
 	}
 	_tmp17_ = path;
-	_tmp18_ = sdx_graphics_cached_surface_indexOfPath (_tmp17_);
+	_tmp18_ = sdx_graphics_surface_cached_surface_indexOfPath (_tmp17_);
 	index = _tmp18_;
 	rmask = (guint32) 0x000000ff;
 	gmask = (guint32) 0x0000ff00;
@@ -661,14 +920,14 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 	_tmp28_ = w;
 	_tmp30_ = _tmp26_ (_tmp27_ / 2, _tmp28_ / 2, &_tmp29_, _tmp26__target);
 	{
-		sdxBlit* segment_collection = NULL;
+		sdxgraphicsBlit* segment_collection = NULL;
 		gint segment_collection_length1 = 0;
 		gint _segment_collection_size_ = 0;
 		gint segment_it = 0;
 		segment_collection = _tmp30_;
 		segment_collection_length1 = _tmp29_;
 		for (segment_it = 0; segment_it < _tmp29_; segment_it = segment_it + 1) {
-			sdxBlit segment = {0};
+			sdxgraphicsBlit segment = {0};
 			segment = segment_collection[segment_it];
 			{
 				sdxgraphicsSurface** _tmp31_ = NULL;
@@ -676,13 +935,13 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 				gint _tmp32_ = 0;
 				sdxgraphicsSurface* _tmp33_ = NULL;
 				SDL_Surface* _tmp34_ = NULL;
-				sdxBlit _tmp35_ = {0};
+				sdxgraphicsBlit _tmp35_ = {0};
 				SDL_Rect _tmp36_ = {0};
 				SDL_Surface* _tmp37_ = NULL;
-				sdxBlit _tmp38_ = {0};
+				sdxgraphicsBlit _tmp38_ = {0};
 				SDL_Rect _tmp39_ = {0};
-				_tmp31_ = sdx_graphics_cached_surface_cache;
-				_tmp31__length1 = sdx_graphics_cached_surface_cache_length1;
+				_tmp31_ = sdx_graphics_surface_cached_surface_cache;
+				_tmp31__length1 = sdx_graphics_surface_cached_surface_cache_length1;
 				_tmp32_ = index;
 				_tmp33_ = _tmp31_[_tmp32_];
 				_tmp34_ = _tmp33_->surface;
@@ -709,92 +968,34 @@ sdxgraphicsSpriteCompositeSprite* sdx_graphics_sprite_composite_sprite_new (cons
 	_tmp46_ = g_strdup (_tmp45_);
 	_g_free0 (((sdxgraphicsSprite*) self)->path);
 	((sdxgraphicsSprite*) self)->path = _tmp46_;
+	((sdxgraphicsSprite*) self)->kind = SDX_GRAPHICS_SPRITE_KIND_CompositeSprite;
 	_SDL_FreeSurface0 (surface);
 	return self;
 }
 
 
-sdxgraphicsSpriteTextSprite* sdx_graphics_sprite_text_sprite_new (const gchar* path, sdxFont* font, SDL_Color color) {
+/**
+ * TextSprite
+ * 
+ * @param text string of text to generate
+ * @param font used to generate text
+ * @param color foregound text color (background transparent)
+ * 
+ */
+sdxgraphicsSpriteTextSprite* sdx_graphics_sprite_text_sprite_new (const gchar* text, sdxFont* font, SDL_Color color) {
 	sdxgraphicsSpriteTextSprite* self;
-	SDL_Surface* surface = NULL;
-	sdxFont* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
+	const gchar* _tmp0_ = NULL;
+	sdxFont* _tmp1_ = NULL;
 	SDL_Color _tmp2_ = {0};
-	SDL_Surface* _tmp3_ = NULL;
-	SDL_Surface* _tmp4_ = NULL;
-	GError * _inner_error_ = NULL;
-	g_return_val_if_fail (path != NULL, NULL);
+	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (font != NULL, NULL);
 	self = (sdxgraphicsSpriteTextSprite*) sdx_graphics_sprite_new ();
-	((sdxgraphicsSprite*) self)->isText = TRUE;
-	((sdxgraphicsSprite*) self)->centered = FALSE;
-	_tmp0_ = font;
-	_tmp1_ = path;
+	_tmp0_ = text;
+	_tmp1_ = font;
 	_tmp2_ = color;
-	_tmp3_ = sdx_font_render (_tmp0_, _tmp1_, _tmp2_);
-	surface = _tmp3_;
-	_tmp4_ = surface;
-	if (_tmp4_ == NULL) {
-		const gchar* _tmp5_ = NULL;
-		GError* _tmp6_ = NULL;
-		_tmp5_ = SDL_GetError ();
-		_tmp6_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_UnableToLoadSurface, _tmp5_);
-		_inner_error_ = _tmp6_;
-		_SDL_FreeSurface0 (surface);
-		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-		g_clear_error (&_inner_error_);
-		return NULL;
-	} else {
-		SDL_Surface* _tmp7_ = NULL;
-		SDL_Color _tmp8_ = {0};
-		guint8 _tmp9_ = 0U;
-		SDL_Renderer* _tmp10_ = NULL;
-		SDL_Surface* _tmp11_ = NULL;
-		SDL_Texture* _tmp12_ = NULL;
-		SDL_Texture* _tmp13_ = NULL;
-		_tmp7_ = surface;
-		_tmp8_ = color;
-		_tmp9_ = _tmp8_.a;
-		SDL_SetSurfaceAlphaMod (_tmp7_, _tmp9_);
-		_tmp10_ = sdx_renderer;
-		_tmp11_ = surface;
-		_tmp12_ = SDL_CreateTextureFromSurface (_tmp10_, _tmp11_);
-		_SDL_DestroyTexture0 (((sdxgraphicsSprite*) self)->texture);
-		((sdxgraphicsSprite*) self)->texture = _tmp12_;
-		_tmp13_ = ((sdxgraphicsSprite*) self)->texture;
-		if (_tmp13_ == NULL) {
-			const gchar* _tmp14_ = NULL;
-			GError* _tmp15_ = NULL;
-			_tmp14_ = SDL_GetError ();
-			_tmp15_ = g_error_new_literal (SDX_SDL_EXCEPTION, SDX_SDL_EXCEPTION_UnableToLoadTexture, _tmp14_);
-			_inner_error_ = _tmp15_;
-			_SDL_FreeSurface0 (surface);
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
-		} else {
-			SDL_Texture* _tmp16_ = NULL;
-			SDL_Surface* _tmp17_ = NULL;
-			gint _tmp18_ = 0;
-			SDL_Surface* _tmp19_ = NULL;
-			gint _tmp20_ = 0;
-			const gchar* _tmp21_ = NULL;
-			gchar* _tmp22_ = NULL;
-			_tmp16_ = ((sdxgraphicsSprite*) self)->texture;
-			SDL_SetTextureBlendMode (_tmp16_, SDL_BLENDMODE_BLEND);
-			_tmp17_ = surface;
-			_tmp18_ = _tmp17_->w;
-			((sdxgraphicsSprite*) self)->width = _tmp18_;
-			_tmp19_ = surface;
-			_tmp20_ = _tmp19_->h;
-			((sdxgraphicsSprite*) self)->height = _tmp20_;
-			_tmp21_ = path;
-			_tmp22_ = g_strdup (_tmp21_);
-			_g_free0 (((sdxgraphicsSprite*) self)->path);
-			((sdxgraphicsSprite*) self)->path = _tmp22_;
-		}
-	}
-	_SDL_FreeSurface0 (surface);
+	sdx_graphics_sprite_text_sprite_setText (self, _tmp0_, _tmp1_, _tmp2_);
+	((sdxgraphicsSprite*) self)->centered = FALSE;
+	((sdxgraphicsSprite*) self)->kind = SDX_GRAPHICS_SPRITE_KIND_TextSprite;
 	return self;
 }
 
@@ -812,7 +1013,13 @@ void sdx_graphics_sprite_text_sprite_setText (sdxgraphicsSpriteTextSprite* self,
 	const gchar* _tmp1_ = NULL;
 	SDL_Color _tmp2_ = {0};
 	SDL_Surface* _tmp3_ = NULL;
-	SDL_Surface* _tmp4_ = NULL;
+	SDL_Renderer* _tmp4_ = NULL;
+	SDL_Texture* _tmp5_ = NULL;
+	SDL_Texture* _tmp6_ = NULL;
+	gint _tmp7_ = 0;
+	gint _tmp8_ = 0;
+	const gchar* _tmp9_ = NULL;
+	gchar* _tmp10_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (text != NULL);
 	g_return_if_fail (font != NULL);
@@ -821,80 +1028,46 @@ void sdx_graphics_sprite_text_sprite_setText (sdxgraphicsSpriteTextSprite* self,
 	_tmp2_ = color;
 	_tmp3_ = sdx_font_render (_tmp0_, _tmp1_, _tmp2_);
 	surface = _tmp3_;
-	_tmp4_ = surface;
-	if (_tmp4_ == NULL) {
-		FILE* _tmp5_ = NULL;
-		sdxFont* _tmp6_ = NULL;
-		const gchar* _tmp7_ = NULL;
-		_tmp5_ = stdout;
-		_tmp6_ = font;
-		_tmp7_ = _tmp6_->path;
-		fprintf (_tmp5_, "Unable to set font surface %s\n", _tmp7_);
-	} else {
-		SDL_Renderer* _tmp8_ = NULL;
-		SDL_Surface* _tmp9_ = NULL;
-		SDL_Texture* _tmp10_ = NULL;
-		SDL_Texture* _tmp11_ = NULL;
-		_tmp8_ = sdx_renderer;
-		_tmp9_ = surface;
-		_tmp10_ = SDL_CreateTextureFromSurface (_tmp8_, _tmp9_);
-		_SDL_DestroyTexture0 (((sdxgraphicsSprite*) self)->texture);
-		((sdxgraphicsSprite*) self)->texture = _tmp10_;
-		_tmp11_ = ((sdxgraphicsSprite*) self)->texture;
-		if (_tmp11_ == NULL) {
-			FILE* _tmp12_ = NULL;
-			const gchar* _tmp13_ = NULL;
-			_tmp12_ = stdout;
-			_tmp13_ = text;
-			fprintf (_tmp12_, "Unable to set image text %s\n", _tmp13_);
-		} else {
-			SDL_Texture* _tmp14_ = NULL;
-			SDL_Surface* _tmp15_ = NULL;
-			gint _tmp16_ = 0;
-			SDL_Surface* _tmp17_ = NULL;
-			gint _tmp18_ = 0;
-			const gchar* _tmp19_ = NULL;
-			gchar* _tmp20_ = NULL;
-			_tmp14_ = ((sdxgraphicsSprite*) self)->texture;
-			SDL_SetTextureBlendMode (_tmp14_, SDL_BLENDMODE_BLEND);
-			_tmp15_ = surface;
-			_tmp16_ = _tmp15_->w;
-			((sdxgraphicsSprite*) self)->width = _tmp16_;
-			_tmp17_ = surface;
-			_tmp18_ = _tmp17_->h;
-			((sdxgraphicsSprite*) self)->height = _tmp18_;
-			_tmp19_ = text;
-			_tmp20_ = g_strdup (_tmp19_);
-			_g_free0 (((sdxgraphicsSprite*) self)->path);
-			((sdxgraphicsSprite*) self)->path = _tmp20_;
-		}
-	}
+	_tmp4_ = sdx_renderer;
+	_tmp5_ = SDL_CreateTextureFromSurface (_tmp4_, surface);
+	_SDL_DestroyTexture0 (((sdxgraphicsSprite*) self)->texture);
+	((sdxgraphicsSprite*) self)->texture = _tmp5_;
+	_tmp6_ = ((sdxgraphicsSprite*) self)->texture;
+	SDL_SetTextureBlendMode (_tmp6_, SDL_BLENDMODE_BLEND);
+	_tmp7_ = surface->w;
+	((sdxgraphicsSprite*) self)->width = _tmp7_;
+	_tmp8_ = surface->h;
+	((sdxgraphicsSprite*) self)->height = _tmp8_;
+	_tmp9_ = text;
+	_tmp10_ = g_strdup (_tmp9_);
+	_g_free0 (((sdxgraphicsSprite*) self)->path);
+	((sdxgraphicsSprite*) self)->path = _tmp10_;
 	_SDL_FreeSurface0 (surface);
 }
 
 
 static void sdx_graphics_sprite_instance_init (sdxgraphicsSprite * self) {
-	sdxgraphicsScale _tmp0_ = {0};
+	gint _tmp0_ = 0;
 	gint _tmp1_ = 0;
-	gint _tmp2_ = 0;
+	sdxgraphicsScale _tmp2_ = {0};
 	self->_retainCount = 1;
-	memset (&_tmp0_, 0, sizeof (sdxgraphicsScale));
-	_tmp0_.x = 1.0;
-	_tmp0_.y = 1.0;
-	self->scale = _tmp0_;
+	_tmp0_ = sdx_graphics_sprite_uniqueId;
+	sdx_graphics_sprite_uniqueId = _tmp0_ + 1;
+	_tmp1_ = sdx_graphics_sprite_uniqueId;
+	self->id = _tmp1_;
+	self->frame = -1;
+	memset (&_tmp2_, 0, sizeof (sdxgraphicsScale));
+	_tmp2_.x = (gfloat) 1;
+	_tmp2_.y = (gfloat) 1;
+	self->scale = _tmp2_;
 	self->color = SDX_COLOR_White;
 	self->centered = TRUE;
 	self->layer = 0;
-	_tmp1_ = sdx_graphics_sprite_uniqueId;
-	sdx_graphics_sprite_uniqueId = _tmp1_ + 1;
-	_tmp2_ = sdx_graphics_sprite_uniqueId;
-	self->id = _tmp2_;
 }
 
 
 void sdx_graphics_sprite_free (sdxgraphicsSprite* self) {
 	_SDL_DestroyTexture0 (self->texture);
-	_SDL_FreeSurface0 (self->surface);
 	_g_free0 (self->path);
 	g_slice_free (sdxgraphicsSprite, self);
 }

@@ -15,7 +15,6 @@ namespace  sdx.math {
         public static Vector2 left  { get {return { -1,  0 }; } }
         public static Vector2 right { get {return {  1,  0 }; } }
         public static Vector2 up    { get {return {  0,  1 }; } }
-        
 
         public static float distance(Vector2 a, Vector2 b) {
             return Math.sqrtf( (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) );

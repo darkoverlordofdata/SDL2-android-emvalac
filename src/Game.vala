@@ -5,10 +5,10 @@ using systems;
  * Game controller 
  */
 public class Game : AbstractGame {
-	public static DisplaySystem display;
+	public static DisplaySystem? display;
 
 	public Game(int w, int h) {
-
+	
 		width = w;
 		height = h;
 
@@ -31,9 +31,9 @@ public class Game : AbstractGame {
 		/**
 		 * Removed from display system
 		 */
-		world.setEntityRemovedListener(e => {
-			DisplaySystem.instance.remove(e);
-			return e;
+		world.setEntityRemovedListener(it => {
+			DisplaySystem.instance.remove(it);
+			return it;
 		});
 		world.initialize();
 		world.createBackground();
@@ -43,8 +43,6 @@ public class Game : AbstractGame {
 		 * 
 		 */
 		update = () => {
-			sdx.update();	
-			sdx.processEvents();
 			world.execute(sdx.delta);
 		};
 
@@ -54,12 +52,9 @@ public class Game : AbstractGame {
 		 */
 		draw = () => {
 			sdx.begin();
-			foreach (var sprite in display.sprites) {
-				if (sprite.isActive()) display.draw(sprite);
-			}
-			sdx.drawFps();
+			foreach (var entity in display.sprites) 
+				if (entity.isActive()) display.draw(entity, ref entity.transform);
 			sdx.end();
 		};
 	}
-
 }

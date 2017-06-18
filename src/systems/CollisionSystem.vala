@@ -22,9 +22,9 @@ namespace systems {
 					if (enemy.isActive()) {
 						foreach (var bullet in bullets.entities) {
 							if (bullet.isActive()) {
-								if (bullet.aabb.is_intersecting(enemy.aabb)) {
-									var x = (int)((float)bullet.position.x);
-									var y = (int)((float)bullet.position.y);
+								if (bullet.transform.aabb.is_intersecting(enemy.transform.aabb)) {
+									var x = (int)((float)bullet.transform.position.x);
+									var y = (int)((float)bullet.transform.position.y);
 									world.bang(x, y);
 									world.deleteEntity(bullet);
 									for (var i=0; i<3; i++) 

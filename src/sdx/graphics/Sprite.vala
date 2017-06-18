@@ -211,6 +211,22 @@ namespace sdx.graphics {
 		public void copy(SDL.Video.Rect? src = null, SDL.Video.Rect? dest = null) {
 			renderer.copy(texture, src, dest);
 		}
+
+		public Sprite setScale(float x, float y) {
+			this.scale = { x, y };
+			return this;
+		}
+
+		public Sprite setPosition(int x, int y) {
+			this.x = x;
+			this.y = y;
+			return this;
+		}
+
+		public Sprite setCentered(bool value) {
+			centered = value;
+			return this;
+		}
 	}
 }
 
