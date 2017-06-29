@@ -130,6 +130,31 @@ emvalac  \
 """
 
 ##
+## Template: desktop build script
+##
+desktopTemplate = (defines, vapis, pkgs, list) ->
+    return """
+mkdir -p build
+emvalac  \
+    --builddir build \
+    --cc=clang \
+    #{defines} \
+    --vapidir src/vapis \
+    #{vapis} \
+    #{pkgs} \
+    -X -lm \
+    -X -lSDL2 \
+    -X -lSDL2_image \
+    -X -lSDL2_mixer \
+    -X -lSDL2_ttf \
+    -X -O3 \
+    -X -I/usr/local/include \
+    -X -I/home/bruce/.local/include/ \
+    -o build/#{path.basename(__dirname)}  \
+    #{list}
+"""
+
+##
 ## build android project
 ##
 task 'build:android', 'build android project', ->
@@ -173,4 +198,17 @@ task 'build:emscripten', 'build emscripten project', ->
 task 'clean:emscripten', 'clean emscripten project', ->
     console.log "not implemented"
     return
+
+##
+## build desktop project
+##
+task 'build:desktop', 'build desktop project', ->
+    prj = avprjParse()
+    vapis = getVapis(prj.vala_vapi)
+    pkgs = getPkgs(prj.vala_check_package)
+    list = getSrc(prj.vala_source).join(' ') + ' ' + getSrc(prj.c_source).join(' ')
+
+    cmd = desktopTemplate('--define NOGOBJECT', vapis, pkgs, list) 
+    console.log cmd
+    exec 'desktop', cmd
 

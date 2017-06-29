@@ -19,7 +19,7 @@ namespace sdx.files {
 		 */
 		public SDL.RWops getRWops() {
 			if (type == FileType.Resource) {
-#if (ANDROID || EMSCRIPTEN)
+#if (ANDROID || EMSCRIPTEN || NOGOBJECT)
 				throw new SdlException.InvalidForPlatform("Resource not available");
 #else
                 var ptr = GLib.resources_lookup_data(sdx.resourceBase+"/"+getPath(), 0);
@@ -39,7 +39,7 @@ namespace sdx.files {
 
 		public string read() {
 			if (type == FileType.Resource) {
-#if (ANDROID || EMSCRIPTEN)
+#if (ANDROID || EMSCRIPTEN || NOGOBJECT)
 				throw new SdlException.InvalidForPlatform("Resource not available");
 #else
                 var st =  GLib.resources_open_stream(sdx.resourceBase+"/"+getPath(), 0);

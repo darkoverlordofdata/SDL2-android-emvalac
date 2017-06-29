@@ -13,6 +13,7 @@ namespace entitas {
 		public uint64 		mask;			/* hasComponent bit array */
 		public Transform 	transform;		/* core game object */
 
+		/* ============================ */
 		public Background? 	background; 
 		public Bullet? 		bullet;		
 		public Enemy1? 		enemy1;		
@@ -21,13 +22,14 @@ namespace entitas {
 		public Expires? 	expires;		
 		public Health? 		health;		
 		public Hud? 		hud;			
-		public Index? 		index; 
 		public Layer? 		layer;		
+		public Player? 		player;		
 		public Sound? 		sound;
 		public Text? 		text;
 		public Tint? 		tint;
 		public Tween?		tween;
 		public Velocity? 	velocity;
+		/* ============================ */
 
 		public bool hasAnyComponent(int[] indices) {
 			foreach (var index in indices)
@@ -90,7 +92,6 @@ namespace entitas {
 				transform.aabb.x = (int)x;
 				transform.aabb.y = (int)y;
 			}
-			
 			return &this;
 		}
 
@@ -135,8 +136,7 @@ namespace entitas {
 		}
 
 		public bool isBackground() {
-			if (this.background == null) return false;
-			else return true;
+			return (mask & BACKGROUND) == BACKGROUND;
 		}
 
 		public Entity* setBullet(bool value) {
@@ -153,7 +153,7 @@ namespace entitas {
 		}
 
 		public bool isBullet() {
-			return (mask & BULLET) != 0;
+			return (mask & BULLET)  == BULLET;
 		}
 
 		public Entity* setEnemy1(bool value) {
@@ -170,7 +170,7 @@ namespace entitas {
 		}
 
 		public bool isEnemy1() {
-			return (mask & ENEMY1) != 0;
+			return (mask & ENEMY1) == ENEMY1;
 		}
 
 		public Entity* setEnemy2(bool value) {
@@ -187,7 +187,7 @@ namespace entitas {
 		}
 
 		public bool isEnemy2() {
-			return (mask & ENEMY2) != 0;
+			return (mask & ENEMY2) == ENEMY2;
 		}
 
 		public Entity* setEnemy3(bool value) {
@@ -204,7 +204,7 @@ namespace entitas {
 		}
 
 		public bool isEnemy3() {
-			return (mask & ENEMY3) != 0;
+			return (mask & ENEMY3) == ENEMY3;
 		}
 
 		public bool hasExpires() {
@@ -212,7 +212,7 @@ namespace entitas {
 		}
 
 		public Entity* addExpires(float value) {
-			if ((mask & EXPIRES) != 0) throw new Exception.EntityAlreadyHasComponent("Expires");
+			if ((mask & EXPIRES) == EXPIRES) throw new Exception.EntityAlreadyHasComponent("Expires");
 			this.expires = { value };
 			mask |= EXPIRES;
 			World.onComponentAdded(&this, Components.ExpiresComponent);
@@ -220,13 +220,13 @@ namespace entitas {
 		}
 
 		public Entity* setExpires(float value) {
-			if ((mask & EXPIRES) == 0) throw new Exception.EntityDoesNotHaveComponent("Expires");
+			if ((mask & EXPIRES) != EXPIRES) throw new Exception.EntityDoesNotHaveComponent("Expires");
 			this.expires.value = value;
 			return &this;
 		}
 
 		public Entity* removeExpires() {
-			if ((mask & EXPIRES) == 0) throw new Exception.EntityDoesNotHaveComponent("Expires");
+			if ((mask & EXPIRES) != EXPIRES) throw new Exception.EntityDoesNotHaveComponent("Expires");
 			this.expires = null;
 			mask ^= EXPIRES;
 			World.onComponentRemoved(&this, Components.ExpiresComponent);
@@ -234,11 +234,11 @@ namespace entitas {
 		}
 
 		public bool hasHealth() {
-			return (mask & HEALTH) != 0;
+			return (mask & HEALTH) == HEALTH;
 		}
 
 		public Entity* addHealth(float current, float maximum) { 
-			if ((mask & HEALTH) != 0) throw new Exception.EntityAlreadyHasComponent("Health");
+			if ((mask & HEALTH) == HEALTH) throw new Exception.EntityAlreadyHasComponent("Health");
 			this.health = { current, maximum };
 			mask |= HEALTH;
 			World.onComponentAdded(&this, Components.HealthComponent);
@@ -246,14 +246,14 @@ namespace entitas {
 		}
 
 		public Entity* setHealth(float current, float maximum) {
-			if ((mask & HEALTH) == 0) throw new Exception.EntityDoesNotHaveComponent("Health");
+			if ((mask & HEALTH) != HEALTH) throw new Exception.EntityDoesNotHaveComponent("Health");
 			this.health.current = current;
 			this.health.maximum = maximum;
 			return &this;
 		}
 
 		public Entity* removeHealth() {
-			if ((mask & HEALTH) == 0) throw new Exception.EntityDoesNotHaveComponent("Health");
+			if ((mask & HEALTH) != HEALTH) throw new Exception.EntityDoesNotHaveComponent("Health");
 			this.health = null;
 			mask ^= HEALTH;
 			World.onComponentRemoved(&this, Components.HealthComponent);
@@ -274,44 +274,16 @@ namespace entitas {
 		}
 
 		public bool isHud() {
-			if (this.hud == null) return false;
-			else return true;
+			return (mask & HUD) == HUD;
 		}
 
-		public bool hasIndex() {
-			return (mask & INDEX) != 0;
-		}
-
-		public Entity* addIndex(int value, int limit, bool vertical) {
-			if ((mask & INDEX) != 0) throw new Exception.EntityAlreadyHasComponent("Index");
-			this.index = { value , limit, vertical };
-			mask |= INDEX;
-			World.onComponentAdded(&this, Components.IndexComponent);
-			return &this;
-		}
-
-		public Entity* setIndex(int value, int limit, bool vertical) {
-			if ((mask & INDEX) == 0) throw new Exception.EntityDoesNotHaveComponent("Index");
-			this.index.value = value;
-			this.index.limit = value;
-			this.index.vertical = vertical;
-			return &this;
-		}
-
-		public Entity* removeIndex() {
-			if ((mask & INDEX) == 0) throw new Exception.EntityDoesNotHaveComponent("Index");
-			this.index = null;
-			mask ^= INDEX;
-			World.onComponentRemoved(&this, Components.IndexComponent);
-			return &this;
-		}
 
 		public bool hasLayer() {
-			return (mask & LAYER) != 0;
+			return (mask & LAYER) == LAYER;
 		}
 
 		public Entity* addLayer(int value) { 
-			if ((mask & LAYER) != 0) throw new Exception.EntityAlreadyHasComponent("Layer");
+			if ((mask & LAYER) == LAYER) throw new Exception.EntityAlreadyHasComponent("Layer");
 			this.layer = { value };
 			mask |= LAYER;
 			World.onComponentAdded(&this, Components.LayerComponent);
@@ -319,26 +291,42 @@ namespace entitas {
 		}
 
 		public Entity* setLayer(int value) {
-			if ((mask & LAYER) == 0) throw new Exception.EntityDoesNotHaveComponent("Layer");
+			if ((mask & LAYER) != LAYER) throw new Exception.EntityDoesNotHaveComponent("Layer");
 			this.layer.value = value;
 			return &this;
 		}
 
 		public Entity* removeLayer() {
-			if ((mask & LAYER) == 0) throw new Exception.EntityDoesNotHaveComponent("Layer");
+			if ((mask & LAYER) != LAYER) throw new Exception.EntityDoesNotHaveComponent("Layer");
 			this.layer = null;
 			mask ^= LAYER;
 			World.onComponentRemoved(&this, Components.LayerComponent);
 			return &this;
 		}
 
+		public Entity* setPlayer(bool value) {
+			if (value) {
+				this.player = { true };
+				mask |= PLAYER;
+				World.onComponentAdded(&this, Components.PlayerComponent);
+			} else {
+				this.player = null;
+				mask ^= PLAYER;
+				World.onComponentRemoved(&this, Components.PlayerComponent);
+			}
+			return &this;
+		}
+
+		public bool isPlayer() {
+			return (mask & PLAYER) == PLAYER;
+		}
 
 		public bool hasSound() {
-			return (mask & SOUND) != 0;
+			return (mask & SOUND) == SOUND;
 		}
 
 		public Entity* addSound(sdx.audio.Sound sound) {
-			if ((mask & SOUND) != 0) throw new Exception.EntityAlreadyHasComponent("Sound");
+			if ((mask & SOUND) == SOUND) throw new Exception.EntityAlreadyHasComponent("Sound");
 			this.sound = { sound };
 			mask |= SOUND;
 			World.onComponentAdded(&this, Components.SoundComponent);
@@ -346,13 +334,13 @@ namespace entitas {
 		}
 
 		public Entity* setSound(sdx.audio.Sound sound) {
-			if ((mask & SOUND) == 0) throw new Exception.EntityDoesNotHaveComponent("Sound");
+			if ((mask & SOUND) != SOUND) throw new Exception.EntityDoesNotHaveComponent("Sound");
 			this.sound.sound = sound;
 			return &this;
 		}
 
 		public Entity* removeSound() {
-			if ((mask & SOUND) == 0) throw new Exception.EntityDoesNotHaveComponent("Sound");
+			if ((mask & SOUND) != SOUND) throw new Exception.EntityDoesNotHaveComponent("Sound");
 			this.sound = null;
 			mask ^= SOUND;
 			World.onComponentRemoved(&this, Components.SoundComponent);
@@ -360,11 +348,11 @@ namespace entitas {
 		}
 
 		public bool hasText() {
-			return (mask & TEXT) != 0;
+			return (mask & TEXT) == TEXT;
 		}
 
 		public Entity* addText(string text, sdx.graphics.Sprite.TextSprite texture) { 
-			if ((mask & TEXT) != 0) throw new Exception.EntityAlreadyHasComponent("Text");
+			if ((mask & TEXT) == TEXT) throw new Exception.EntityAlreadyHasComponent("Text");
 			this.text = { text, texture };
 			mask |= TEXT;
 			World.onComponentAdded(&this, Components.TextComponent);
@@ -372,14 +360,14 @@ namespace entitas {
 		}
 
 		public Entity* setText(string text, sdx.graphics.Sprite.TextSprite texture) {
-			if ((mask & TEXT) == 0) throw new Exception.EntityDoesNotHaveComponent("Text");
+			if ((mask & TEXT) != TEXT) throw new Exception.EntityDoesNotHaveComponent("Text");
 			this.text.text = text;
 			this.text.sprite = texture;
 			return &this;
 		}
 
 		public Entity* removeText() {
-			if ((mask & TEXT) == 0) throw new Exception.EntityDoesNotHaveComponent("Text");
+			if ((mask & TEXT) != TEXT) throw new Exception.EntityDoesNotHaveComponent("Text");
 			this.text = null;
 			mask ^= TEXT;
 			World.onComponentRemoved(&this, Components.TextComponent);
@@ -387,11 +375,11 @@ namespace entitas {
 		}
 
 		public bool hasTint() {
-			return (mask & TINT) != 0;
+			return (mask & TINT) == TINT;
 		}
 
 		public Entity* addTint(int r, int g, int b, int a) {
-			if ((mask & TINT) != 0) throw new Exception.EntityAlreadyHasComponent("Tint");
+			if ((mask & TINT) == TINT) throw new Exception.EntityAlreadyHasComponent("Tint");
 			this.tint = { r, g, b, a };
 			mask |= TINT;
 			World.onComponentAdded(&this, Components.TintComponent);
@@ -399,7 +387,7 @@ namespace entitas {
 		}
 
 		public Entity* setTint(int r, int g, int b, int a) {
-			if ((mask & TINT) == 0) throw new Exception.EntityDoesNotHaveComponent("Tint");
+			if ((mask & TINT) != TINT) throw new Exception.EntityDoesNotHaveComponent("Tint");
 			this.tint.r = r;
 			this.tint.g = g;
 			this.tint.b = b;
@@ -408,7 +396,7 @@ namespace entitas {
 		}
 
 		public Entity* removeTint() {
-			if ((mask & TINT) == 0) throw new Exception.EntityDoesNotHaveComponent("Tint");
+			if ((mask & TINT)!= TINT) throw new Exception.EntityDoesNotHaveComponent("Tint");
 			this.tint = null;
 			mask ^= TINT;
 			World.onComponentRemoved(&this, Components.TintComponent);
@@ -416,11 +404,11 @@ namespace entitas {
 		}
 
 		public bool hasTween() {
-			return (mask & TWEEN) != 0;
+			return (mask & TWEEN) == TWEEN;
 		}
 
 		public Entity* addTween(float min, float max, float speed, bool repeat, bool active) { 
-			if ((mask & TWEEN) != 0) throw new Exception.EntityAlreadyHasComponent("Tween");
+			if ((mask & TWEEN) == TWEEN) throw new Exception.EntityAlreadyHasComponent("Tween");
 			this.tween = { min, max, speed, repeat, active };
 			mask |= TWEEN;
 			World.onComponentAdded(&this, Components.TweenComponent);
@@ -428,7 +416,7 @@ namespace entitas {
 		}
 
 		public Entity* setTween(float min, float max, float speed, bool repeat, bool active) {
-			if ((mask & TWEEN) == 0) throw new Exception.EntityDoesNotHaveComponent("Tween");
+			if ((mask & TWEEN) != TWEEN) throw new Exception.EntityDoesNotHaveComponent("Tween");
 			this.tween.min = min;
 			this.tween.max = max;
 			this.tween.speed = speed;
@@ -438,7 +426,7 @@ namespace entitas {
 		}
 
 		public Entity* removeTween() {
-			if ((mask & TWEEN) == 0) throw new Exception.EntityDoesNotHaveComponent("Tween");
+			if ((mask & TWEEN) != TWEEN) throw new Exception.EntityDoesNotHaveComponent("Tween");
 			this.tween = null;
 			mask ^= TWEEN;
 			World.onComponentRemoved(&this, Components.TweenComponent);
@@ -446,11 +434,11 @@ namespace entitas {
 		}
 
 		public bool hasVelocity() {
-			return (mask & VELOCITY) != 0;
+			return (mask & VELOCITY) == VELOCITY;
 		}
 
 		public Entity* addVelocity(float x, float y) { 
-			if ((mask & VELOCITY) != 0) throw new Exception.EntityAlreadyHasComponent("Velocity");
+			if ((mask & VELOCITY) == VELOCITY) throw new Exception.EntityAlreadyHasComponent("Velocity");
 			this.velocity = { x, y };
 			mask |= VELOCITY;
 			World.onComponentAdded(&this, Components.VelocityComponent);
@@ -458,14 +446,14 @@ namespace entitas {
 		}
 
 		public Entity* setVelocity(float x, float y) {
-			if ((mask & VELOCITY) == 0) throw new Exception.EntityDoesNotHaveComponent("Velocity");
+			if ((mask & VELOCITY) != VELOCITY) throw new Exception.EntityDoesNotHaveComponent("Velocity");
 			this.velocity.x = x;
 			this.velocity.y = y;
 			return &this;
 		}
 
 		public Entity* removeVelocity() {
-			if ((mask & VELOCITY) == 0) throw new Exception.EntityDoesNotHaveComponent("Velocity");
+			if ((mask & VELOCITY) != VELOCITY) throw new Exception.EntityDoesNotHaveComponent("Velocity");
 			this.velocity = null;
 			mask ^= VELOCITY;
 			World.onComponentRemoved(&this, Components.VelocityComponent);

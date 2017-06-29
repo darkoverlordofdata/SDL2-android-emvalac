@@ -61,15 +61,13 @@ namespace entitas {
     }
 
 	[SimpleType]
-	public struct Index {
-		public int value; 
-		public int limit;
-		public bool vertical;
-    }
-
-	[SimpleType]
 	public struct Layer {
 		public int value; 
+    }
+
+	[SimpleType, Immutable]
+	public struct Player {
+		public bool active;
     }
 
 	public struct Sound {
@@ -117,8 +115,8 @@ namespace entitas {
 	const uint64 EXPIRES 		= 0x00020;
 	const uint64 HEALTH 		= 0x00040;
 	const uint64 HUD 			= 0x00080;
-	const uint64 INDEX 			= 0x00100;
-	const uint64 LAYER 			= 0x00200;
+	const uint64 LAYER 			= 0x00100;
+	const uint64 PLAYER 		= 0x00200;
 	const uint64 SOUND 			= 0x00400;
 	const uint64 TEXT 			= 0x00800;
 	const uint64 TINT 			= 0x01000;
@@ -139,8 +137,8 @@ namespace entitas {
 		"Expires",
 		"Health",
 		"Hud",
-		"Index",
 		"Layer",
+		"Player",
 		"Sound",
 		"Text",
 		"Tint",
@@ -161,8 +159,8 @@ namespace entitas {
 		ExpiresComponent,
 		HealthComponent,
 		HudComponent,
-		IndexComponent,
 		LayerComponent,
+		PlayerComponent,
 		SoundComponent,
 		TextComponent,
 		TintComponent,

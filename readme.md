@@ -15,13 +15,19 @@ cp assets install/src
 cd install/src
 ./shmupwarz
 
+the auto
+### compact
+cake build:desktop
+
+result in ./build
+
 ### emscripten
-./emscripten.sh
+cake build:emscripten
 
 results in ./web
 
 ### android
-./android.sh
+cake build:android
 
 ## build requirements
 * autovala for desktop

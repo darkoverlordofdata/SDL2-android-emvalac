@@ -8,15 +8,19 @@ namespace systems {
 		public static DisplaySystem instance; 
 		public List<Entity*> sprites = new List<Entity*>();
 
+		public static void add(Entity* e) {
+			instance.addEntity(e);
+
+		}
 		public DisplaySystem() {
 			instance = this;
 		}
 
-		public void remove(Entity* e) {
-			sprites.remove(e);
+		public static void remove(Entity* e) {
+			instance.sprites.remove(e);
 		}
 		
-		public void add(Entity* e) {
+		public void addEntity(Entity* e) {
 			var layer = e.layer.value;
 			if (sprites.length() == 0) {
 				sprites.append(e);

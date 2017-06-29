@@ -10,7 +10,10 @@ namespace systems {
 
 			var shoot = false;
 			var timeToFire = FIRE_RATE;
-			var player = world.createPlayer();
+			var player = world.getGroup(Matcher.AllOf({Components.PlayerComponent}));
+			
+			world.addBackground(0, 0);
+			world.addPlayer(0, 0);
 			/**
 			 * get player input
 			 */
@@ -18,12 +21,12 @@ namespace systems {
 				var x = (int)sdx.mouseX;
 				var y = (int)sdx.mouseY;
 				
-				player.setPosition(x, y);
+				player.getSingleEntity().setPosition(x, y);
 				shoot = sdx.mouseDown || (sdx.keys[122] == 1);
 				if (shoot) timeToFire -= delta;
 				if (timeToFire < 0) {
-					world.bullet(x + 27, y + 2);
-					world.bullet(x - 27, y + 2);
+					world.addBullet(x + 27, y + 2);
+					world.addBullet(x - 27, y + 2);
 					timeToFire = FIRE_RATE;
 				}
 			};

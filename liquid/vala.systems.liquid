@@ -1,0 +1,18 @@
+using entitas;
+namespace {{ namespace }}.systems {
+
+    public class {{ name }} : System {
+
+		public {{ name }}(Game game, Factory world) {
+			var group = world.getGroup(Matcher.AllOf({Components.SomeComponent}));
+			
+			execute = (delta) => {
+				foreach (var entity in group.entities) {
+					if (entity.isActive()) {
+                    }
+                }
+            }
+
+        }
+    }
+}

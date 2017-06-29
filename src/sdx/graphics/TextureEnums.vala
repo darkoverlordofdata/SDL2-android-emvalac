@@ -18,7 +18,8 @@ namespace sdx.graphics {
                 case "MipMapLinearNearest": return MipMapLinearNearest;
                 case "MipMapNearestLinear": return MipMapNearestLinear;
                 case "MipMapLinearLinear": return MipMapLinearLinear;
-                default: throw new SdlException.NotReached("TextureFilter.from["+value+"]");
+                default: return Nearest;
+                //  default: throw new SdlException.NotReached("TextureFilter.from["+value+"]");
             }
         }
 
@@ -36,7 +37,8 @@ namespace sdx.graphics {
                 case MipMapLinearNearest: return "MipMapLinearNearest";
                 case MipMapNearestLinear: return "MipMapNearestLinear";
                 case MipMapLinearLinear: return "MipMapLinearLinear";
-                default: throw new SdlException.NotReached("TextureFilter.to_string["+this.to_string()+"]");
+                default: return "Nearest";
+                //  default: throw new SdlException.NotReached("TextureFilter.to_string["+this.to_string()+"]");
             }
         }
     }
@@ -78,7 +80,8 @@ namespace sdx.graphics {
                 case "RGBA4444": return RGBA4444;
                 case "RGB888": return RGB888;
                 case "RGBA8888": return RGBA8888;
-                default: throw new SdlException.NotReached("Format.from["+value+"]");
+                //  default: throw new SdlException.NotReached("Format.from["+value+"]");
+                default: return RGBA8888;
             }
         }
         public string to_string() {
@@ -90,7 +93,8 @@ namespace sdx.graphics {
                 case RGBA4444: return "RGBA4444";
                 case RGB888: return "RGB888";
                 case RGBA8888: return "RGBA8888";
-                default: throw new SdlException.NotReached("Format.to_string["+this.to_string()+"]");
+                //  default: throw new SdlException.NotReached("Format.to_string["+this.to_string()+"]");
+                default: return "RGBA8888";
             }
         }
 

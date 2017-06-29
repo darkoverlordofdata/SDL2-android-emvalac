@@ -19,15 +19,15 @@ namespace systems {
 					switch (enemy) {
 						case 1:
 							var x = (int)(sdx.getRandom() * (game.width-70)) + 35;
-							world.enemy1(x, -35);
+							world.addEnemy1(x, -35);
 							return 1;
 						case 2:
 							var x = (int)(sdx.getRandom() * (game.width-172)) + 85;
-							world.enemy2(x, -85);
+							world.addEnemy2(x, -85);
 							return 4;
 						case 3:
 							var x = (int)(sdx.getRandom() * (game.width-320)) + 160;
-							world.enemy3(x, -160);
+							world.addEnemy3(x, -160);
 							return 6;
 						default:
 							return 0;

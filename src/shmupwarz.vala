@@ -15,3 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#if (!EMSCRIPTEN && !ANDROID && !NOGOBJECT)
+/* on desktop, hide GLib.Object */
+public class Object{}
+#endif

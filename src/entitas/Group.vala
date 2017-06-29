@@ -24,6 +24,7 @@ namespace entitas {
 				entities.remove(entity);
 		} 
 
+
 		public bool containsEntity(Entity* entity) {
 			return entities.find(entity) != null;
 		}

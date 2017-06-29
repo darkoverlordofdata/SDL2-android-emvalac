@@ -11,9 +11,7 @@ namespace sdx.graphics {
      *  load a libgdx format atlas
      */
     public class TextureAtlas : Object {
-        public Surface.TextureSurface? texture;
         public List<AtlasRegion> regions = new List<AtlasRegion>();
-
         /**
          * @param root location of resources
          */
@@ -53,8 +51,9 @@ namespace sdx.graphics {
          */
         public void load(TextureAtlasData data) {
         
-            texture = null;
-            var pageToTexture = new HashTable<string,Surface.TextureSurface>(str_hash, str_equal);
+            Surface.TextureSurface? texture = null;
+            var pageToTexture = new Surface.TextureSurface[0];
+
             foreach (var page in data.pages) {
 
                 if (page.texture == null) {
@@ -64,13 +63,13 @@ namespace sdx.graphics {
                 }
                 texture.setFilter(page.minFilter, page.magFilter);
                 texture.setWrap(page.uWrap, page.vWrap);
-                pageToTexture.insert(page.id.to_string(), texture);
+                pageToTexture += texture;
             }
 
             foreach (var region in data.regions) {
                 var width = region.width;
                 var height = region.height;
-                var atlasRegion = new AtlasRegion(pageToTexture.@get(region.page.id.to_string()), region.left, region.top,
+                var atlasRegion = new AtlasRegion(pageToTexture[region.page.id], region.left, region.top,
 				    region.rotate ? height : width, region.rotate ? width : height);
 
                 atlasRegion.index = region.index;
@@ -194,6 +193,7 @@ namespace sdx.graphics {
 
     public class TextureAtlasData : Object {
         /** tuple used to return the parsed values */
+        public static TextureAtlasData instance;
         public static string[] tuple;
 	    /** Returns the number of tuple values read (1, 2 or 4). */
         public static int readTuple(DataInputStream reader) {

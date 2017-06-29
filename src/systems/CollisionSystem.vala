@@ -25,14 +25,14 @@ namespace systems {
 								if (bullet.transform.aabb.is_intersecting(enemy.transform.aabb)) {
 									var x = (int)((float)bullet.transform.position.x);
 									var y = (int)((float)bullet.transform.position.y);
-									world.bang(x, y);
+									world.addBang(x, y);
 									world.deleteEntity(bullet);
 									for (var i=0; i<3; i++) 
-										world.particle(x, y);
+										world.addParticle(x, y);
 									if (enemy.health != null) {
 										var current = enemy.health.current - 2;
 										if (current < 0) {
-											world.explosion(x, y);
+											world.addExplosion(x, y);
 											world.deleteEntity(enemy);
 										} else {
 											enemy.health.current = current;

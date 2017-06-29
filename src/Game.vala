@@ -25,18 +25,16 @@ public class Game : AbstractGame {
 			.addSystem(new CollisionSystem(this, world))
 			.addSystem(new AnimationSystem(this, world))
 			.addSystem(new ExpireSystem(this, world))
-			.addSystem(new RemoveSystem(this, world))
 			.addSystem(new ScoreSystem(this, world));
 
 		/**
 		 * Removed from display system
 		 */
 		world.setEntityRemovedListener(it => {
-			DisplaySystem.instance.remove(it);
+			DisplaySystem.remove(it);
 			return it;
 		});
 		world.initialize();
-		world.createBackground();
 
 		/**
 		 * Update

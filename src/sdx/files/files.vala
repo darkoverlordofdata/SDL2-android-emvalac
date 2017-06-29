@@ -25,6 +25,8 @@ namespace sdx.files {
 		return new FileHandle(path, FileType.Relative);
 #elif (ANDROID)
 		return new FileHandle(path, FileType.Asset);
+#elif (NOGOBJECT)
+		return new FileHandle(path, FileType.Relative);
 #else
 		return new FileHandle(path, FileType.Resource);
 #endif		

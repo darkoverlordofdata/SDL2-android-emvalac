@@ -33,6 +33,8 @@ public class Factory : World {
 		base();		
 		atlas = new sdx.graphics.TextureAtlas(sdx.files.@default("assets/assets.atlas"));
 		setPool(256, Pool.Count, {
+			Buffer(Pool.BACKGROUND,	  1, createBackground),
+			Buffer(Pool.PLAYER, 	  1, createPlayer),
 			Buffer(Pool.BULLET, 	 20, createBullet),
 			Buffer(Pool.ENEMY1, 	 15, createEnemy1),
 			Buffer(Pool.ENEMY2,  	  5, createEnemy2),
@@ -41,15 +43,6 @@ public class Factory : World {
 			Buffer(Pool.BANG,      	 12, createBang),
 			Buffer(Pool.PARTICLE,  	100, createParticle)
 		});
-	}
-
-	/**
-	 * added to display system
-	 */
-	public Entity* entityAdded(Entity* e) {
-		if (e.transform.sprite == null) return e;
-		DisplaySystem.instance.add(e);
-		return e;
 	}
 
 	/**
@@ -65,21 +58,22 @@ public class Factory : World {
 	 *	factory methods:
 	 */
 	public Entity* createBackground() {
-		return entityAdded(createBase("background", Pool.BACKGROUND, 2*sdx.pixelFactor, true, false)
-			.setBackground(true));
+		return createBase("background", Pool.BACKGROUND, 2*sdx.pixelFactor, true, false)
+			.setBackground(true);
 	}
 
 	public Entity* createPlayer() {
-		return entityAdded(createBase("spaceshipspr", Pool.PLAYER, sdx.pixelFactor, true));
+		return createBase("spaceshipspr", Pool.PLAYER, sdx.pixelFactor, true)
+			.setPlayer(true);
 	}
 
 	public Entity* createBullet() {
-		return (createBase("bullet", Pool.BULLET)
+		return createBase("bullet", Pool.BULLET)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/pew.wav")))
 			.addTint(0xd2, 0xfa, 0, 0xfa)
 			.addHealth(2, 2)
 			.addVelocity(0, -800*sdx.pixelFactor)
-			.setBullet(true));
+			.setBullet(true);
 	}
 
 	public Entity* createEnemy1() {
@@ -130,87 +124,102 @@ public class Factory : World {
 	}
 
 	/**
-	 * Get entity from the pool
+	 * Get entity from the pool and
+	 * put it on the screen at (x,y)
 	 */
-	public Entity* bullet(int x, int y) {
-		if (cache[Pool.BULLET].isEmpty()) {
-			stdout.printf("out of bullets\n");
-			return null;
+	public void addBackground(int x, int y) {
+		if (cache[Pool.BACKGROUND].isEmpty()) {
+			cache[Pool.BACKGROUND].enque(createBackground());
+			stdout.printf("out of background\n");
 		}
-		return entityAdded(cache[Pool.BULLET].deque()
+		DisplaySystem.add(cache[Pool.BACKGROUND].deque());
+	}
+		
+	public void addPlayer(int x, int y) {
+		if (cache[Pool.PLAYER].isEmpty()) {
+			cache[Pool.PLAYER].enque(createPlayer());
+			stdout.printf("out of player\n");
+		}
+		DisplaySystem.add(cache[Pool.PLAYER].deque());
+	}
+
+	public void addBullet(int x, int y) {
+		if (cache[Pool.BULLET].isEmpty()) {
+			cache[Pool.BULLET].enque(createBullet());
+			stdout.printf("out of bullets\n");
+		}
+		DisplaySystem.add(cache[Pool.BULLET].deque()
 			.setPosition(x, y)
 			.setActive(true));
 	}
 
-	public Entity* enemy1(int x, int y) {
+	public void addEnemy1(int x, int y) {
 		if (cache[Pool.ENEMY1].isEmpty()) {
+			cache[Pool.ENEMY1].enque(createEnemy1());
 			stdout.printf("out of enemy1\n");
-			return null;
 		}
-		return entityAdded(cache[Pool.ENEMY1].deque()
+		DisplaySystem.add(cache[Pool.ENEMY1].deque()
 			.setPosition(x, y)
 			.setHealth(10, 10)
 			.setActive(true));
 	}
 
-	public Entity* enemy2(int x, int y) {
+	public void addEnemy2(int x, int y) {
 		if (cache[Pool.ENEMY2].isEmpty()) {
+			cache[Pool.ENEMY2].enque(createEnemy2());
 			stdout.printf("out of enemy2\n");
-			return null;
 		}
-		return entityAdded(cache[Pool.ENEMY2].deque()
+		DisplaySystem.add(cache[Pool.ENEMY2].deque()
 			.setPosition(x, y)
 			.setHealth(20, 20) 
 			.setActive(true));
 	}
 
-	public Entity* enemy3(int x, int y) {
+	public void addEnemy3(int x, int y) {
 		if (cache[Pool.ENEMY3].isEmpty()) {
+			cache[Pool.ENEMY3].enque(createEnemy3());
 			stdout.printf("out of enemy3\n");
-			return null;
 		}
-		return entityAdded(cache[Pool.ENEMY3].deque()
+		DisplaySystem.add(cache[Pool.ENEMY3].deque()
 			.setPosition(x, y)
 			.setHealth(60, 60)
 			.setActive(true));
 	}
 
-	public Entity* explosion(int x, int y) {
+	public void addExplosion(int x, int y) {
 		if (cache[Pool.EXPLOSION].isEmpty()) {
+			cache[Pool.EXPLOSION].enque(createExplosion());
 			stdout.printf("out of explosions\n");
-			return null;
 		}
 		var entity = cache[Pool.EXPLOSION].deque();
-		entityAdded(entity
+		DisplaySystem.add(entity
 			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setTween(0.006f, 0.6f, -3f, false, true)
 			.setPosition(x, y)
 			.setScale(0.6f*sdx.pixelFactor, 0.6f*sdx.pixelFactor)
 			.setExpires(0.2f)
 			.setActive(true));
-		return entity;
 	}
 
-	public Entity* bang(int x, int y) {
+	public void addBang(int x, int y) {
 		if (cache[Pool.BANG].isEmpty()) {
+			cache[Pool.BANG].enque(createBang());
 			stdout.printf("out of bang\n");
-			return null;
 		}
 		var entity = cache[Pool.BANG].deque();
-		entityAdded(entity
+		DisplaySystem.add(entity
 			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setTween(0.003f, 0.3f, -3f, false, true)
 			.setPosition(x, y)
 			.setScale(0.3f*sdx.pixelFactor, 0.3f*sdx.pixelFactor)
 			.setExpires(0.2f)
 			.setActive(true));
-		return entity;
 	}
 
-	public Entity* particle(int x, int y) {
+	public void addParticle(int x, int y) {
 		if (cache[Pool.PARTICLE].isEmpty()) {
+			cache[Pool.PARTICLE].enque(createParticle());
 			stdout.printf("out of particles\n");
-			return null;
 		}
 		var radians = sdx.getRandom() * TAU;
 		var magnitude = sdx.getRandom() * 200;
@@ -218,13 +227,12 @@ public class Factory : World {
 		var velocityY = magnitude * Math.sin(radians);
 		var scale = (float)sdx.getRandom();
 		var entity = cache[Pool.PARTICLE].deque();
-		entityAdded(entity
+		DisplaySystem.add(entity
 			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setPosition(x, y)
 			.setScale(scale*sdx.pixelFactor, scale*sdx.pixelFactor)
 			.setVelocity((float)velocityX, (float)velocityY)
 			.setExpires(0.75f)
 			.setActive(true));
-		return entity;
 	}
 }

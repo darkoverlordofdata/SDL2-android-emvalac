@@ -47,6 +47,7 @@ namespace entitas {
 		public Matcher(Matcher[] matchers = null ) {
 			id = uniqueId++;
 			if (matchers != null) {
+				//  print("matchers != null\n");
 				var allOf = new int[0];
 				var anyOf = new int[0];
 				var noneOf = new int[0];
@@ -61,6 +62,9 @@ namespace entitas {
 				allOfIndices = Matcher.distinctIndices(allOf);
 				anyOfIndices = Matcher.distinctIndices(anyOf);
 				noneOfIndices = Matcher.distinctIndices(noneOf);
+			} else {
+				//  print("matchers == null\n");
+				
 			}
 		}
 
@@ -79,22 +83,22 @@ namespace entitas {
 		 * @params Array<entitas.IMatcher>|Array<number> args
 		 * @returns entitas.Matcher
 		 */
-		public Matcher* anyOf(int[] args) { 
-			anyOfIndices = Matcher.distinctIndices(args);
-			indices = null;
-			return this;
-		}
+		//  public Matcher* anyOf(int[] args) { 
+		//  	anyOfIndices = Matcher.distinctIndices(args);
+		//  	indices = null;
+		//  	return this;
+		//  }
 
 		/**
 		 * Matches noneOf the components/indices specified
 		 * @params Array<entitas.IMatcher>|Array<number> args
 		 * @returns entitas.Matcher
 		 */
-		public Matcher* noneOf(int[] args) { 
-			noneOfIndices = Matcher.distinctIndices(args);
-			indices = null;
-			return this;
-		}
+		//  public Matcher* noneOf(int[] args) { 
+		//  	noneOfIndices = Matcher.distinctIndices(args);
+		//  	indices = null;
+		//  	return this;
+		//  }
 
 		/**
 		 * Check if the entity matches this matcher
@@ -192,16 +196,16 @@ namespace entitas {
 		 * @param Array<IMatcher> matchers
 		 * @returns Array<number>
 		 */
-		public static int[] merge(Matcher[] matchers) throws Exception {
-			var indices = new List<int>();
+		//  public static int[] merge(Matcher[] matchers) throws Exception {
+		//  	var indices = new List<int>();
 
-			for (var i=0; i < matchers.length-1; i++) {
-				if (matchers[i].indices.length != 1)
-					throw new Exception.InvalidMatcherExpression(matchers[i].toString());
-				indices.prepend(matchers[i].indices[0]);
-			}
-			return listToArray(indices);
-		}
+		//  	for (var i=0; i < matchers.length-1; i++) {
+		//  		if (matchers[i].indices.length != 1)
+		//  			throw new Exception.InvalidMatcherExpression(matchers[i].toString());
+		//  		indices.prepend(matchers[i].indices[0]);
+		//  	}
+		//  	return listToArray(indices);
+		//  }
 
 		/**
 		 * Matches noneOf the components/indices specified
