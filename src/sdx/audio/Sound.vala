@@ -1,7 +1,7 @@
 
-using sdx.files;
+using Sdx.Files;
 
-namespace sdx.audio {
+namespace Sdx.Audio {
 
     public class Sound : Object {
 
@@ -9,10 +9,10 @@ namespace sdx.audio {
         public SDLMixer.Chunk chunk;
 
         public Sound(FileHandle file) {
-            chunk = new SDLMixer.Chunk.WAV_RW(file.getRWops());
+            chunk = new SDLMixer.Chunk.WAV_RW(file.GetRWops());
         }
 
-        public void play(int loops = 0) {            
+        public void Play(int loops = 0) {            
             SDLMixer.play(-1, chunk, loops);
 
         }
@@ -20,7 +20,7 @@ namespace sdx.audio {
         public Sound(FileHandle file) {
         }
 
-        public void play(int loops = 0) {            
+        public void Play(int loops = 0) {            
         }
 
 #endif

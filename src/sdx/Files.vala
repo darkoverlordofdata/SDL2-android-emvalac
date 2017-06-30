@@ -1,6 +1,6 @@
-using sdx.files;
+using Sdx.Files;
 
-namespace sdx {
+namespace Sdx {
 
 	public enum FileType {
 		Resource = 1,		/* Path to memory GResource */
@@ -14,10 +14,11 @@ namespace sdx {
 		public string[] data; 
 		public int ctr;
 		public DataInputStream(string data) {
-			this.data = data.split("\n");
+			this.data = data.Split("\n");
+
 			ctr = 0;
 		}
-		public string? read_line() {
+		public string? ReadLine() {
 			return ctr<data.length ? data[ctr++] : null;
 		}
 	}

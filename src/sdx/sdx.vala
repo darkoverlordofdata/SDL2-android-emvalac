@@ -2,15 +2,15 @@ using SDL;
 using SDL.Video;
 using SDLImage;
 
-namespace sdx {
+namespace Sdx {
 
 	public class AbstractPlatform : Object {
 		public int width;
 		public int height;
 		public delegate void AbstractUpdate(int tick);
 		public delegate void AbstractDraw(int tick);
-		public AbstractUpdate update = (tick) => {};
-		public AbstractDraw draw = (tick) => {};
+		public AbstractUpdate Update = (tick) => {};
+		public AbstractDraw Draw = (tick) => {};
 		public AbstractPlatform() {
 			// forces the subclassed lambda context to be reference counted
 			var r = new LambdaReference();
@@ -22,14 +22,14 @@ namespace sdx {
 		public int height;
 		public delegate void AbstractUpdate();
 		public delegate void AbstractDraw();
-		public AbstractUpdate update = () => {};
-		public AbstractDraw draw = () => {};
+		public AbstractUpdate Update = () => {};
+		public AbstractDraw Draw = () => {};
 		public AbstractGame() {
 			// forces the subclassed lambda context to be reference counted
 			var r = new LambdaReference();
 		}
-		public void start() {
-			sdx.start();
+		public void Start() {
+			Sdx.Start();
 		}
 	}
 
@@ -50,19 +50,19 @@ namespace sdx {
 	FileType platform = FileType.Relative;
 #endif
 	Renderer renderer;
-	sdx.Font font;
-	sdx.Font smallFont;
-	sdx.Font largeFont;
+	Sdx.Font font;
+	Sdx.Font smallFont;
+	Sdx.Font largeFont;
 	SDL.Video.Display display;
 	SDL.Video.DisplayMode displayMode;
 	SDL.Video.Color fpsColor;
 	SDL.Video.Color bgdColor;
-	sdx.graphics.Sprite.TextSprite fpsSprite;
-	sdx.graphics.Sprite.AnimatedSprite fps1;
-	sdx.graphics.Sprite.AnimatedSprite fps2;
-	sdx.graphics.Sprite.AnimatedSprite fps3;
-	sdx.graphics.Sprite.AnimatedSprite fps4;
-	sdx.graphics.Sprite.AnimatedSprite fps5;
+	Sdx.Graphics.Sprite.TextSprite fpsSprite;
+	Sdx.Graphics.Sprite.AnimatedSprite fps1;
+	Sdx.Graphics.Sprite.AnimatedSprite fps2;
+	Sdx.Graphics.Sprite.AnimatedSprite fps3;
+	Sdx.Graphics.Sprite.AnimatedSprite fps4;
+	Sdx.Graphics.Sprite.AnimatedSprite fps5;
 	bool showFps;
 	float fps;
 	float delta = 1.0f/60.0f;
@@ -89,27 +89,27 @@ namespace sdx {
 	 * Initialization
 	 * 
 	 */
-	Window initialize(int width, int height, string name) {
-		sdx.height = height;
-		sdx.width = width;
+	Window Initialize(int width, int height, string name) {
+		Sdx.height = height;
+		Sdx.width = width;
 		keys = new uint8[256];
 		direction = new bool[5];
 
-		if (SDL.init(SDL.InitFlag.VIDEO | SDL.InitFlag.TIMER | SDL.InitFlag.EVENTS) < 0)
-			throw new SdlException.Initialization(SDL.get_error());
+		if (SDL.Init(SDL.InitFlag.VIDEO | SDL.InitFlag.TIMER | SDL.InitFlag.EVENTS) < 0)
+			throw new SdlException.Initialization(SDL.GetError());
 
-		if (SDLImage.init(SDLImage.InitFlags.PNG) < 0)
-			throw new SdlException.ImageInitialization(SDL.get_error());
+		if (SDLImage.Init(SDLImage.InitFlags.PNG) < 0)
+			throw new SdlException.ImageInitialization(SDL.GetError());
 
-		if (!SDL.Hint.set_hint(Hint.RENDER_SCALE_QUALITY, "1"))	
-			throw new SdlException.TextureFilteringNotEnabled(SDL.get_error());
+		if (!SDL.Hint.SetHint(Hint.RENDER_SCALE_QUALITY, "1"))	
+			throw new SdlException.TextureFilteringNotEnabled(SDL.GetError());
 
-		if (SDLTTF.init() == -1)
-			throw new SdlException.TtfInitialization(SDL.get_error());
+		if (SDLTTF.Init() == -1)
+			throw new SdlException.TtfInitialization(SDL.GetError());
 
 		display = 0;
-		display.get_mode(0, out displayMode);
-		//  if (display.get_dpi(null, null, null) == -1) {
+		display.GetMode(0, out displayMode);
+		//  if (display.GetDpi(null, null, null) == -1) {
 		//  	pixelFactor = 1;
 		//  } else {
 		//  	pixelFactor = 1;
@@ -124,100 +124,100 @@ namespace sdx {
 		var window = new Window(name, Window.POS_CENTERED, Window.POS_CENTERED, width, height, WindowFlags.SHOWN);
 #endif	
 		if (window == null)
-			throw new SdlException.OpenWindow(SDL.get_error());
+			throw new SdlException.OpenWindow(SDL.GetError());
 		
-		sdx.renderer = Renderer.create(window, -1, RendererFlags.ACCELERATED | RendererFlags.PRESENTVSYNC);
-		if (sdx.renderer == null)
-			throw new SdlException.CreateRenderer(SDL.get_error());
+		Sdx.renderer = Renderer.Create(window, -1, RendererFlags.ACCELERATED | RendererFlags.PRESENTVSYNC);
+		if (Sdx.renderer == null)
+			throw new SdlException.CreateRenderer(SDL.GetError());
 
-		freq = SDL.Timer.get_performance_frequency();
-		fpsColor = sdx.Color.AntiqueWhite;
-		bgdColor = sdx.Color.Black; //{ 0, 0, 0, 0 };
+		freq = SDL.Timer.GetPerformanceFrequency();
+		fpsColor = Sdx.Color.AntiqueWhite;
+		bgdColor = Sdx.Color.Black; //{ 0, 0, 0, 0 };
 
 		fps = 60;
-		MersenneTwister.init_genrand((ulong)SDL.Timer.get_performance_counter());
+		MersenneTwister.InitGenrand((ulong)SDL.Timer.GetPerformanceCounter());
 		return window;
 	}
 
-	double getRandom() {
-		return MersenneTwister.genrand_real2();
+	double GetRandom() {
+		return MersenneTwister.GenrandReal2();
 	}
 
-	void setResourceBase(string path) {
-		sdx.resourceBase = path;
+	void SetResourceBase(string path) {
+		Sdx.resourceBase = path;
 	}
 
-	void setDefaultFont(string path, int size) {
-		font = new sdx.Font(path, size);
+	void SetDefaultFont(string path, int size) {
+		font = new Sdx.Font(path, size);
 	}
 
-	void setSmallFont(string path, int size) {
-		smallFont = new sdx.Font(path, size);
+	void SetSmallFont(string path, int size) {
+		smallFont = new Sdx.Font(path, size);
 	}
 
-	void setLargeFont(string path, int size) {
-		largeFont = new sdx.Font(path, size);
+	void SetLargeFont(string path, int size) {
+		largeFont = new Sdx.Font(path, size);
 	}
 
-	void setShowFps(bool value) {
+	void SetShowFps(bool value) {
 		showFps = value;
 		if (showFps == true) {
 
-			fps1 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
-			fps2 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
-			fps3 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
-			fps4 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
-			fps5 = new sdx.graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps1 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps2 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps3 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps4 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
+			fps5 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
 
 		} else {
 			fpsSprite = null;
 		}
 	}
 
-	void drawFps() {
+	void DrawFps() {
 		if (showFps) {
 			var f = "%2.2f".printf(fps);
-			fps1.setFrame(f[0]);
-			fps1.render(20, 12);
-			fps2.setFrame(f[1]);
-			fps2.render(35, 12);
-			fps3.setFrame(f[2]);
-			fps3.render(50, 12);
-			fps4.setFrame(f[3]);
-			fps4.render(65, 12);
-			fps5.setFrame(f[4]);
-			fps5.render(80, 12);
+			fps1.SetFrame(f[0]);
+			fps1.Render(20, 12);
+			fps2.SetFrame(f[1]);
+			fps2.Render(35, 12);
+			fps3.SetFrame(f[2]);
+			fps3.Render(50, 12);
+			fps4.SetFrame(f[3]);
+			fps4.Render(65, 12);
+			fps5.SetFrame(f[4]);
+			fps5.Render(80, 12);
 		}
 	}
 
-	double getNow() {
-		return (double)SDL.Timer.get_performance_counter()/freq;
+	double GetNow() {
+		return (double)SDL.Timer.GetPerformanceCounter()/freq;
 	} 
 
-	void start() {
-		currentTime = getNow();
+	void Start() {
+		currentTime = GetNow();
 		running = true;
 	}
 
-	void gameloop(AbstractGame game) {
+	void GameLoop(AbstractGame game) {
 		
-		double newTime = getNow();
+		double newTime = GetNow();
 		double frameTime = newTime - currentTime;
 		if (frameTime > 0.25) frameTime = 0.25;
 		currentTime = newTime;
 
 		accumulator += frameTime;
 
-		processEvents();
+		ProcessEvents();
 		while (accumulator >= MS_PER_UPDATE) {
-			game.update();
+			game.Update();
 			accumulator -= MS_PER_UPDATE;
 		}
-		game.draw();
+		game.Draw();
 	}
 
 
-	void processEvents() {
+	void ProcessEvents() {
 		while (SDL.Event.poll(out _evt) != 0) {
 			switch (_evt.type) {
 				case SDL.EventType.QUIT:
@@ -274,19 +274,19 @@ namespace sdx {
 		}
 	}
 	
-	void begin() {
-		renderer.set_draw_color(bgdColor.r, bgdColor.g, bgdColor.b, bgdColor.a);
-		renderer.clear();
+	void Begin() {
+		renderer.SetDrawColor(bgdColor.r, bgdColor.g, bgdColor.b, bgdColor.a);
+		renderer.Clear();
 	}
 
-	void end() {
-		// sdx.drawFps();
-		sdx.renderer.present();
+	void End() {
+		// Sdx.drawFps();
+		renderer.Present();
 	}
 
-	void log(string text) {
+	void Log(string text) {
 #if (ANDROID)
-		Android.logWrite(Android.LogPriority.ERROR, "SDX", text);
+		Android.LogWrite(Android.LogPriority.ERROR, "SDX", text);
 #else
 		stdout.printf("%s\n", text);
 #endif

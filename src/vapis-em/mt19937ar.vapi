@@ -1,28 +1,28 @@
 [CCode (cprefix = "", lower_case_cprefix = "")]
 namespace MersenneTwister {
-	[CCode (cheader_filename = "mt19937ar.h")]
-	public void init_genrand (ulong s);
+	[CCode (cname = "init_genrand", cheader_filename = "mt19937ar.h")]
+	public void InitGenrand (ulong s);
 
-	[CCode (cheader_filename = "mt19937ar.h")]
-	public void init_by_array (ulong[] init_key, int key_length);
+	[CCode (cname = "init_by_array", cheader_filename = "mt19937ar.h")]
+	public void InitByArray (ulong[] init_key, int key_length);
 
-	[CCode (cheader_filename = "mt19937ar.h")]
-	public ulong genrand_int32 ();
+	[CCode (cname = "genrand_int32", cheader_filename = "mt19937ar.h")]
+	public ulong GenrandInt32 ();
 
-	[CCode (cheader_filename = "mt19937ar.h")]
-	public ulong genrand_int31 ();
+	[CCode (cname = "genrand_int31", cheader_filename = "mt19937ar.h")]
+	public ulong GenrandInt31 ();
 
-	[CCode (cheader_filename = "mt19937ar.h")]
-	public double genrand_real1 ();
+	[CCode (cname = "genrand_real1", cheader_filename = "mt19937ar.h")]
+	public double GenrandReal1 ();
     
-	[CCode (cheader_filename = "mt19937ar.h")]
-	public double genrand_real2 ();
+	[CCode (cname = "genrand_real2", cheader_filename = "mt19937ar.h")]
+	public double GenrandReal2 ();
 
-	[CCode (cheader_filename = "mt19937ar.h")]
-	public double genrand_real3 ();
+	[CCode (cname = "genrand_real3", cheader_filename = "mt19937ar.h")]
+	public double GenrandReal3 ();
 
-	[CCode (cheader_filename = "mt19937ar.h")]
-	public double genrand_real53 ();
+	[CCode (cname = "genrand_real53", cheader_filename = "mt19937ar.h")]
+	public double GenrandReal53 ();
 
 }
 

@@ -1,3 +1,3 @@
-namespace sdx.audio {
+namespace Sdx.Audio {
 
 }

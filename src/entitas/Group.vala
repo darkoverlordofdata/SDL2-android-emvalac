@@ -1,4 +1,4 @@
-namespace entitas {
+namespace Entitas {
 
 	public class Group : Object {
 		public Matcher matcher;
@@ -9,34 +9,34 @@ namespace entitas {
 		}
 
 		/** Add entity to group */
-		public void handleEntitySilently(Entity* entity) {
-			if (matcher.matches(entity)) 
-				entities.prepend(entity);
+		public void HandleEntitySilently(Entity* entity) {
+			if (matcher.Matches(entity)) 
+				entities.Insert(entity);
 			else 
-				entities.remove(entity);
+				entities.Remove(entity);
 		}
 
 		/** Add entity to group and raise events */
-		public void handleEntity(Entity* entity, Components index) {
-			if (matcher.matches(entity))
-				entities.prepend(entity);
+		public void HandleEntity(Entity* entity, Components index) {
+			if (matcher.Matches(entity))
+				entities.Insert(entity);
 			else
-				entities.remove(entity);
+				entities.Remove(entity);
 		} 
 
 
-		public bool containsEntity(Entity* entity) {
-			return entities.find(entity) != null;
+		public bool ContainsEntity(Entity* entity) {
+			return entities.Find(entity) != null;
 		}
 
-		public Entity* getSingleEntity() { 
-			var c = entities.length();
+		public Entity* GetSingleEntity() { 
+			var c = entities.Length();
 			if (c == 1) {
-				return (Entity*)entities.first().data;
+				return (Entity*)entities.Head.data;
 			} else if (c == 0) {
 				return null;
 			} else {
-				throw new Exception.SingleEntity(matcher.toString());
+				throw new Exception.SingleEntity(matcher.ToString());
 			}
 		}
 	}

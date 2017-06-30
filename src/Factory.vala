@@ -1,8 +1,8 @@
 /**
  * Entity Factory
  */
-using entitas;
-using systems;
+using Entitas;
+using Systems;
 using GLib.Math;
 
 const double TAU = 2.0 * Math.PI; 
@@ -28,211 +28,211 @@ enum Pool {
  */
 public class Factory : World {
 
-	public static sdx.graphics.TextureAtlas atlas;
+	public static Sdx.Graphics.TextureAtlas atlas;
 	public Factory() {
 		base();		
-		atlas = new sdx.graphics.TextureAtlas(sdx.files.@default("assets/assets.atlas"));
-		setPool(256, Pool.Count, {
-			Buffer(Pool.BACKGROUND,	  1, createBackground),
-			Buffer(Pool.PLAYER, 	  1, createPlayer),
-			Buffer(Pool.BULLET, 	 20, createBullet),
-			Buffer(Pool.ENEMY1, 	 15, createEnemy1),
-			Buffer(Pool.ENEMY2,  	  5, createEnemy2),
-			Buffer(Pool.ENEMY3,  	  4, createEnemy3),
-			Buffer(Pool.EXPLOSION, 	 10, createExplosion),
-			Buffer(Pool.BANG,      	 12, createBang),
-			Buffer(Pool.PARTICLE,  	100, createParticle)
+		atlas = new Sdx.Graphics.TextureAtlas(Sdx.Files.Default("assets/assets.atlas"));
+		SetPool(256, Pool.Count, {
+			Buffer(Pool.BACKGROUND,	  1, CreateBackground),
+			Buffer(Pool.PLAYER, 	  1, CreatePlayer),
+			Buffer(Pool.BULLET, 	 20, CreateBullet),
+			Buffer(Pool.ENEMY1, 	 15, CreateEnemy1),
+			Buffer(Pool.ENEMY2,  	  5, CreateEnemy2),
+			Buffer(Pool.ENEMY3,  	  4, CreateEnemy3),
+			Buffer(Pool.EXPLOSION, 	 10, CreateExplosion),
+			Buffer(Pool.BANG,      	 12, CreateBang),
+			Buffer(Pool.PARTICLE,  	100, CreateParticle)
 		});
 	}
 
 	/**
 	 * The stuff that all entities have
 	 */
-	public Entity* createBase(string name, int pool, float scale = sdx.pixelFactor, bool active = false, bool centered = true) {
-		return createEntity(name, pool, active)
-			.setTransform(atlas.createSprite(name).setScale(scale, scale).setCentered(centered))
-			.addLayer(pool);
+	public Entity* CreateBase(string name, int pool, float scale = Sdx.pixelFactor, bool active = false, bool centered = true) {
+		return CreateEntity(name, pool, active)
+			.SetTransform(atlas.CreateSprite(name).SetScale(scale, scale).SetCentered(centered))
+			.AddLayer(pool);
 	}
 
 	/** 
 	 *	factory methods:
 	 */
-	public Entity* createBackground() {
-		return createBase("background", Pool.BACKGROUND, 2*sdx.pixelFactor, true, false)
-			.setBackground(true);
+	public Entity* CreateBackground() {
+		return CreateBase("background", Pool.BACKGROUND, 2*Sdx.pixelFactor, true, false)
+			.SetBackground(true);
 	}
 
-	public Entity* createPlayer() {
-		return createBase("spaceshipspr", Pool.PLAYER, sdx.pixelFactor, true)
-			.setPlayer(true);
+	public Entity* CreatePlayer() {
+		return CreateBase("spaceshipspr", Pool.PLAYER, Sdx.pixelFactor, true)
+			.SetPlayer(true);
 	}
 
-	public Entity* createBullet() {
-		return createBase("bullet", Pool.BULLET)
+	public Entity* CreateBullet() {
+		return CreateBase("bullet", Pool.BULLET)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/pew.wav")))
-			.addTint(0xd2, 0xfa, 0, 0xfa)
-			.addHealth(2, 2)
-			.addVelocity(0, -800*sdx.pixelFactor)
-			.setBullet(true);
+			.AddTint(0xd2, 0xfa, 0, 0xfa)
+			.AddHealth(2, 2)
+			.AddVelocity(0, -800*Sdx.pixelFactor)
+			.SetBullet(true);
 	}
 
-	public Entity* createEnemy1() {
-		return createBase("enemy1", Pool.ENEMY1)
-			.addHealth(10, 10)
-			.addVelocity(0, 40)
-			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
-			.setEnemy1(true);
+	public Entity* CreateEnemy1() {
+		return CreateBase("enemy1", Pool.ENEMY1)
+			.AddHealth(10, 10)
+			.AddVelocity(0, 40)
+			.AddText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
+			.SetEnemy1(true);
 	}
 
-	public Entity* createEnemy2() {
-		return createBase("enemy2", Pool.ENEMY2)
-			.addHealth(20, 20)
-			.addVelocity(0, 30)
-			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
-			.setEnemy2(true);
+	public Entity* CreateEnemy2() {
+		return CreateBase("enemy2", Pool.ENEMY2)
+			.AddHealth(20, 20)
+			.AddVelocity(0, 30)
+			.AddText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
+			.SetEnemy2(true);
 	}
 
-	public Entity* createEnemy3() {
-		return createBase("enemy3", Pool.ENEMY3)
-			.addHealth(60, 60)
-			.addVelocity(0, 20)
-			.addText("100%", new sdx.graphics.Sprite.TextSprite("100%", sdx.smallFont, sdx.Color.LimeGreen))
-			.setEnemy3(true);
+	public Entity* CreateEnemy3() {
+		return CreateBase("enemy3", Pool.ENEMY3)
+			.AddHealth(60, 60)
+			.AddVelocity(0, 20)
+			.AddText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
+			.SetEnemy3(true);
 	}
 
-	public Entity* createExplosion() {
-		return createBase("explosion", Pool.EXPLOSION, 0.6f)
+	public Entity* CreateExplosion() {
+		return CreateBase("explosion", Pool.EXPLOSION, 0.6f)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/asplode.wav")))
-			.addTint(0xd2, 0xfa, 0xd2, 0x7f)
-			.addExpires(0.2f)
-			.addTween(0.006f, 0.6f, -3f, false, true);
+			.AddTint(0xd2, 0xfa, 0xd2, 0x7f)
+			.AddExpires(0.2f)
+			.AddTween(0.006f, 0.6f, -3f, false, true);
 	}
 
-	public Entity* createBang() {
-		return createBase("explosion", Pool.BANG, 0.1f)
+	public Entity* CreateBang() {
+		return CreateBase("explosion", Pool.BANG, 0.1f)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/smallasplode.wav")))
-			.addTint(0xd2, 0xfa, 0xd2, 0x9f)
-			.addExpires(0.2f)
-			.addTween(0.001f, 0.1f, -3f, false, true);
+			.AddTint(0xd2, 0xfa, 0xd2, 0x9f)
+			.AddExpires(0.2f)
+			.AddTween(0.001f, 0.1f, -3f, false, true);
 	}
 
-	public Entity* createParticle() {
-		return createBase("star", Pool.PARTICLE)
-			.addTint(0xd2, 0xfa, 0xd2, 0xfa)
-			.addExpires(0.75f)
-			.addVelocity(0, 0);
+	public Entity* CreateParticle() {
+		return CreateBase("star", Pool.PARTICLE)
+			.AddTint(0xd2, 0xfa, 0xd2, 0xfa)
+			.AddExpires(0.75f)
+			.AddVelocity(0, 0);
 	}
 
 	/**
 	 * Get entity from the pool and
 	 * put it on the screen at (x,y)
 	 */
-	public void addBackground(int x, int y) {
-		if (cache[Pool.BACKGROUND].isEmpty()) {
-			cache[Pool.BACKGROUND].enque(createBackground());
-			stdout.printf("out of background\n");
+	public void AddBackground(int x, int y) {
+		if (cache[Pool.BACKGROUND].IsEmpty()) {
+			cache[Pool.BACKGROUND].Enque(CreateBackground());
+			Sdx.Log("out of background\n");
 		}
-		DisplaySystem.add(cache[Pool.BACKGROUND].deque());
+		DisplaySystem.Add(cache[Pool.BACKGROUND].Deque());
 	}
 		
-	public void addPlayer(int x, int y) {
-		if (cache[Pool.PLAYER].isEmpty()) {
-			cache[Pool.PLAYER].enque(createPlayer());
-			stdout.printf("out of player\n");
+	public void AddPlayer(int x, int y) {
+		if (cache[Pool.PLAYER].IsEmpty()) {
+			cache[Pool.PLAYER].Enque(CreatePlayer());
+			Sdx.Log("out of player\n");
 		}
-		DisplaySystem.add(cache[Pool.PLAYER].deque());
+		DisplaySystem.Add(cache[Pool.PLAYER].Deque());
 	}
 
-	public void addBullet(int x, int y) {
-		if (cache[Pool.BULLET].isEmpty()) {
-			cache[Pool.BULLET].enque(createBullet());
-			stdout.printf("out of bullets\n");
+	public void AddBullet(int x, int y) {
+		if (cache[Pool.BULLET].IsEmpty()) {
+			cache[Pool.BULLET].Enque(CreateBullet());
+			Sdx.Log("out of bullets\n");
 		}
-		DisplaySystem.add(cache[Pool.BULLET].deque()
-			.setPosition(x, y)
-			.setActive(true));
+		DisplaySystem.Add(cache[Pool.BULLET].Deque()
+			.SetPosition(x, y)
+			.SetActive(true));
 	}
 
-	public void addEnemy1(int x, int y) {
-		if (cache[Pool.ENEMY1].isEmpty()) {
-			cache[Pool.ENEMY1].enque(createEnemy1());
-			stdout.printf("out of enemy1\n");
+	public void AddEnemy1(int x, int y) {
+		if (cache[Pool.ENEMY1].IsEmpty()) {
+			cache[Pool.ENEMY1].Enque(CreateEnemy1());
+			Sdx.Log("out of enemy1\n");
 		}
-		DisplaySystem.add(cache[Pool.ENEMY1].deque()
-			.setPosition(x, y)
-			.setHealth(10, 10)
-			.setActive(true));
+		DisplaySystem.Add(cache[Pool.ENEMY1].Deque()
+			.SetPosition(x, y)
+			.SetHealth(10, 10)
+			.SetActive(true));
 	}
 
-	public void addEnemy2(int x, int y) {
-		if (cache[Pool.ENEMY2].isEmpty()) {
-			cache[Pool.ENEMY2].enque(createEnemy2());
-			stdout.printf("out of enemy2\n");
+	public void AddEnemy2(int x, int y) {
+		if (cache[Pool.ENEMY2].IsEmpty()) {
+			cache[Pool.ENEMY2].Enque(CreateEnemy2());
+			Sdx.Log("out of enemy2\n");
 		}
-		DisplaySystem.add(cache[Pool.ENEMY2].deque()
-			.setPosition(x, y)
-			.setHealth(20, 20) 
-			.setActive(true));
+		DisplaySystem.Add(cache[Pool.ENEMY2].Deque()
+			.SetPosition(x, y)
+			.SetHealth(20, 20) 
+			.SetActive(true));
 	}
 
-	public void addEnemy3(int x, int y) {
-		if (cache[Pool.ENEMY3].isEmpty()) {
-			cache[Pool.ENEMY3].enque(createEnemy3());
-			stdout.printf("out of enemy3\n");
+	public void AddEnemy3(int x, int y) {
+		if (cache[Pool.ENEMY3].IsEmpty()) {
+			cache[Pool.ENEMY3].Enque(CreateEnemy3());
+			Sdx.Log("out of enemy3\n");
 		}
-		DisplaySystem.add(cache[Pool.ENEMY3].deque()
-			.setPosition(x, y)
-			.setHealth(60, 60)
-			.setActive(true));
+		DisplaySystem.Add(cache[Pool.ENEMY3].Deque()
+			.SetPosition(x, y)
+			.SetHealth(60, 60)
+			.SetActive(true));
 	}
 
-	public void addExplosion(int x, int y) {
-		if (cache[Pool.EXPLOSION].isEmpty()) {
-			cache[Pool.EXPLOSION].enque(createExplosion());
-			stdout.printf("out of explosions\n");
+	public void AddExplosion(int x, int y) {
+		if (cache[Pool.EXPLOSION].IsEmpty()) {
+			cache[Pool.EXPLOSION].Enque(CreateExplosion());
+			Sdx.Log("out of explosions\n");
 		}
-		var entity = cache[Pool.EXPLOSION].deque();
-		DisplaySystem.add(entity
-			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
-			.setTween(0.006f, 0.6f, -3f, false, true)
-			.setPosition(x, y)
-			.setScale(0.6f*sdx.pixelFactor, 0.6f*sdx.pixelFactor)
-			.setExpires(0.2f)
-			.setActive(true));
+		var entity = cache[Pool.EXPLOSION].Deque();
+		DisplaySystem.Add(entity
+			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
+			.SetTween(0.006f, 0.6f, -3f, false, true)
+			.SetPosition(x, y)
+			.SetScale(0.6f*Sdx.pixelFactor, 0.6f*Sdx.pixelFactor)
+			.SetExpires(0.2f)
+			.SetActive(true));
 	}
 
-	public void addBang(int x, int y) {
-		if (cache[Pool.BANG].isEmpty()) {
-			cache[Pool.BANG].enque(createBang());
-			stdout.printf("out of bang\n");
+	public void AddBang(int x, int y) {
+		if (cache[Pool.BANG].IsEmpty()) {
+			cache[Pool.BANG].Enque(CreateBang());
+			Sdx.Log("out of bang\n");
 		}
-		var entity = cache[Pool.BANG].deque();
-		DisplaySystem.add(entity
-			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
-			.setTween(0.003f, 0.3f, -3f, false, true)
-			.setPosition(x, y)
-			.setScale(0.3f*sdx.pixelFactor, 0.3f*sdx.pixelFactor)
-			.setExpires(0.2f)
-			.setActive(true));
+		var entity = cache[Pool.BANG].Deque();
+		DisplaySystem.Add(entity
+			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
+			.SetTween(0.003f, 0.3f, -3f, false, true)
+			.SetPosition(x, y)
+			.SetScale(0.3f*Sdx.pixelFactor, 0.3f*Sdx.pixelFactor)
+			.SetExpires(0.2f)
+			.SetActive(true));
 	}
 
-	public void addParticle(int x, int y) {
-		if (cache[Pool.PARTICLE].isEmpty()) {
-			cache[Pool.PARTICLE].enque(createParticle());
-			stdout.printf("out of particles\n");
+	public void AddParticle(int x, int y) {
+		if (cache[Pool.PARTICLE].IsEmpty()) {
+			cache[Pool.PARTICLE].Enque(CreateParticle());
+			Sdx.Log("out of particles\n");
 		}
-		var radians = sdx.getRandom() * TAU;
-		var magnitude = sdx.getRandom() * 200;
+		var radians = Sdx.GetRandom() * TAU;
+		var magnitude = Sdx.GetRandom() * 200;
 		var velocityX = magnitude * Math.cos(radians);
 		var velocityY = magnitude * Math.sin(radians);
-		var scale = (float)sdx.getRandom();
-		var entity = cache[Pool.PARTICLE].deque();
-		DisplaySystem.add(entity
-			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
-			.setPosition(x, y)
-			.setScale(scale*sdx.pixelFactor, scale*sdx.pixelFactor)
-			.setVelocity((float)velocityX, (float)velocityY)
-			.setExpires(0.75f)
-			.setActive(true));
+		var scale = (float)Sdx.GetRandom();
+		var entity = cache[Pool.PARTICLE].Deque();
+		DisplaySystem.Add(entity
+			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
+			.SetPosition(x, y)
+			.SetScale(scale*Sdx.pixelFactor, scale*Sdx.pixelFactor)
+			.SetVelocity((float)velocityX, (float)velocityY)
+			.SetExpires(0.75f)
+			.SetActive(true));
 	}
 }

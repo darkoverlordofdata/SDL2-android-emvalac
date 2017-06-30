@@ -1,7 +1,7 @@
-namespace sdx.utils {
+namespace Sdx.Utils {
 
-	public const string pathSeparator  = "/";
-	public const char pathSeparatorChar  = '/';
+	public const string PathSeparator  = "/";
+	public const char PathSeparatorChar  = '/';
 	/**
 	 * Simple File handler
 	 * 
@@ -16,68 +16,68 @@ namespace sdx.utils {
 
 		public File(string path) {
 			this.path = path;
-    		file = new SDL.RWops.from_file(path, "r");
+    		file = new SDL.RWops.FromFile(path, "r");
 		} 
 
-		public string getPath() {
+		public string GetPath() {
 			return path;
 		}
 
 		/**
 		 * the name is everything after the final separator
 		 */
-		public string getName() {
+		public string GetName() {
 			for (var i=path.length-1; i>0; i--)
-				if (path[i] == pathSeparatorChar)
-					return path.substring(i+1);
+				if (path[i] == PathSeparatorChar)
+					return path.SubString(i+1);
 			return path;
 		}
 
 		/**
 		 * the parent is everything prior to the final separator
 		 */
-		public string getParent() {
-			var i = path.last_index_of(pathSeparator);
-			return i < 0 ? "" : path.substring(0, i);
+		public string GetParent() {
+			var i = path.LastIndexOf(PathSeparator);
+			return i < 0 ? "" : path.SubString(0, i);
 		}
 
 		/**
 		 * check if the represented struture exists on the virtual disk
 		 */
-		public bool exists() {
+		public bool Exists() {
 			return file != null;
 		}
 
 		/**
 		 * is it a file?
 		 */
-		public bool isFile() {
+		public bool IsFile() {
 			return file != null;
 		}
 
 		/**
 		 * is it a folder?
 		 */
-		public bool isDirectory() {
+		public bool IsDirectory() {
 			return false;
 		}
 
 		/**
 		 * get the length of the file
 		 */
-		public int length() {
+		public int Length() {
 			return file != null ? (int)file.size : 0;
 		}
 		
 		/**
 		 * read the contents into a string buffer
 		 */
-		public string read() {
-			if (!exists()) return "";
+		public string Read() {
+			if (!Exists()) return "";
 			var size = (int)file.size;
 	    	var ioBuff = new char[size+2];
     
-    		var stat = file.read((void*)ioBuff, 2, (size_t)size/2);
+    		var stat = file.Read((void*)ioBuff, 2, (size_t)size/2);
 			var lines = "";
 			lines = lines + (string)ioBuff;
 			return lines;
@@ -86,7 +86,7 @@ namespace sdx.utils {
 			/**
 		 * return the list of files in the folder
 		 */
-		public string[] list() {
+		public string[] List() {
 			files = new string[0];
 			return files;
 		}

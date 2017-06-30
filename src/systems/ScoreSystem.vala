@@ -1,5 +1,5 @@
-using entitas;
-namespace systems {
+using Entitas;
+namespace Systems {
 
 	/**
 	* game systems
@@ -8,24 +8,24 @@ namespace systems {
 
 		public ScoreSystem(Game game, Factory world) {
 
-			var group = world.getGroup(Matcher.AllOf({
+			var scoring = world.GetGroup(Matcher.AllOf({
 				Components.HealthComponent, 
 				Components.TextComponent
 			}));
 
-			execute = (delta) => {
-				foreach (var entity in group.entities) {
-					if (entity.isActive()) {
+			Execute = (delta) => {
+				scoring.entities.ForEach(entity => {
+					if (entity.IsActive()) {
 						var score = (int)Math.fmin(100, (float)entity.health.current/(float)entity.health.maximum*100);
-						var pct = ((double)score).to_string();
+						var pct = ((double)score).ToString();
 						if (pct != entity.text.text) {
 							entity.text.text = pct;
-							entity.text.sprite.setText(pct, sdx.smallFont, sdx.Color.LimeGreen);
+							entity.text.sprite.SetText(pct, Sdx.smallFont, Sdx.Color.LimeGreen);
 							entity.text.sprite.x = (int)entity.transform.position.x;
 							entity.text.sprite.y = (int)entity.transform.position.y;
 						}
 					}
-				}
+				});
 			};
 		}
 	}

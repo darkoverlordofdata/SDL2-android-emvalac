@@ -1,58 +1,54 @@
-using sdx;
-using entitas;
-using systems;
+using Sdx;
+using Entitas;
+using Systems;
 /**
  * Game controller 
  */
 public class Game : AbstractGame {
-	public static DisplaySystem? display;
 
 	public Game(int w, int h) {
 	
 		width = w;
 		height = h;
 
-		sdx.setResourceBase("/darkoverlordofdata/shmupwarz");
-		sdx.setSmallFont("assets/fonts/OpenDyslexic-Bold.otf", 16);
-		sdx.setDefaultFont("assets/fonts/OpenDyslexic-Bold.otf", 24);
-		sdx.setShowFps(true);
-		display = new DisplaySystem();
+		Sdx.SetResourceBase("/darkoverlordofdata/shmupwarz");
+		Sdx.SetSmallFont("assets/fonts/OpenDyslexic-Bold.otf", 16);
+		Sdx.SetDefaultFont("assets/fonts/OpenDyslexic-Bold.otf", 24);
+		Sdx.SetShowFps(true);
 		
-		Factory world = new Factory();
-		world.addSystem(new SpawnSystem(this, world))
-			.addSystem(new InputSystem(this, world))
-			.addSystem(new PhysicsSystem(this, world))
-			.addSystem(new CollisionSystem(this, world))
-			.addSystem(new AnimationSystem(this, world))
-			.addSystem(new ExpireSystem(this, world))
-			.addSystem(new ScoreSystem(this, world));
+		var world = new Factory();
+		var display = new DisplaySystem();
 
-		/**
-		 * Removed from display system
-		 */
-		world.setEntityRemovedListener(it => {
-			DisplaySystem.remove(it);
-			return it;
-		});
-		world.initialize();
+		world.SetEntityRemovedListener(it => display.sprites.Remove(it));
+
+		world.AddSystem(new SpawnSystem(this, world))
+			.AddSystem(new InputSystem(this, world))
+			.AddSystem(new PhysicsSystem(this, world))
+			.AddSystem(new CollisionSystem(this, world))
+			.AddSystem(new AnimationSystem(this, world))
+			.AddSystem(new ExpireSystem(this, world))
+			.AddSystem(new ScoreSystem(this, world));
+
+		world.Initialize();
 
 		/**
 		 * Update
 		 * 
 		 */
-		update = () => {
-			world.execute(sdx.delta);
+		Update = () => {
+			world.Execute(Sdx.delta);
 		};
 
 		/**
 		 * Render
 		 * 
 		 */
-		draw = () => {
-			sdx.begin();
+		Draw = () => {
+			Sdx.Begin();
 			foreach (var entity in display.sprites) 
-				if (entity.isActive()) display.draw(entity, ref entity.transform);
-			sdx.end();
+				if (entity.IsActive()) 
+					display.Draw(entity, ref entity.transform);
+			Sdx.End();
 		};
 	}
 }

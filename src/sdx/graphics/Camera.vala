@@ -1,5 +1,5 @@
-using sdx.math;
-namespace sdx.graphics {
+using Sdx.Math;
+namespace Sdx.Graphics {
 
 	public class Camera : Object {
         
@@ -12,7 +12,7 @@ namespace sdx.graphics {
 
 		public Kind kind;
 		public Vector2 position;
-        public CameraSetPosition setPosition = (position) => {};
+        public CameraSetPosition SetPosition = (position) => {};
 
 
         public class InnerCamera : Camera {
@@ -24,9 +24,9 @@ namespace sdx.graphics {
                 kind = Kind.InnerCamera;
                 position = { x, y };
 
-                setPosition = (player) => {
-                    var area = player.x - (float)sdx.width/2;
-                    position = { clamp(position.x, area-100, area+100), position.y };
+                SetPosition = (player) => {
+                    var area = player.x - (float)Sdx.width/2;
+                    position = { Clamp(position.x, area-100, area+100), position.y };
                 };
             }
         }
@@ -40,8 +40,8 @@ namespace sdx.graphics {
                 kind = Kind.FluidCamera;
                 position = { x, y };
 
-                setPosition = (player) => {
-                    var dist = position.x - player.x + (float)sdx.width/2;
+                SetPosition = (player) => {
+                    var dist = position.x - player.x + (float)Sdx.width/2;
                     position = { position.x += (-0.05f * dist), position.y };
                 };
             }
@@ -56,8 +56,8 @@ namespace sdx.graphics {
                 kind = Kind.SimpleCamera;
                 position = { x, y };
 
-                setPosition = (player) => {
-                    position = { player.x - (float)sdx.width/2, position.y };
+                SetPosition = (player) => {
+                    position = { player.x - (float)Sdx.width/2, position.y };
                 };
             }
         }

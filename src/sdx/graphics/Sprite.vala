@@ -1,4 +1,4 @@
-namespace sdx.graphics {
+namespace Sdx.Graphics {
 
 	public struct Scale {
 		float x;
@@ -22,7 +22,7 @@ namespace sdx.graphics {
 		public int index;
 		public int frame = -1;
 		public Scale scale = Scale() { x = 1, y = 1 };
-		public SDL.Video.Color color = sdx.Color.White;
+		public SDL.Video.Color color = Sdx.Color.White;
 		public bool centered = true;
 		public int layer = 0;
 		public string path;
@@ -39,19 +39,19 @@ namespace sdx.graphics {
 			 * For each cell in spritesheet, draw the image from a cell
 			 */
 			public AnimatedSprite(string path, int width, int height) {
-				index = Surface.CachedSurface.indexOfPath(path);
+				index = Surface.CachedSurface.IndexOfPath(path);
 				this.height = height;
 				this.width = width;
 				this.path = path;
 				this.kind = Kind.AnimatedSprite;
-				setFrame(0);
+				SetFrame(0);
 			}
 			/**
 			 * setFrame
 			 * 
 			 * @param frame index of frame to draw
 			 */
-			public void setFrame(int frame) {
+			public void SetFrame(int frame) {
 				if (frame == this.frame) return;
 				this.frame = frame;
 				var rmask = (uint32)0x000000ff; 
@@ -63,9 +63,9 @@ namespace sdx.graphics {
 
 				x = (frame % wf) * width;
 				y = (int)(frame / wf) * height;
-				var surface = new SDL.Video.Surface.legacy_rgb(0, width, height, 32, rmask, gmask, bmask, amask);
-				Surface.CachedSurface.cache[index].surface.blit_scaled({ x, y, width, height }, surface, { 0, 0, width, height });
-				this.texture = SDL.Video.Texture.create_from_surface(renderer, surface);
+				var surface = new SDL.Video.Surface.LegacyRgb(0, width, height, 32, rmask, gmask, bmask, amask);
+				Surface.CachedSurface.cache[index].surface.BlitScaled({ x, y, width, height }, surface, { 0, 0, width, height });
+				this.texture = SDL.Video.Texture.CreateFromSurface(renderer, surface);
 
 			}
 
@@ -80,10 +80,10 @@ namespace sdx.graphics {
 			 * Simple sprite, 1 image per file
 			 */
 			public TextureSprite(string path) {
-				var index = Surface.CachedSurface.indexOfPath(path);
-				texture = SDL.Video.Texture.create_from_surface(renderer, Surface.CachedSurface.cache[index].surface);
+				var index = Surface.CachedSurface.IndexOfPath(path);
+				texture = SDL.Video.Texture.CreateFromSurface(renderer, Surface.CachedSurface.cache[index].surface);
 				if (texture == null) throw new SdlException.UnableToLoadTexture(path);
-				texture.set_blend_mode(SDL.Video.BlendMode.BLEND);
+				texture.SetBlendMode(SDL.Video.BlendMode.BLEND);
 				width = Surface.CachedSurface.cache[index].width;
 				height = Surface.CachedSurface.cache[index].height;
 				this.path = path;
@@ -101,7 +101,7 @@ namespace sdx.graphics {
 			public AtlasSprite(AtlasRegion region) {
 
 				var path = region.rg.texture.path;
-				var index = Surface.CachedSurface.indexOfPath(region.rg.texture.path);
+				var index = Surface.CachedSurface.IndexOfPath(region.rg.texture.path);
 				var rmask = (uint32)0x000000ff; 
 				var gmask = (uint32)0x0000ff00;
 				var bmask = (uint32)0x00ff0000;
@@ -110,9 +110,9 @@ namespace sdx.graphics {
 				var y = region.rg.left;
 				var w = region.rg.width;
 				var h = region.rg.height;
-				var surface = new SDL.Video.Surface.legacy_rgb(0, w, h, 32, rmask, gmask, bmask, amask);
-				Surface.CachedSurface.cache[index].surface.blit_scaled({ x, y, w, h }, surface, { 0, 0, w, h });
-				this.texture = SDL.Video.Texture.create_from_surface(renderer, surface);
+				var surface = new SDL.Video.Surface.LegacyRgb(0, w, h, 32, rmask, gmask, bmask, amask);
+				Surface.CachedSurface.cache[index].surface.BlitScaled({ x, y, w, h }, surface, { 0, 0, w, h });
+				this.texture = SDL.Video.Texture.CreateFromSurface(renderer, surface);
 				this.width = w;
 				this.height = h;
 				this.path = region.name;
@@ -135,16 +135,16 @@ namespace sdx.graphics {
 					if (segment.dest.h > h) h = (int)segment.dest.h;
 					if (segment.dest.w > w) w = (int)segment.dest.w;
 				}
-				var index = Surface.CachedSurface.indexOfPath(path);
+				var index = Surface.CachedSurface.IndexOfPath(path);
 				var rmask = (uint32)0x000000ff; 
 				var gmask = (uint32)0x0000ff00;
 				var bmask = (uint32)0x00ff0000;
 				var amask = (uint32)0xff000000;
-				var surface = new SDL.Video.Surface.legacy_rgb(0, h, w, 32, rmask, gmask, bmask, amask);
+				var surface = new SDL.Video.Surface.LegacyRgb(0, h, w, 32, rmask, gmask, bmask, amask);
 				foreach (var segment in builder(h/2, w/2)) {
-					Surface.CachedSurface.cache[index].surface.blit_scaled(segment.source, surface, segment.dest);
+					Surface.CachedSurface.cache[index].surface.BlitScaled(segment.source, surface, segment.dest);
 				}
-				texture = SDL.Video.Texture.create_from_surface(renderer, surface);
+				texture = SDL.Video.Texture.CreateFromSurface(renderer, surface);
 				width = w;
 				height = h;
 				this.path = path;
@@ -161,8 +161,8 @@ namespace sdx.graphics {
 			 * @param color foregound text color (background transparent)
 			 * 
 			 */
-			public TextSprite(string text, sdx.Font font, SDL.Video.Color color) {
-				setText(text, font, color);
+			public TextSprite(string text, Sdx.Font font, SDL.Video.Color color) {
+				SetText(text, font, color);
 				centered = false;
 				kind = Kind.TextSprite;
 			}
@@ -174,10 +174,10 @@ namespace sdx.graphics {
 			 * @param font used to generate text
 			 * @param color foregound text color (background transparent)
 			 */
-			public void setText(string text, sdx.Font font, SDL.Video.Color color) {
-				var surface = font.render(text, color);
-				texture = SDL.Video.Texture.create_from_surface(renderer, surface);
-				texture.set_blend_mode(SDL.Video.BlendMode.BLEND);
+			public void SetText(string text, Sdx.Font font, SDL.Video.Color color) {
+				var surface = font.Render(text, color);
+				texture = SDL.Video.Texture.CreateFromSurface(renderer, surface);
+				texture.SetBlendMode(SDL.Video.BlendMode.BLEND);
 				width = surface.w;
 				height = surface.h;
 				path = text;
@@ -193,7 +193,7 @@ namespace sdx.graphics {
 		 * @param y display coordinate
 		 * @param clip optional clipping rectangle
 		 */
-		public void render(int x, int y, SDL.Video.Rect? clip = null) {
+		public void Render(int x, int y, SDL.Video.Rect? clip = null) {
 			/* do clipping? */
 			var w = (int)((clip == null ? width : clip.w) * scale.x);
 			var h = (int)((clip == null ? height : clip.h) * scale.y);
@@ -203,27 +203,27 @@ namespace sdx.graphics {
 			y = centered ? y-(h/2) : y;
 
 			/* apply current tint */
-			texture.set_color_mod(color.r, color.g, color.b);
+			texture.SetColorMod(color.r, color.g, color.b);
 			/* copy to the rendering context */
-			renderer.copy(texture, clip, { x, y, w, h });
+			renderer.Copy(texture, clip, { x, y, w, h });
 		}
 
-		public void copy(SDL.Video.Rect? src = null, SDL.Video.Rect? dest = null) {
-			renderer.copy(texture, src, dest);
+		public void Copy(SDL.Video.Rect? src = null, SDL.Video.Rect? dest = null) {
+			renderer.Copy(texture, src, dest);
 		}
 
-		public Sprite setScale(float x, float y) {
+		public Sprite SetScale(float x, float y) {
 			this.scale = { x, y };
 			return this;
 		}
 
-		public Sprite setPosition(int x, int y) {
+		public Sprite SetPosition(int x, int y) {
 			this.x = x;
 			this.y = y;
 			return this;
 		}
 
-		public Sprite setCentered(bool value) {
+		public Sprite SetCentered(bool value) {
 			centered = value;
 			return this;
 		}

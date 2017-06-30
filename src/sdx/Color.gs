@@ -1,5 +1,5 @@
 uses SDL.Video
-namespace sdx.Color
+namespace Sdx.Color
 	const AliceBlue: SDL.Video.Color = { 0xf0, 0xf8, 0xff, 0xff }
 	const AntiqueWhite: SDL.Video.Color = { 0xfa, 0xeb, 0xd7, 0xff }
 	const Aqua: SDL.Video.Color = { 0x00, 0xFF, 0x00, 0xFF }

@@ -10,17 +10,17 @@
  *
  */
 public void game() {
-	var window = sdx.initialize(720, 512, "Shmupwarz");
+	var window = Sdx.Initialize(720, 512, "Shmupwarz");
 	var game = new Game(720, 512);
-	game.start();
-	Emscripten.emscripten_set_main_loop_arg(mainloop, game, 0, 1);
+	game.Start();
+	Emscripten.SetMainLoopArg(MainLoop, game, 0, 1);
 	return;
 }
 /**
  * the main loop
  */
-public void mainloop(void* arg) {
-	sdx.gameloop((Game*)arg);
+public void MainLoop(void* arg) {
+	Sdx.GameLoop((Game*)arg);
 }
 
 
@@ -31,15 +31,15 @@ public void mainloop(void* arg) {
  */
 public int main(string args[]) {
 #if (ANDROID)
-	var window = sdx.initialize(1184, 768, "Shmupwarz");
+	var window = Sdx.Initialize(1184, 768, "Shmupwarz");
 	var game = new Game(1184, 768);
 #else
-	var window = sdx.initialize(720, 512, "Shmupwarz");
+	var window = Sdx.Initialize(720, 512, "Shmupwarz");
 	var game = new Game(720, 512);
 #endif
-	game.start();
-	while (sdx.running) {
-		sdx.gameloop(game);
+	game.Start();
+	while (Sdx.running) {
+		Sdx.GameLoop(game);
 	}
 	return 0;
 }

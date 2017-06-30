@@ -2,10 +2,10 @@
  * TextureAtlas.gs
  *
  */
-using sdx.files;
-using sdx.graphics;
+using Sdx.Files;
+using Sdx.Graphics;
 
-namespace sdx.graphics {
+namespace Sdx.Graphics {
 
     /**
      *  load a libgdx format atlas
@@ -16,11 +16,11 @@ namespace sdx.graphics {
          * @param root location of resources
          */
         public TextureAtlas(FileHandle packFile, FileHandle? imageDir=null, bool flip=false) {
-            load(new TextureAtlasData(packFile, imageDir == null ? packFile.getParent() : imageDir, flip));
+            Load(new TextureAtlasData(packFile, imageDir == null ? packFile.GetParent() : imageDir, flip));
         }
 
 
-        public AtlasRegion? findRegion(string name, int index=-1) {
+        public AtlasRegion? FindRegion(string name, int index=-1) {
             foreach (var region in regions) {   
                 if (index == -1) {
                     if (region.name == name) return region;
@@ -31,7 +31,7 @@ namespace sdx.graphics {
             return null;
         }
 
-        public Sprite? createSprite(string name, int index=-1) { 
+        public Sprite? CreateSprite(string name, int index=-1) { 
             foreach (var region in regions) {
                 if (index == -1) {
                     if (region.name == name) {
@@ -49,7 +49,7 @@ namespace sdx.graphics {
         /**
          * @param data config to load images from
          */
-        public void load(TextureAtlasData data) {
+        public void Load(TextureAtlasData data) {
         
             Surface.TextureSurface? texture = null;
             var pageToTexture = new Surface.TextureSurface[0];
@@ -61,8 +61,8 @@ namespace sdx.graphics {
                 } else {    
                     texture = page.texture;
                 }
-                texture.setFilter(page.minFilter, page.magFilter);
-                texture.setWrap(page.uWrap, page.vWrap);
+                texture.SetFilter(page.minFilter, page.magFilter);
+                texture.SetWrap(page.uWrap, page.vWrap);
                 pageToTexture += texture;
             }
 
@@ -81,8 +81,8 @@ namespace sdx.graphics {
                 atlasRegion.rotate = region.rotate;
                 atlasRegion.splits = region.splits;
                 atlasRegion.pads = region.pads;
-                if (region.flip) atlasRegion.flip(false, true);
-                regions.append(atlasRegion);
+                if (region.flip) atlasRegion.Flip(false, true);
+                regions.Add(atlasRegion);
             }
         }
 
@@ -126,8 +126,8 @@ namespace sdx.graphics {
         }
 
 
-        public void flip(bool x, bool y) {
-            rg.flip(x, y);
+        public void Flip(bool x, bool y) {
+            rg.Flip(x, y);
         }
     }
     /**
@@ -196,11 +196,11 @@ namespace sdx.graphics {
         public static TextureAtlasData instance;
         public static string[] tuple;
 	    /** Returns the number of tuple values read (1, 2 or 4). */
-        public static int readTuple(DataInputStream reader) {
-            var line = reader.read_line();
-            var ts = line.split(":");
+        public static int ReadTuple(DataInputStream reader) {
+            var line = reader.ReadLine();
+            var ts = line.Split(":");
             if (ts.length == 0) throw new IOException.InvalidData("invalid line "+line);
-            tuple = ts[1].split(",");
+            tuple = ts[1].Split(",");
             for (var i=0; i<tuple.length; i++) {
                 tuple[i] = tuple[i];
             }
@@ -208,9 +208,9 @@ namespace sdx.graphics {
         }
 
         /** Returns the single value */
-        public static string readValue(DataInputStream reader) {
-            var line = reader.read_line();
-            var ts = line.split(":");
+        public static string ReadValue(DataInputStream reader) {
+            var line = reader.ReadLine();
+            var ts = line.Split(":");
             if (ts.length == 0) throw new IOException.InvalidData("invalid line "+line);
             return ts[1];
         }
@@ -226,28 +226,28 @@ namespace sdx.graphics {
         public TextureAtlasData(FileHandle packFile, FileHandle imagesDir, bool flip) {
             pages = new List<Page>();
             regions = new List<Region>();
-            var reader = new DataInputStream(packFile.read());
+            var reader = new DataInputStream(packFile.Read());
             try {
                 Page pageImage = null;
                 while (true) {
-                    var line = reader.read_line();
+                    var line = reader.ReadLine();
                     if (line == null) break;
                     if (line.length == 0) { 
                         pageImage = null;
                     } else if (pageImage == null) {
-                        var file = imagesDir.child(line);
+                        var file = imagesDir.Child(line);
                         var width = 0;
                         var height = 0;
-                        if (readTuple(reader) == 2) {
-                            width = int.parse(tuple[0]);
-                            height = int.parse(tuple[1]);
-                            readTuple(reader);
+                        if (ReadTuple(reader) == 2) {
+                            width = int.Parse(tuple[0]);
+                            height = int.Parse(tuple[1]);
+                            ReadTuple(reader);
                         }
                         var format = Format.from(tuple[0].strip());
-                        readTuple(reader);
+                        ReadTuple(reader);
                         var min = TextureFilter.from(tuple[0].strip());
                         var max = TextureFilter.from(tuple[1].strip());
-                        var direction = readValue(reader);
+                        var direction = ReadValue(reader);
                         var repeatX = TextureWrap.ClampToEdge;
                         var repeatY = TextureWrap.ClampToEdge;
                         if (direction == "x") {
@@ -260,44 +260,44 @@ namespace sdx.graphics {
                         }
 
                         pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
-                        pages.append(pageImage);
+                        pages.Add(pageImage);
                     } else {
-                        var rotate = bool.parse(readValue(reader));
+                        var rotate = bool.Parse(ReadValue(reader));
 
-                        readTuple(reader);
-                        var left = int.parse(tuple[0]);
-                        var top = int.parse(tuple[1]);
+                        ReadTuple(reader);
+                        var left = int.Parse(tuple[0]);
+                        var top = int.Parse(tuple[1]);
 
-                        readTuple(reader);
-                        var width = int.parse(tuple[0]);
-                        var height = int.parse(tuple[1]);
+                        ReadTuple(reader);
+                        var width = int.Parse(tuple[0]);
+                        var height = int.Parse(tuple[1]);
 
                         var region = new Region(pageImage, left, top, width, height, line, rotate);
 
-                        if (readTuple(reader) == 4) {
-                            region.splits = { int.parse(tuple[0]), int.parse(tuple[1]), 
-                                int.parse(tuple[2]), int.parse(tuple[3]) };
+                        if (ReadTuple(reader) == 4) {
+                            region.splits = { int.Parse(tuple[0]), int.Parse(tuple[1]), 
+                                int.Parse(tuple[2]), int.Parse(tuple[3]) };
 
-                            if (readTuple(reader) == 4) {
-                                region.pads = { int.parse(tuple[0]), int.parse(tuple[1]), 
-                                    int.parse(tuple[2]), int.parse(tuple[3]) };
+                            if (ReadTuple(reader) == 4) {
+                                region.pads = { int.Parse(tuple[0]), int.Parse(tuple[1]), 
+                                    int.Parse(tuple[2]), int.Parse(tuple[3]) };
 
-                                readTuple(reader);
+                                ReadTuple(reader);
                             }
                         }
 
-                        region.originalWidth = int.parse(tuple[0]);
-                        region.originalHeight = int.parse(tuple[1]);
+                        region.originalWidth = int.Parse(tuple[0]);
+                        region.originalHeight = int.Parse(tuple[1]);
 
-                        readTuple(reader);
-                        region.offsetX = int.parse(tuple[0]);
-                        region.offsetY = int.parse(tuple[1]);
+                        ReadTuple(reader);
+                        region.offsetX = int.Parse(tuple[0]);
+                        region.offsetY = int.Parse(tuple[1]);
 
-                        region.index = int.parse(readValue(reader));
+                        region.index = int.Parse(ReadValue(reader));
 
                         if (flip) region.flip = true;
 
-                        regions.append(region);
+                        regions.Add(region);
                     }
                 }
             } catch (Error e) {

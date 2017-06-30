@@ -1,4 +1,4 @@
-namespace sdx.utils {
+namespace Sdx.Utils {
 
     /**
      * Simple Json Parser
@@ -38,21 +38,22 @@ namespace sdx.utils {
         public int at;
         public char ch;
         public string text;
-        public JsDelegate replacer;
+        public JsDelegate Replacer;
 
-        public Json(JsDelegate replacer = null) {
-            this.replacer = replacer;
+
+        public Json(JsDelegate Replacer = null) {
+            this.Replacer = Replacer;
         }
 
-        public static JsVariant parse(string source) {
-            return new Json().parseJson(source);
+        public static JsVariant Parse(string source) {
+            return new Json().ParseJson(source);
         }
 
-        public static string stringify(JsVariant value, JsDelegate replacer = null, string space = "") {
-            // The stringify method takes a value and an optional replacer, and an optional
-            // space parameter, and returns a JSON text. The replacer can be a function
+        public static string Stringify(JsVariant value, JsDelegate Replacer = null, string space = "") {
+            // The stringify method takes a value and an optional Replacer, and an optional
+            // space parameter, and returns a JSON text. The Replacer can be a function
             // that can replace values, or an array of strings that will select the keys.
-            // A default replacer method can be provided. Use of the space parameter can
+            // A default Replacer method can be provided. Use of the space parameter can
             // produce text that is more easily readable.
 
             gap = "";
@@ -60,44 +61,44 @@ namespace sdx.utils {
 
             var holder = new JsVariant(JsType.JS_OBJECT);
             holder.object.set("", value);
-            return new Json(replacer).str("", holder);
+            return new Json(Replacer).Str("", holder);
         }
 
-        public string quote(string str) {
+        public string Quote(string str) {
             return "\"" + str + "\"";
 
         }
-        public JsVariant getItem(JsVariant holder, string key) {
+        public JsVariant GetItem(JsVariant holder, string key) {
             switch (holder.type) {
                 case JsType.JS_ARRAY:
-                    return holder.array.nth_data(int.parse(key));
+                    return holder.array.Item(int.Parse(key)).data;
                 case JsType.JS_OBJECT:
                     return holder.object.get(key);
                 default:
                     return null;
             }
         }
-        public string str(string key, JsVariant holder) {
+        public string Str(string key, JsVariant holder) {
             // Produce a string from holder[key].
 
             var length = 0;
             var mind = gap;
-            JsVariant value = getItem(holder, key);
+            JsVariant value = GetItem(holder, key);
 
-            if (replacer != null) {
-                value = replacer(holder, key, value);
+            if (Replacer != null) {
+                value = Replacer(holder, key, value);
             }
 
             switch (value.type) {
 
                 case JsType.JS_STRING:
-                    return quote(value.string);
+                    return Quote(value.string);
 
                 case JsType.JS_NUMBER:
-                    return value.number.to_string(); 
+                    return value.number.ToString(); 
 
                 case JsType.JS_BOOLEAN:
-                    return value.boolean.to_string();
+                    return value.boolean.ToString();
 
                 case JsType.JS_OBJECT:
                     if (value.object == null) return "null";
@@ -109,7 +110,7 @@ namespace sdx.utils {
                     var keys = value.object.get_keys_as_array();
                     for (var i = 0; i < keys.length; i++) {
                         var k = keys[i];
-                        partial[i] = quote(k) + (gap.length>0 ? ": " : ":") + str(k, value);
+                        partial[i] = Quote(k) + (gap.length>0 ? ": " : ":") + Str(k, value);
                     }
                     // Join all of the member texts together, separated with commas,
                     // and wrap them in braces.
@@ -117,9 +118,9 @@ namespace sdx.utils {
                     if (partial.length == 0) {
                         v =  "{}";
                     } else if (gap.length > 0) {
-                        v = "{\n" + gap + string.joinv(",\n" + gap, partial) + "\n" + mind + "}";
+                        v = "{\n" + gap + string.Joinv(",\n" + gap, partial) + "\n" + mind + "}";
                     } else {
-                        v = "{" + string.joinv(",", partial) + "}";
+                        v = "{" + string.Joinv(",", partial) + "}";
                     }
                     gap = mind;
                     return v;
@@ -130,10 +131,10 @@ namespace sdx.utils {
                     gap += indent;
                     
                     // The value is an array. Stringify every element                    
-                    length = (int)value.array.length();
+                    length = (int)value.array.Length();
                     var partial = new string[length];
                     for (var i = 0; i < length; i++) {
-                        partial[i] = str(i.to_string(), value);
+                        partial[i] = Str(i.ToString(), value);
                     }
                     // Join all of the elements together, separated with commas, and wrap them in
                     // brackets.
@@ -142,9 +143,9 @@ namespace sdx.utils {
                     if (partial.length == 0) {
                         v =  "[]";
                     } else if (gap.length > 0) {
-                        v = "[\n" + gap + string.joinv(",\n" + gap, partial) + "\n" + mind + "]";
+                        v = "[\n" + gap + string.Joinv(",\n" + gap, partial) + "\n" + mind + "]";
                     } else {
-                        v = "[" + string.joinv(",", partial) + "]";
+                        v = "[" + string.Joinv(",", partial) + "]";
                     }
                     gap = mind;
                     return v;
@@ -152,23 +153,23 @@ namespace sdx.utils {
             return "";
         }
 
-        public JsVariant parseJson(string source) {
+        public JsVariant ParseJson(string source) {
 
             text = source;
             at = 0;
             ch = ' ';
-            var result = getValue();
-            skipWhite();
+            var result = GetValue();
+            SkipWhite();
             if (ch != 0) {
                 throw new JsonException.SyntaxError("");
             }
             return result;
         }
 
-        public char next(char? c=null) {
+        public char Next(char? c=null) {
             // If a c parameter is provided, verify that it matches the current character.
             if (c != null && c != ch) {
-                throw new JsonException.UnexpectedCharacter("Expected '" + c.to_string() + "' instead of '" + ch.to_string() + "'");
+                throw new JsonException.UnexpectedCharacter("Expected '" + c.ToString() + "' instead of '" + ch.ToString() + "'");
             }
             // Get the next character. When there are no more characters,
             // return the empty string.
@@ -177,63 +178,63 @@ namespace sdx.utils {
             return ch;
         }
 
-        public JsVariant getValue() {
+        public JsVariant GetValue() {
 
             // Parse a JSON value. It could be an object, an array, a string, a number,
             // or a word.
 
-            skipWhite();
+            SkipWhite();
             switch (ch) {
             case '{':
-                return getObject();
+                return GetObject();
             case '[':
-                return getArray();
+                return GetArray();
             case '\"':
-                return getString();
+                return GetString();
             case '-':
-                return getNumber();
+                return GetNumber();
             default:
                 return (ch >= '0' && ch <= '9')
-                    ? getNumber()
-                    : getWord();
+                    ? GetNumber()
+                    : GetWord();
             }
         }
 
-        public JsVariant getNumber() {
+        public JsVariant GetNumber() {
             // Parse a number value.
             var string = "";
 
             if (ch == '-') {
                 string = "-";
-                next('-');
+                Next('-');
             }
 
             while (ch >= '0' && ch <= '9') {
-                string += ch.to_string();
-                next();
+                string += ch.ToString();
+                Next();
             }
             if (ch == '.') {
                 string += ".";
-                while (next() != 0 && ch >= '0' && ch <= '9') {
-                    string += ch.to_string();
+                while (Next() != 0 && ch >= '0' && ch <= '9') {
+                    string += ch.ToString();
                 }
             }
             if (ch == 'e' || ch == 'E') {
-                string += ch.to_string();
-                next();
+                string += ch.ToString();
+                Next();
                 if (ch == '-' || ch == '+') {
-                    string += ch.to_string();
-                    next();
+                    string += ch.ToString();
+                    Next();
                 }
                 while (ch >= '0' && ch <= '9') {
-                    string += ch.to_string();
-                    next();
+                    string += ch.ToString();
+                    Next();
                 }
             }
-            return JsVariant.Number((double)double.parse(string));
+            return JsVariant.Number((double)double.Parse(string));
         }
 
-        public JsVariant getString() {
+        public JsVariant GetString() {
             // Parse a string value.
             var hex = 0;
             var i = 0;
@@ -242,28 +243,28 @@ namespace sdx.utils {
             // When parsing for string values, we must look for " and \ characters.
 
             if (ch == '\"') {
-                while (next() != 0) {
+                while (Next() != 0) {
                     if (ch == '\"') {
-                        next();
+                        Next();
                         return JsVariant.String(string);
                     }
                     if (ch == '\\') {
-                        next();
+                        Next();
                         if (ch == 'u') {
                             uffff = 0;
                             for (i = 0; i < 4; i += 1) {
-                                hex = HEX_DIGIT.index_of(next().to_string().down());
+                                hex = HEX_DIGIT.IndexOf(Next().ToString().down());
                                 if (hex < 0) break;
                                 uffff = uffff * 16 + hex;
                             }
-                            string += ((char)uffff).to_string();
-                        } else if ((i = escape0.index_of(ch.to_string())) >= 0) {
+                            string += ((char)uffff).ToString();
+                        } else if ((i = escape0.IndexOf(ch.ToString())) >= 0) {
                             string += escape1[i];
                         } else {
                             break;
                         }
                     } else {
-                        string += ch.to_string();
+                        string += ch.ToString();
                     }
                 }
             }
@@ -271,94 +272,94 @@ namespace sdx.utils {
         }
 
 
-        public void skipWhite() {
+        public void SkipWhite() {
 
             // Skip whitespace.
 
             while (ch != 0 && ch <= ' ') {
-                next();
+                Next();
             }
         }
 
-        public JsVariant getWord() {
+        public JsVariant GetWord() {
 
             switch (ch) {
             case 't':
-                next('t');
-                next('r');
-                next('u');
-                next('e');
+                Next('t');
+                Next('r');
+                Next('u');
+                Next('e');
                 return JsVariant.Boolean(true);
             case 'f':
-                next('f');
-                next('a');
-                next('l');
-                next('s');
-                next('e');
+                Next('f');
+                Next('a');
+                Next('l');
+                Next('s');
+                Next('e');
                 return JsVariant.Boolean(false);
             case 'n':
-                next('n');
-                next('u');
-                next('l');
-                next('l');
+                Next('n');
+                Next('u');
+                Next('l');
+                Next('l');
                 return new JsVariant(JsType.JS_OBJECT, true);
             }
-            throw new JsonException.UnexpectedCharacter("Unexpected '" + ch.to_string() + "'");
+            throw new JsonException.UnexpectedCharacter("Unexpected '" + ch.ToString() + "'");
 
         }
 
-        public JsVariant getArray() {
+        public JsVariant GetArray() {
             // Parse an array value.
             var result = new JsVariant(JsType.JS_ARRAY);
 
             if (ch == '[') {
-                next('[');
-                skipWhite();
+                Next('[');
+                SkipWhite();
                 if (ch == ']') {
-                    next(']');
+                    Next(']');
                     return result;
                 }
                 while (ch != 0) {
-                    result.array.append(getValue());
-                    skipWhite();
+                    result.array.Add(GetValue());
+                    SkipWhite();
                     if (ch == ']') {
-                        next(']');
+                        Next(']');
                         return result;
                     }
-                    next(',');
-                    skipWhite();
+                    Next(',');
+                    SkipWhite();
                 }
             }
             throw new JsonException.InvalidArray("");
         }
 
-        public JsVariant getObject() {
+        public JsVariant GetObject() {
             // Parse an object value.
             var key = "";
             var result = new JsVariant(JsType.JS_OBJECT);
 
             if (ch == '{') {
-                next('{');
-                skipWhite();
+                Next('{');
+                SkipWhite();
                 if (ch == '}') {
-                    next('}');
+                    Next('}');
                     return result;
                 }
                 while (ch != 0) {
-                    key = getString().string;
-                    skipWhite();
-                    next(':');
+                    key = GetString().string;
+                    SkipWhite();
+                    Next(':');
                     if (result.object.contains(key)) {
                         throw new JsonException.DuplicateKey("");
                     }
-                    result.object.@set(key, getValue());
-                    skipWhite();
+                    result.object.@set(key, GetValue());
+                    SkipWhite();
                     if (ch == '}') {
-                        next('}');
+                        Next('}');
                         return result;
                     }
-                    next(',');
-                    skipWhite();
+                    Next(',');
+                    SkipWhite();
                 }
             }
             throw new JsonException.InvalidObject("");
@@ -423,11 +424,11 @@ namespace sdx.utils {
             }
         }
 
-        public JsVariant at(int index) {
-            return array.nth_data(0);
+        public JsVariant At(int index) {
+            return array.Head.data;
         }
 
-        public JsVariant member(string key) {
+        public JsVariant Member(string key) {
             return object.get(key);
         }
     }   

@@ -1,7 +1,7 @@
 /**
  * Unordered cache 
  */
-namespace sdx.utils {
+namespace Sdx.Utils {
 
 	
 	public class Cache<T> : Object {
@@ -14,11 +14,11 @@ namespace sdx.utils {
 			size = 0;
 		}
 
-		public bool isEmpty() {
+		public bool IsEmpty() {
 			return size == 0;
 		}
 
-		public T get(int index) {
+		public T Get(int index) {
 			if (index < 0 || index > size) {
 				stdout.printf("Can't get cache at %d\n", index);
 				return null;
@@ -26,7 +26,7 @@ namespace sdx.utils {
 			return items[index];
 		}
 
-		public void put(int index, T entity) {
+		public void Put(int index, T entity) {
 			if (index < 0 || index >= size) {
 				stdout.printf("Can't put cache at %d\n", index);
 				return;
@@ -34,12 +34,12 @@ namespace sdx.utils {
 			items[index] = entity;
 		}
 
-		public void enque(T entity) {
-			if (size >= items.length) grow(items.length*2);
+		public void Enque(T entity) {
+			if (size >= items.length) Grow(items.length*2);
 			items[size++] = entity;
 		}
 
-		public T deque() {
+		public T Deque() {
 			if (size <= 0) {
 				stdout.printf("Unable to pop from queue\n");
 				return null;
@@ -47,10 +47,10 @@ namespace sdx.utils {
 			return items[--size];
 		}
 
-		public void grow(int newSize) {
+		public void Grow(int newSize) {
 			var temp = new List<T>();
 			foreach (var item in items)
-				temp.prepend(item);
+				temp.Insert(item);
 
 			items = new T[newSize];
 

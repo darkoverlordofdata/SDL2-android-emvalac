@@ -1,6 +1,6 @@
-namespace  sdx.math { 
+namespace  Sdx.Math { 
 
-    public inline float clamp(float value, float low, float hi) {
+    public inline float Clamp(float value, float low, float hi) {
 	    return value < low ? low : value > hi ? hi : value;
     }
     
@@ -9,15 +9,15 @@ namespace  sdx.math {
         public float x;
         public float y;
 
-        public static Vector2 zero  { get {return {  0,  0 }; } }
-        public static Vector2 one   { get {return {  1,  1 }; } }
-        public static Vector2 down  { get {return {  0, -1 }; } }
-        public static Vector2 left  { get {return { -1,  0 }; } }
-        public static Vector2 right { get {return {  1,  0 }; } }
-        public static Vector2 up    { get {return {  0,  1 }; } }
+        public static Vector2 Zero  { get {return {  0,  0 }; } }
+        public static Vector2 One   { get {return {  1,  1 }; } }
+        public static Vector2 Down  { get {return {  0, -1 }; } }
+        public static Vector2 Left  { get {return { -1,  0 }; } }
+        public static Vector2 Right { get {return {  1,  0 }; } }
+        public static Vector2 Up    { get {return {  0,  1 }; } }
 
-        public static float distance(Vector2 a, Vector2 b) {
-            return Math.sqrtf( (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) );
+        public static float Distance(Vector2 a, Vector2 b) {
+            return GLib.Math.sqrtf( (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) );
         }
 
         public Vector2(float x = 0, float y = 0) {
@@ -25,23 +25,23 @@ namespace  sdx.math {
             this.y = y;
         }
 
-        public inline Vector2 mul(float f) {
+        public inline Vector2 Mul(float f) {
             return { x*f, y*f };
         }
 
-        public inline Vector2 div(float f) {
+        public inline Vector2 Div(float f) {
             return { x/f, y/f };
         }
 
-        public inline float len() {
-            return Math.sqrtf(x*x + y*y);
+        public inline float Len() {
+            return GLib.Math.sqrtf(x*x + y*y);
         }
 
-        public inline Vector2 add(Vector2 v) {
+        public inline Vector2 Add(Vector2 v) {
             return { x+v.x, y+v.y };
         }
 
-        public inline Vector2 sub(Vector2 v) {
+        public inline Vector2 Sub(Vector2 v) {
             return { x-v.x, y-v.y };
         }            
     }

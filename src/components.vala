@@ -3,15 +3,15 @@
  * 
  * 
  */
-namespace entitas { 
+namespace Entitas { 
 
 	public struct Transform {
-		public sdx.math.Vector2? scale;
-		public sdx.math.Vector2? position;
+		public Sdx.Math.Vector2? scale;
+		public Sdx.Math.Vector2? position;
 		public SDL.Video.Rect? aabb;
- 		public sdx.graphics.Sprite? sprite;
+ 		public Sdx.Graphics.Sprite? sprite;
 
-		public Transform(sdx.graphics.Sprite sprite) {
+		public Transform(Sdx.Graphics.Sprite sprite) {
 			this.sprite = sprite;
 			position = { 0, 0 };
 			scale = { sprite.scale.x, sprite.scale.y };
@@ -71,12 +71,12 @@ namespace entitas {
     }
 
 	public struct Sound {
-		public sdx.audio.Sound sound;
+		public Sdx.Audio.Sound sound;
     } 
 
 	public struct Text {
         public string text;
- 		public sdx.graphics.Sprite.TextSprite sprite;
+ 		public Sdx.Graphics.Sprite.TextSprite sprite;
         
     }
 

@@ -1,26 +1,26 @@
 
-namespace sdx.files {
+namespace Sdx.Files {
 
-	public FileHandle getHandle(string path, FileType type) {
+	public FileHandle GetHandle(string path, FileType type) {
 		return new FileHandle(path, type);
 	}
 
-	public FileHandle resource(string path) {
+	public FileHandle Resource(string path) {
 		return new FileHandle(path, FileType.Resource);
 	}
 
-	public FileHandle asset(string path) {
+	public FileHandle Asset(string path) {
 		return new FileHandle(path, FileType.Asset);
 	}
 
-	public FileHandle absolute(string path) {
+	public FileHandle Absolute(string path) {
 		return new FileHandle(path, FileType.Absolute);
 	}
 
-	public FileHandle relative(string path) {
+	public FileHandle Relative(string path) {
 		return new FileHandle(path, FileType.Relative);
 	}
-	public FileHandle @default(string path) {
+	public FileHandle Default(string path) {
 #if (EMSCRIPTEN)
 		return new FileHandle(path, FileType.Relative);
 #elif (ANDROID)

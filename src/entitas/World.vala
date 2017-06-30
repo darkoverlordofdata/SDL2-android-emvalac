@@ -1,4 +1,4 @@
-namespace entitas {
+namespace Entitas {
 	
 	public class World : Object {
 		public static World instance;
@@ -8,21 +8,21 @@ namespace entitas {
 		public int id = 0;
 		public ISystem?[] systems = new ISystem?[100];
 		public int count = 0;
-		public EntityRemovedListener entityRemoved;
+		public EntityRemovedListener EntityRemoved;
 
 		public World() {
 			instance = this;
 		}
 
-		public static void onComponentAdded(Entity* e, Components c) {
-			instance.componentAddedOrRemoved(e, c);
+		public static void OnComponentAdded(Entity* e, Components c) {
+			instance.ComponentAddedOrRemoved(e, c);
 		}
 
-		public static void onComponentRemoved(Entity* e, Components c) {
-			instance.componentAddedOrRemoved(e, c);
+		public static void OnComponentRemoved(Entity* e, Components c) {
+			instance.ComponentAddedOrRemoved(e, c);
 		}
 
-		public void setPool(int size, int count, Buffer[] buffers) {
+		public void SetPool(int size, int count, Buffer[] buffers) {
 			pool = new Entity[size];
 			cache = new EntityCache[count];
 			for (var i=0;  i < buffers.length; i++) {
@@ -30,63 +30,64 @@ namespace entitas {
 				var iSize = buffers[i].size;
 				cache[iPool] = new EntityCache(); //iSize) 
 				for (var k=0;  k < iSize; k++) {
-					cache[iPool].enque(buffers[i].factory());
+					cache[iPool].Enque(buffers[i].Factory());
 				}
 			}
 		}
 				
-		public World addSystem(System system) {
+		public World AddSystem(System system) {
 			systems[count++] = system._ISystem;
 			return this;
 		}
-		public void initialize() {
+		public void Initialize() {
 			for (var i=0; i < count; i++)
-				systems[i].initialize();
+				systems[i].Initialize();
 		}
 
-		public void execute(float delta) {
+		public void Execute(float delta) {
 			for (var i=0; i < count; i++)
-				systems[i].execute(delta);
+				systems[i].Execute(delta);
 		}
 
-		public void setEntityRemovedListener(EntityRemovedListener removed) {
-			entityRemoved = removed;
+		public void SetEntityRemovedListener(EntityRemovedListener removed) {
+			EntityRemoved = removed;
 		}
 
-		public void componentAddedOrRemoved(Entity* entity, Components component) {
+		public void ComponentAddedOrRemoved(Entity* entity, Components component) {
 			foreach (var group in groups)
-				group.handleEntity(entity, component);
+				group.HandleEntity(entity, component);
 		}
 
 		/**
 		* send antity back to it's pool
 		*/		
-		public void deleteEntity(Entity* entity) {
-			entity.setActive(false);
-			cache[entity.pool].enque(entity);
-			entityRemoved(entity);
+		public void DeleteEntity(Entity* entity) {
+			entity.SetActive(false);
+			cache[entity.pool].Enque(entity);
+			EntityRemoved(entity);
 		}
 
 		/**
 		* create an entity from the pool
 		*/
-		public Entity* createEntity(string name, int pool, bool active) {
+		public Entity* CreateEntity(string name, int pool, bool active) {
 			var id = this.id++;
 			return (this.pool[id]
-				.setId(id)
-				.setName(name)
-				.setPool(pool)
-				.setActive(active));
+				.SetId(id)
+				.SetName(name)
+				.SetPool(pool)
+				.SetActive(active));
 		}
 
-		public Group getGroup(Matcher matcher) {
-			if (groups.length() > matcher.id ) {
-				return groups.nth_data(matcher.id);
+		public Group GetGroup(Matcher matcher) {
+			if (groups.Length() > matcher.id ) {
+				return groups.Item(matcher.id).data;
 			} else {
-				groups.prepend(new Group(matcher));
+				//  groups.prepend(new Group(matcher));
+				groups.Insert(new Group(matcher));
 				for (var i = 0; i < this.id-1; i++) 
-					groups.nth_data(0).handleEntitySilently(&pool[i]);
-				return groups.nth_data(0);
+					groups.Head.data.HandleEntitySilently(&pool[i]);
+				return groups.Head.data;
 			}
 		}
 	}

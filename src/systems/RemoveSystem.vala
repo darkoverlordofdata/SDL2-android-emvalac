@@ -1,5 +1,5 @@
-using entitas;
-namespace systems {
+using Entitas;
+namespace Systems {
 
 	/**
 	* game systems
@@ -7,14 +7,14 @@ namespace systems {
 	public class RemoveSystem : System {
 		public RemoveSystem(Game game, Factory world) {
 
-			var moving = world.getGroup(Matcher.AllOf({Components.VelocityComponent}));
+			var moving = world.GetGroup(Matcher.AllOf({Components.VelocityComponent}));
 			
 			/**
 			 * Remove entities that have gone off-screen
 			 */
-			execute = (delta) => {
+			Execute = (delta) => {
 				foreach (var entity in moving.entities) {
-					if (entity.isActive()) {
+					if (entity.IsActive()) {
 						//  switch (entity.pool) {
 						//  	case Pool.ENEMY1:
 						//  		if (entity.transform.position.y > game.height) world.deleteEntity(entity);

@@ -1,4 +1,4 @@
-namespace sdx {
+namespace Sdx {
 	
 	public class Font : Object {
 		public static int uniqueId = 0;
@@ -11,8 +11,8 @@ namespace sdx {
 
 		public Font(string path, int size) {
 			
-			var file = sdx.files.@default(path);
-			raw = file.getRWops();
+			var file = Sdx.Files.Default(path);
+			raw = file.GetRWops();
 			innerFont = new SDLTTF.Font.RW(raw, 0, size);
 			this.path = path;
 			this.size = size;
@@ -26,7 +26,7 @@ namespace sdx {
 		 * @param color foreground color of text
 		 * @return new Surface
 		 */
-		public SDL.Video.Surface render(string text, SDL.Video.Color color) {
+		public SDL.Video.Surface Render(string text, SDL.Video.Color color) {
 			return innerFont.render(text, color);
 		}
 	}

@@ -1,4 +1,4 @@
-namespace entitas {
+namespace Entitas {
 
 	public errordomain Exception {
 		EntityIsNotEnabled,
@@ -10,19 +10,21 @@ namespace entitas {
 		WorldDoesNotContainEntity
 	}
 
-	public delegate Entity* EntityRemovedListener(Entity* e);
-	public delegate Entity* EntityAddedListener(Entity* e);
+	//  public delegate Entity* EntityRemovedListener(Entity* e);
+	//  public delegate Entity* EntityAddedListener(Entity* e);
+	public delegate void EntityRemovedListener(Entity* e);
+	public delegate void EntityAddedListener(Entity* e);
 
 	public delegate Entity* Factory();
 
 	public struct Buffer {
 		public int pool;		   	// pool index
 		public int size;		   	// pool size
-		public Factory factory;		// factory callback
+		public Factory Factory;		// factory callback
 		public Buffer(int pool, int size, Factory factory) {
 			this.pool = pool;
 			this.size = size;
-			this.factory = factory;
+			this.Factory = factory;
 		}
 	}
 
@@ -31,16 +33,16 @@ namespace entitas {
 
 	[SimpleType, Immutable]
 	public struct ISystem { 
-		public unowned SystemInitialize initialize;
-		public unowned SystemExecute execute;
+		public unowned SystemInitialize Initialize;
+		public unowned SystemExecute Execute;
 	}
 
 	public class System : Object {
 		public ISystem _ISystem { 
-			get { return { initialize, execute }; } 
+			get { return { Initialize, Execute }; } 
 		}
-		public SystemInitialize initialize = () => {};
-		public SystemExecute execute = (delta) => {};
+		public SystemInitialize Initialize = () => {};
+		public SystemExecute Execute = (delta) => {};
 	}	
 
 	/**

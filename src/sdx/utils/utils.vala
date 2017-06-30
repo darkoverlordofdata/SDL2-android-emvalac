@@ -1,3 +1,3 @@
-namespace sdx.utils {
+namespace Sdx.Utils {
 
 }

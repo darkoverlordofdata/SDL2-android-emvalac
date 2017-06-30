@@ -1,4 +1,4 @@
-namespace entitas {
+namespace Entitas {
 
 	/**
 	 * Match entities by component
@@ -59,9 +59,9 @@ namespace entitas {
 					foreach (var j in matchers[i].anyOfIndices) anyOf += j;
 					foreach (var j in matchers[i].noneOfIndices) noneOf += j;
 				}
-				allOfIndices = Matcher.distinctIndices(allOf);
-				anyOfIndices = Matcher.distinctIndices(anyOf);
-				noneOfIndices = Matcher.distinctIndices(noneOf);
+				allOfIndices = Matcher.DistinctIndices(allOf);
+				anyOfIndices = Matcher.DistinctIndices(anyOf);
+				noneOfIndices = Matcher.DistinctIndices(noneOf);
 			} else {
 				//  print("matchers == null\n");
 				
@@ -72,9 +72,9 @@ namespace entitas {
 		 * A list of the component ordinals that this matches
 		 * @type Array<number>
 		 * @name entitas.Matcher#indices */
-		public int[] getIndices() {
+		public int[] GetIndices() {
 			if (indices == null)
-				indices = mergeIndices();
+				indices = MergeIndices();
 			return indices;
 		}
 
@@ -105,7 +105,7 @@ namespace entitas {
 		 * @param entitas.IEntity entity	
 		 * @returns boolean
 		 */
-		public bool matches(Entity* entity) {
+		public bool Matches(Entity* entity) {
 			var mask = entity.mask ^ ACTIVE; 
 			var matchesAllOf  = allOfMask  == 0 ? true : (mask & allOfMask) == allOfMask;
 			var matchesAnyOf  = anyOfMask  == 0 ? true : (mask & anyOfMask) != 0;
@@ -117,7 +117,7 @@ namespace entitas {
 		 * Merge list of component indices
 		 * @returns Array<number>
 		 */
-		public int[] mergeIndices() {
+		public int[] MergeIndices() {
 
 			var indices = new int[0];
 			if (allOfIndices != null)
@@ -129,31 +129,31 @@ namespace entitas {
 			if (noneOfIndices != null)
 				foreach (var i in noneOfIndices) indices += i;
 
-			return Matcher.distinctIndices(indices);
+			return Matcher.DistinctIndices(indices);
 		}
 
 		/**
 		 * toString representation of this matcher
 		 * @returns string
 		 */
-		public string toString() {
+		public string ToString() {
 			if (toStringCache == null) {
 				var sb = "";
 				if (allOfIndices != null) {
 					sb += "AllOf(";
-					sb += componentstoString(allOfIndices);
+					sb += ComponentstoString(allOfIndices);
 					sb += ")";
 				}
 				if (anyOfIndices != null) {
 					if (allOfIndices != null)
 						sb += ".";
 					sb += "AnyOf(";
-					sb += componentstoString(anyOfIndices);
+					sb += ComponentstoString(anyOfIndices);
 					sb += ")";
 				}
 				if (noneOfIndices != null) {
 					sb += ".NoneOf(";
-					sb += componentstoString(noneOfIndices);
+					sb += ComponentstoString(noneOfIndices);
 					sb += ")";
 				}
 				toStringCache = sb;
@@ -161,15 +161,15 @@ namespace entitas {
 			return toStringCache;
 		}
 
-		public static string componentstoString(int[] indexArray) {
+		public static string ComponentstoString(int[] indexArray) {
 			var sb = "";
 			foreach (var index in indexArray) 
 				sb += ComponentString[index];
 			return sb;
 		}
 
-		public static int[] listToArray(List<int> list) {
-			var a = new int[list.length()];
+		public static int[] ListToArray(List<int> list) {
+			var a = new int[list.Length()];
 			var i = 0;
 			foreach (var x in list) a[i++] = x;
 			return a;
@@ -179,16 +179,16 @@ namespace entitas {
 		 * @param Array<number> indices
 		 * @returns Array<number>
 		 */
-		public static int[] distinctIndices(int[] indices) {
+		public static int[] DistinctIndices(int[] indices) {
 			var indicesSet = new bool[64];
 			var result = new List<int>();
 
 			foreach (var index in indices) {
 				if (!indicesSet[index])
-					result.prepend(index);
+					result.Insert(index);
 				indicesSet[index] = true;
 			}
-			return listToArray(result);
+			return ListToArray(result);
 		}
 
 		/**
@@ -214,8 +214,8 @@ namespace entitas {
 		 */
 		public static Matcher NoneOf(int[] args) {
 			var matcher = new Matcher();
-			matcher.noneOfIndices = Matcher.distinctIndices(args);
-			matcher.noneOfMask = Matcher.buildMask(matcher.noneOfIndices);
+			matcher.noneOfIndices = Matcher.DistinctIndices(args);
+			matcher.noneOfMask = Matcher.BuildMask(matcher.noneOfIndices);
 			return matcher;
 		}
 		/**
@@ -225,8 +225,8 @@ namespace entitas {
 		 */
 		public static Matcher AllOf(int[] args) { 
 			var matcher = new Matcher();
-			matcher.allOfIndices = Matcher.distinctIndices(args);
-			matcher.allOfMask = Matcher.buildMask(matcher.allOfIndices);
+			matcher.allOfIndices = Matcher.DistinctIndices(args);
+			matcher.allOfMask = Matcher.BuildMask(matcher.allOfIndices);
 			return matcher;
 		}
 
@@ -237,12 +237,12 @@ namespace entitas {
 		 */
 		public static Matcher AnyOf(int[] args) { 
 			var matcher = new Matcher();
-			matcher.anyOfIndices = Matcher.distinctIndices(args);
-			matcher.anyOfMask = Matcher.buildMask(matcher.anyOfIndices);
+			matcher.anyOfIndices = Matcher.DistinctIndices(args);
+			matcher.anyOfMask = Matcher.BuildMask(matcher.anyOfIndices);
 			return matcher;
 		}
 
-		public static uint64 buildMask(int[] indices) { 
+		public static uint64 BuildMask(int[] indices) { 
 			uint64 accume = 0;
 			foreach (var index in indices) accume |= POW2[index];
 			return accume;

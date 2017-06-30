@@ -1,5 +1,5 @@
-using entitas;
-namespace systems {
+using Entitas;
+namespace Systems {
 	/**
 	* game systems
 	*/
@@ -7,11 +7,11 @@ namespace systems {
 
 		public AnimationSystem(Game game, Factory world) {
 
-			var tweens = world.getGroup(Matcher.AllOf({Components.TweenComponent}));
+			var tweens = world.GetGroup(Matcher.AllOf({ Components.TweenComponent }));
 			
-			execute = (delta) => {
-				foreach (var entity in tweens.entities) {
-					if (entity.isActive()) {
+			Execute = (delta) => {
+				tweens.entities.ForEach(entity => {
+					if (entity.IsActive()) {
 						var x = entity.transform.scale.x + (entity.tween.speed * delta);
 						var y = entity.transform.scale.y + (entity.tween.speed * delta);
 						var active = entity.tween.active;
@@ -29,7 +29,7 @@ namespace systems {
 						entity.transform.scale.y = (float)y;
 						entity.tween.active = active;
 					}
-				}
+				});
 			};
 		}
 	}

@@ -1,5 +1,5 @@
-using entitas;
-namespace systems {
+using Entitas;
+namespace Systems {
 	/**
 	* game systems
 	*/
@@ -10,23 +10,23 @@ namespace systems {
 
 			var shoot = false;
 			var timeToFire = FIRE_RATE;
-			var player = world.getGroup(Matcher.AllOf({Components.PlayerComponent}));
+			var player = world.GetGroup(Matcher.AllOf({ Components.PlayerComponent }));
 			
-			world.addBackground(0, 0);
-			world.addPlayer(0, 0);
+			world.AddBackground(0, 0);
+			world.AddPlayer(0, 0);
 			/**
 			 * get player input
 			 */
-			execute = (delta) => {
-				var x = (int)sdx.mouseX;
-				var y = (int)sdx.mouseY;
+			Execute = (delta) => {
+				var x = (int)Sdx.mouseX;
+				var y = (int)Sdx.mouseY;
 				
-				player.getSingleEntity().setPosition(x, y);
-				shoot = sdx.mouseDown || (sdx.keys[122] == 1);
+				player.GetSingleEntity().SetPosition(x, y);
+				shoot = Sdx.mouseDown || (Sdx.keys[122] == 1);
 				if (shoot) timeToFire -= delta;
 				if (timeToFire < 0) {
-					world.addBullet(x + 27, y + 2);
-					world.addBullet(x - 27, y + 2);
+					world.AddBullet(x + 27, y + 2);
+					world.AddBullet(x - 27, y + 2);
 					timeToFire = FIRE_RATE;
 				}
 			};

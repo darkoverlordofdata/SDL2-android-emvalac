@@ -1,4 +1,4 @@
-namespace sdx.graphics { 
+namespace Sdx.Graphics { 
 	public struct Blit {
 		SDL.Video.Rect source;
 		SDL.Video.Rect dest;

@@ -1,5 +1,5 @@
-using entitas;
-namespace systems {
+using Entitas;
+namespace Systems {
 
 	/**
 	* game systems
@@ -7,19 +7,19 @@ namespace systems {
 	public class ExpireSystem : System {
 		public ExpireSystem(Game game, Factory world) {
 
-			var expiring = world.getGroup(Matcher.AllOf({Components.ExpiresComponent}));
+			var expiring = world.GetGroup(Matcher.AllOf({Components.ExpiresComponent}));
 			
 			/**
 			 * Remove exired entities
 			 */
-			execute = (delta) => {
-				foreach (var entity in expiring.entities) {
-					if (entity.isActive()) {
+			Execute = (delta) => {
+				expiring.entities.ForEach(entity => {
+					if (entity.IsActive()) {
 						entity.expires.value -= delta; 
 						if (entity.expires.value < 0)	
-							world.deleteEntity(entity);
+							world.DeleteEntity(entity);
 					}
-				}
+				});
 			};
 		}
 	}

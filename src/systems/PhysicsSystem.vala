@@ -1,5 +1,5 @@
-using entitas;
-namespace systems {
+using Entitas;
+namespace Systems {
 
 	/**
 	* game systems
@@ -7,40 +7,43 @@ namespace systems {
 	public class PhysicsSystem : System {
 		public PhysicsSystem(Game game, Factory world) {
 
-			var physics = world.getGroup(Matcher.AllOf({Components.VelocityComponent}));
+			var physics = world.GetGroup(Matcher.AllOf({Components.VelocityComponent}));
 
 			/**
 			* physics system
 			* model movement
 			*/
-			execute = (delta) => {
+			Execute = (delta) => {
+				physics.entities.ForEach(it => {
+					if (it.IsActive()) {
 
-				foreach (var entity in physics.entities)  {
-					if (entity.isActive()) {
+						var x = it.transform.position.x + it.velocity.x * delta;
+						var y = it.transform.position.y + it.velocity.y * delta;
+						it.SetPosition(x, y);
 
-						var x = entity.transform.position.x + entity.velocity.x * delta;
-						var y = entity.transform.position.y + entity.velocity.y * delta;
-						entity.setPosition(x, y);
-
-						switch (entity.pool) {
+						switch (it.pool) {
 							case Pool.ENEMY1:
-								if (entity.transform.position.y > game.height) world.deleteEntity(entity);
+								if (it.transform.position.y > game.height) 
+									world.DeleteEntity(it);
 								break;
 								
 							case Pool.ENEMY2:
-								if (entity.transform.position.y > game.height) world.deleteEntity(entity);
+								if (it.transform.position.y > game.height) 
+									world.DeleteEntity(it);
 								break;
 								
 							case Pool.ENEMY3:
-								if (entity.transform.position.y > game.height) world.deleteEntity(entity);
+								if (it.transform.position.y > game.height) 
+									world.DeleteEntity(it);
 								break;
 								
 							case Pool.BULLET:
-								if (entity.transform.position.y < 0) world.deleteEntity(entity);
+								if (it.transform.position.y < 0) 
+									world.DeleteEntity(it);
 								break;
 						}
 					}
-				}
+				});
 			};
 		}
 	}

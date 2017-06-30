@@ -1,4 +1,4 @@
-namespace sdx.utils {
+namespace Sdx.Utils {
 
     public class StringTokenizer : Object {
 
@@ -20,10 +20,10 @@ namespace sdx.utils {
             maxPosition = str.length;
             delimiters = delim;
             retDelims = returnDelims;
-            setMaxDelimCodePoint();
+            SetMaxDelimCodePoint();
         }
             
-        public void setMaxDelimCodePoint() {
+        public void SetMaxDelimCodePoint() {
             if (delimiters == null) {
                 maxDelimCodePoint = 0;
                 return;
@@ -40,7 +40,7 @@ namespace sdx.utils {
             maxDelimCodePoint = m;
         }
 
-        public int skipDelimiters(int startPos) {
+        public int SkipDelimiters(int startPos) {
             if (delimiters == null) {
                 throw new SdlException.NullPointer("delimiters");
             }
@@ -48,61 +48,61 @@ namespace sdx.utils {
             var position = startPos;
             while (!retDelims && position < maxPosition) {
                 var c = str[position];
-                if ((c > maxDelimCodePoint) || !isDelimiter(c)) break;
+                if ((c > maxDelimCodePoint) || !IsDelimiter(c)) break;
                 position += 1;
             }
             return position;
         }
 
-        public int scanToken(int startPos) {
+        public int ScanToken(int startPos) {
             var position = startPos;
             while (position < maxPosition) {
                 var c = str[position];
-                if ((c <= maxDelimCodePoint) && isDelimiter(c)) break;
+                if ((c <= maxDelimCodePoint) && IsDelimiter(c)) break;
                 position += 1;
             }   
             if (retDelims && (startPos == position)) {
                 var c = str[position];
-                if ((c <= maxDelimCodePoint) && isDelimiter(c)) position += 1;
+                if ((c <= maxDelimCodePoint) && IsDelimiter(c)) position += 1;
             }
             return position;
         }
 
 
-        public bool isDelimiter(char c) {
+        public bool IsDelimiter(char c) {
             for (var i = 0; i<delimiters.length-1; i++)
                 if (delimiters[i] == c) return true;
             return false;
         }
 
-        public bool hasMoreTokens() {
-            newPosition = skipDelimiters(currentPosition);
+        public bool HasMoreTokens() {
+            newPosition = SkipDelimiters(currentPosition);
             return newPosition < maxPosition;
         }
 
-        public string nextToken(string delim = "") {
+        public string NextToken(string delim = "") {
             if (delim > "") {
                 delimiters = delim;
                 delimsChanged = true;
             }
-            currentPosition = newPosition >= 0 && !delimsChanged ? newPosition : skipDelimiters(currentPosition);
+            currentPosition = newPosition >= 0 && !delimsChanged ? newPosition : SkipDelimiters(currentPosition);
 
             delimsChanged = false;
             newPosition = -1;
 
             if (currentPosition >= maxPosition) throw new SdlException.NoSuchElement("");
             var start = currentPosition;
-            currentPosition = scanToken(currentPosition);
-            return str.substring(start, currentPosition);
+            currentPosition = ScanToken(currentPosition);
+            return str.SubString(start, currentPosition);
         }
         
-        public int countTokens() {
+        public int CountTokens() {
             var count = 0;
             var currpos = currentPosition;
             while (currpos < maxPosition) {
-                currpos = skipDelimiters(currpos);
+                currpos = SkipDelimiters(currpos);
                 if (currpos >= maxPosition) break;
-                currpos = scanToken(currpos);
+                currpos = ScanToken(currpos);
                 count++;
             }
             return count;

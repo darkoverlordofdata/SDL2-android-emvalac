@@ -1,4 +1,4 @@
-namespace sdx 
+namespace Sdx 
 
 	exception IOException
 		InvalidData
