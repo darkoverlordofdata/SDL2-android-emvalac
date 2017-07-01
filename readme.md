@@ -35,3 +35,5 @@ cake build:android
 * emvalac requires nodejs
 * android requires SDL2.0.5, SDL_image and SDL_ttf linked or copied to the jni folder
 
+
+##### <center>Powered by ZeroG</center>

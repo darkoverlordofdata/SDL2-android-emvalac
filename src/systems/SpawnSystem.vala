@@ -5,7 +5,6 @@ namespace Systems {
 	* game systems
 	*/	
 	public class SpawnSystem : System {
-
 		public delegate float SpawnEnemyFunc(float delta, float t, int enemy);
 
 		public SpawnSystem(Game game, Factory world) {

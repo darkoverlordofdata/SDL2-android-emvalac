@@ -5,7 +5,6 @@ using Systems;
  * Game controller 
  */
 public class Game : AbstractGame {
-
 	public Game(int w, int h) {
 	
 		width = w;
@@ -30,7 +29,6 @@ public class Game : AbstractGame {
 			.AddSystem(new ScoreSystem(this, world));
 
 		world.Initialize();
-
 		/**
 		 * Update
 		 * 
@@ -45,9 +43,13 @@ public class Game : AbstractGame {
 		 */
 		Draw = () => {
 			Sdx.Begin();
-			foreach (var entity in display.sprites) 
+			display.sprites.ForEach(entity => {
 				if (entity.IsActive()) 
 					display.Draw(entity, ref entity.transform);
+			});
+			//  foreach (var entity in display.sprites) 
+			//  	if (entity.IsActive()) 
+			//  		display.Draw(entity, ref entity.transform);
 			Sdx.End();
 		};
 	}

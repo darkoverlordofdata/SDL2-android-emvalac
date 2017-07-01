@@ -96,7 +96,7 @@ namespace Sdx.Graphics {
             if (imagePaths != null) throw new SdlException.IllegalStateException("Already loaded.");
 
             var json = Sdx.Utils.Json.Parse(fontFile.Read());
-            var padding = json.Member("font").Member("info").Member("padding").@string.Split(",", 4);
+            var padding = json.Member("font").Member("info").Member("padding").string.Split(",", 4);
             if (padding.length != 4) throw new SdlException.RuntimeException("Invalid padding.");
             padTop = int.Parse(padding[0]);
             padRight = int.Parse(padding[1]);
@@ -108,30 +108,30 @@ namespace Sdx.Graphics {
             var baseLine = (int)json.Member("font").Member("common").Member("base").number;
 
 
-            var pages = json.Member("font").Member("pages").@object.get_keys_as_array();
+            var pages = json.Member("font").Member("pages").object.GetKeysAsArray();
             var pageCount = pages.length;
             imagePaths = new string[pageCount];
             // Read each page definition.
             for (var p = 0; p<pageCount; p++) {
                 var node = json.Member("font").Member("pages").Member(pages[p]);
-                var filename = node.Member("file").@string;
+                var filename = node.Member("file").string;
                 imagePaths[p] = fontFile.GetParent().Child(filename).GetPath();
             }
 
             descent = 0;
             foreach (var ch in json.Member("font").Member("chars").Member("char").array) {
                 var glyph = new Glyph();
-                    glyph.id = int.Parse(ch.Member("id").@string);
-                    glyph.x = int.Parse(ch.Member("x").@string);
-                    glyph.y = int.Parse(ch.Member("y").@string);
-                    glyph.width = int.Parse(ch.Member("width").@string);
-                    glyph.height = int.Parse(ch.Member("height").@string);
-                    glyph.xoffset = int.Parse(ch.Member("xoffset").@string);
+                    glyph.id = int.Parse(ch.Member("id").string);
+                    glyph.x = int.Parse(ch.Member("x").string);
+                    glyph.y = int.Parse(ch.Member("y").string);
+                    glyph.width = int.Parse(ch.Member("width").string);
+                    glyph.height = int.Parse(ch.Member("height").string);
+                    glyph.xoffset = int.Parse(ch.Member("xoffset").string);
                     if (flip)
-                        glyph.yoffset = int.Parse(ch.Member("yoffset").@string);
+                        glyph.yoffset = int.Parse(ch.Member("yoffset").string);
                     else
-                        glyph.yoffset = -(glyph.height + int.Parse(ch.Member("yoffset").@string));
-                    glyph.xadvance = int.Parse(ch.Member("xadvance").@string);
+                        glyph.yoffset = -(glyph.height + int.Parse(ch.Member("yoffset").string));
+                    glyph.xadvance = int.Parse(ch.Member("xadvance").string);
 
                     if (glyph.width > 0 && glyph.height > 0) descent = GLib.Math.fminf(baseLine + glyph.yoffset, descent);
             }

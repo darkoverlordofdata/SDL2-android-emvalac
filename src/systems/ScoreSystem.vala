@@ -5,7 +5,6 @@ namespace Systems {
 	* game systems
 	*/
 	public class ScoreSystem : System {
-
 		public ScoreSystem(Game game, Factory world) {
 
 			var scoring = world.GetGroup(Matcher.AllOf({
@@ -15,6 +14,7 @@ namespace Systems {
 
 			Execute = (delta) => {
 				scoring.entities.ForEach(entity => {
+
 					if (entity.IsActive()) {
 						var score = (int)Math.fmin(100, (float)entity.health.current/(float)entity.health.maximum*100);
 						var pct = ((double)score).ToString();

@@ -31,6 +31,15 @@
 /** 
  * Zero-G modified vala bindings.
  * 
+ * 
+ *      __________                    ________ 
+ *      \____    /___________  ____  /  _____/ 
+ *        /     // __ \_  __ \/  _ \/   \  ___ 
+ *       /     /\  ___/|  | \(  <_> )    \_\  \
+ *      /_______ \___  >__|   \____/ \______  /
+ *              \/   \/                     \/ 
+ *
+ * 
  * Binds to zerog runtime in place of glib
  * 
  * Copyright (C) 2017 bruce davidson

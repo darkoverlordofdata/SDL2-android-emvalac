@@ -60,7 +60,7 @@ namespace Sdx.Utils {
             indent = space;
 
             var holder = new JsVariant(JsType.JS_OBJECT);
-            holder.object.set("", value);
+            holder.object.Set("", value);
             return new Json(Replacer).Str("", holder);
         }
 
@@ -73,7 +73,7 @@ namespace Sdx.Utils {
                 case JsType.JS_ARRAY:
                     return holder.array.Item(int.Parse(key)).data;
                 case JsType.JS_OBJECT:
-                    return holder.object.get(key);
+                    return holder.object.Get(key);
                 default:
                     return null;
             }
@@ -103,11 +103,11 @@ namespace Sdx.Utils {
                 case JsType.JS_OBJECT:
                     if (value.object == null) return "null";
                     gap += indent;
-                    length = (int)value.object.size();
+                    length = (int)value.object.Size();
                     var partial = new string[length];
 
                     // iterate through all of the keys in the object.
-                    var keys = value.object.get_keys_as_array();
+                    var keys = value.object.GetKeysAsArray();
                     for (var i = 0; i < keys.length; i++) {
                         var k = keys[i];
                         partial[i] = Quote(k) + (gap.length>0 ? ": " : ":") + Str(k, value);
@@ -349,10 +349,10 @@ namespace Sdx.Utils {
                     key = GetString().string;
                     SkipWhite();
                     Next(':');
-                    if (result.object.contains(key)) {
+                    if (result.object.Contains(key)) {
                         throw new JsonException.DuplicateKey("");
                     }
-                    result.object.@set(key, GetValue());
+                    result.object.Set(key, GetValue());
                     SkipWhite();
                     if (ch == '}') {
                         Next('}');
@@ -429,7 +429,7 @@ namespace Sdx.Utils {
         }
 
         public JsVariant Member(string key) {
-            return object.get(key);
+            return object.Get(key);
         }
     }   
 }

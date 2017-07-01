@@ -4,7 +4,6 @@ namespace Systems {
 	* game systems
 	*/
 	public class AnimationSystem : System {
-
 		public AnimationSystem(Game game, Factory world) {
 
 			var tweens = world.GetGroup(Matcher.AllOf({ Components.TweenComponent }));

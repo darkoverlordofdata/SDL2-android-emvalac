@@ -18,9 +18,9 @@ namespace Systems {
 			* model movement
 			*/
 			Execute = (delta) => {
-				foreach (var enemy in enemies.entities) {
+				enemies.entities.ForEach(enemy => {
 					if (enemy.IsActive()) {
-						foreach (var bullet in bullets.entities) {
+						bullets.entities.ForEach(bullet => {
 							if (bullet.IsActive()) {
 								if (bullet.transform.aabb.HasIntersection(enemy.transform.aabb)) {
 									var x = (int)((float)bullet.transform.position.x);
@@ -41,9 +41,9 @@ namespace Systems {
 									return;
 								}
 							}
-						}
+						});
 					}
-				}
+				});
 			};
 		}
 	}
