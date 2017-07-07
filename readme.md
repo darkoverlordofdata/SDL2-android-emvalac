@@ -1,4 +1,4 @@
-# ShmupWarz II - The Wrath of Duane Dibbley 
+# <del>ShmupWarz II</del> Better Than Shmup
 
 
 vala-entitas running on android, emscripten and linux desktop.

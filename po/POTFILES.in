@@ -18,6 +18,7 @@ src/sdx/files/FileHandle.vala
 src/sdx/files/files.vala
 src/sdx/graphics/BitmapFont.vala
 src/sdx/graphics/Camera.vala
+src/sdx/graphics/NinePatch.vala
 src/sdx/graphics/Sprite.vala
 src/sdx/graphics/Surface.vala
 src/sdx/graphics/TextureAtlas.vala
@@ -26,6 +27,7 @@ src/sdx/graphics/TextureRegion.vala
 src/sdx/graphics/graphics.vala
 src/sdx/math/Vector2.vala
 src/sdx/sdx.vala
+src/sdx/ui/Component.vala
 src/sdx/utils/Cache.vala
 src/sdx/utils/File.vala
 src/sdx/utils/Json.vala

@@ -8,7 +8,8 @@ using GLib.Math;
 const double TAU = 2.0 * Math.PI; 
 
 /* entity types - each gets a pool partition  */
-enum Pool {
+enum Pool 
+{
 	BACKGROUND,
 	ENEMY1,
 	ENEMY2,
@@ -26,29 +27,35 @@ enum Pool {
 /**
  * fabricate specialized entities
  */
-public class Factory : World {
+public class Factory : World 
+{
 
 	public static Sdx.Graphics.TextureAtlas atlas;
-	public Factory() {
+	public Factory() 
+	{
 		base();		
 		atlas = new Sdx.Graphics.TextureAtlas(Sdx.Files.Default("assets/assets.atlas"));
-		SetPool(256, Pool.Count, {
-			Buffer(Pool.BACKGROUND,	  1, CreateBackground),
-			Buffer(Pool.PLAYER, 	  1, CreatePlayer),
-			Buffer(Pool.BULLET, 	 20, CreateBullet),
-			Buffer(Pool.ENEMY1, 	 15, CreateEnemy1),
-			Buffer(Pool.ENEMY2,  	  5, CreateEnemy2),
-			Buffer(Pool.ENEMY3,  	  4, CreateEnemy3),
-			Buffer(Pool.EXPLOSION, 	 10, CreateExplosion),
-			Buffer(Pool.BANG,      	 12, CreateBang),
-			Buffer(Pool.PARTICLE,  	100, CreateParticle)
-		});
+
+		SetPool(256, Pool.Count, 
+			{
+				Buffer(Pool.BACKGROUND,	  1, CreateBackground),
+				Buffer(Pool.PLAYER, 	  1, CreatePlayer),
+				Buffer(Pool.BULLET, 	 20, CreateBullet),
+				Buffer(Pool.ENEMY1, 	 15, CreateEnemy1),
+				Buffer(Pool.ENEMY2,  	  5, CreateEnemy2),
+				Buffer(Pool.ENEMY3,  	  4, CreateEnemy3),
+				Buffer(Pool.EXPLOSION, 	 10, CreateExplosion),
+				Buffer(Pool.BANG,      	 12, CreateBang),
+				Buffer(Pool.PARTICLE,  	100, CreateParticle)
+			}
+		);
 	}
 
 	/**
 	 * The stuff that all entities have
 	 */
-	public Entity* CreateBase(string name, int pool, float scale = Sdx.pixelFactor, bool active = false, bool centered = true) {
+	public Entity* CreateBase(string name, int pool, float scale = Sdx.pixelFactor, bool active = false, bool centered = true) 
+	{
 		return CreateEntity(name, pool, active)
 			.SetTransform(atlas.CreateSprite(name).SetScale(scale, scale).SetCentered(centered))
 			.AddLayer(pool);
@@ -57,17 +64,20 @@ public class Factory : World {
 	/** 
 	 *	factory methods:
 	 */
-	public Entity* CreateBackground() {
+	public Entity* CreateBackground() 
+	{
 		return CreateBase("background", Pool.BACKGROUND, 2*Sdx.pixelFactor, true, false)
 			.SetBackground(true);
 	}
 
-	public Entity* CreatePlayer() {
+	public Entity* CreatePlayer() 
+	{
 		return CreateBase("spaceshipspr", Pool.PLAYER, Sdx.pixelFactor, true)
 			.SetPlayer(true);
 	}
 
-	public Entity* CreateBullet() {
+	public Entity* CreateBullet() 
+	{
 		return CreateBase("bullet", Pool.BULLET)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/pew.wav")))
 			.AddTint(0xd2, 0xfa, 0, 0xfa)
@@ -76,7 +86,8 @@ public class Factory : World {
 			.SetBullet(true);
 	}
 
-	public Entity* CreateEnemy1() {
+	public Entity* CreateEnemy1() 
+	{
 		return CreateBase("enemy1", Pool.ENEMY1)
 			.AddHealth(10, 10)
 			.AddVelocity(0, 40)
@@ -84,7 +95,8 @@ public class Factory : World {
 			.SetEnemy1(true);
 	}
 
-	public Entity* CreateEnemy2() {
+	public Entity* CreateEnemy2() 
+	{
 		return CreateBase("enemy2", Pool.ENEMY2)
 			.AddHealth(20, 20)
 			.AddVelocity(0, 30)
@@ -92,7 +104,8 @@ public class Factory : World {
 			.SetEnemy2(true);
 	}
 
-	public Entity* CreateEnemy3() {
+	public Entity* CreateEnemy3() 
+	{
 		return CreateBase("enemy3", Pool.ENEMY3)
 			.AddHealth(60, 60)
 			.AddVelocity(0, 20)
@@ -100,7 +113,8 @@ public class Factory : World {
 			.SetEnemy3(true);
 	}
 
-	public Entity* CreateExplosion() {
+	public Entity* CreateExplosion() 
+	{
 		return CreateBase("explosion", Pool.EXPLOSION, 0.6f)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/asplode.wav")))
 			.AddTint(0xd2, 0xfa, 0xd2, 0x7f)
@@ -108,7 +122,8 @@ public class Factory : World {
 			.AddTween(0.006f, 0.6f, -3f, false, true);
 	}
 
-	public Entity* CreateBang() {
+	public Entity* CreateBang() 
+	{
 		return CreateBase("explosion", Pool.BANG, 0.1f)
 			// .addSound(new audio.Sound(Sdx.files.resource("sounds/smallasplode.wav")))
 			.AddTint(0xd2, 0xfa, 0xd2, 0x9f)
@@ -116,7 +131,8 @@ public class Factory : World {
 			.AddTween(0.001f, 0.1f, -3f, false, true);
 	}
 
-	public Entity* CreateParticle() {
+	public Entity* CreateParticle() 
+	{
 		return CreateBase("star", Pool.PARTICLE)
 			.AddTint(0xd2, 0xfa, 0xd2, 0xfa)
 			.AddExpires(0.75f)
@@ -127,24 +143,30 @@ public class Factory : World {
 	 * Get entity from the pool and
 	 * put it on the screen at (x,y)
 	 */
-	public void AddBackground(int x, int y) {
-		if (cache[Pool.BACKGROUND].IsEmpty()) {
+	public void AddBackground(int x, int y) 
+	{
+		if (cache[Pool.BACKGROUND].IsEmpty()) 
+		{
 			cache[Pool.BACKGROUND].Enque(CreateBackground());
 			Sdx.Log("out of background\n");
 		}
 		DisplaySystem.Add(cache[Pool.BACKGROUND].Deque());
 	}
 		
-	public void AddPlayer(int x, int y) {
-		if (cache[Pool.PLAYER].IsEmpty()) {
+	public void AddPlayer(int x, int y) 
+	{
+		if (cache[Pool.PLAYER].IsEmpty()) 
+		{
 			cache[Pool.PLAYER].Enque(CreatePlayer());
 			Sdx.Log("out of player\n");
 		}
 		DisplaySystem.Add(cache[Pool.PLAYER].Deque());
 	}
 
-	public void AddBullet(int x, int y) {
-		if (cache[Pool.BULLET].IsEmpty()) {
+	public void AddBullet(int x, int y) 
+	{
+		if (cache[Pool.BULLET].IsEmpty()) 
+		{
 			cache[Pool.BULLET].Enque(CreateBullet());
 			Sdx.Log("out of bullets\n");
 		}
@@ -153,8 +175,10 @@ public class Factory : World {
 			.SetActive(true));
 	}
 
-	public void AddEnemy1(int x, int y) {
-		if (cache[Pool.ENEMY1].IsEmpty()) {
+	public void AddEnemy1(int x, int y) 
+	{
+		if (cache[Pool.ENEMY1].IsEmpty()) 
+		{
 			cache[Pool.ENEMY1].Enque(CreateEnemy1());
 			Sdx.Log("out of enemy1\n");
 		}
@@ -164,8 +188,10 @@ public class Factory : World {
 			.SetActive(true));
 	}
 
-	public void AddEnemy2(int x, int y) {
-		if (cache[Pool.ENEMY2].IsEmpty()) {
+	public void AddEnemy2(int x, int y) 
+	{
+		if (cache[Pool.ENEMY2].IsEmpty()) 
+		{
 			cache[Pool.ENEMY2].Enque(CreateEnemy2());
 			Sdx.Log("out of enemy2\n");
 		}
@@ -175,8 +201,10 @@ public class Factory : World {
 			.SetActive(true));
 	}
 
-	public void AddEnemy3(int x, int y) {
-		if (cache[Pool.ENEMY3].IsEmpty()) {
+	public void AddEnemy3(int x, int y) 
+	{
+		if (cache[Pool.ENEMY3].IsEmpty()) 
+		{
 			cache[Pool.ENEMY3].Enque(CreateEnemy3());
 			Sdx.Log("out of enemy3\n");
 		}
@@ -186,8 +214,10 @@ public class Factory : World {
 			.SetActive(true));
 	}
 
-	public void AddExplosion(int x, int y) {
-		if (cache[Pool.EXPLOSION].IsEmpty()) {
+	public void AddExplosion(int x, int y) 
+	{
+		if (cache[Pool.EXPLOSION].IsEmpty()) 
+		{
 			cache[Pool.EXPLOSION].Enque(CreateExplosion());
 			Sdx.Log("out of explosions\n");
 		}
@@ -201,8 +231,10 @@ public class Factory : World {
 			.SetActive(true));
 	}
 
-	public void AddBang(int x, int y) {
-		if (cache[Pool.BANG].IsEmpty()) {
+	public void AddBang(int x, int y) 
+	{
+		if (cache[Pool.BANG].IsEmpty()) 
+		{
 			cache[Pool.BANG].Enque(CreateBang());
 			Sdx.Log("out of bang\n");
 		}
@@ -216,8 +248,10 @@ public class Factory : World {
 			.SetActive(true));
 	}
 
-	public void AddParticle(int x, int y) {
-		if (cache[Pool.PARTICLE].IsEmpty()) {
+	public void AddParticle(int x, int y) 
+	{
+		if (cache[Pool.PARTICLE].IsEmpty()) 
+		{
 			cache[Pool.PARTICLE].Enque(CreateParticle());
 			Sdx.Log("out of particles\n");
 		}

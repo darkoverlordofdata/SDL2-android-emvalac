@@ -1,11 +1,14 @@
 using Entitas;
-namespace Systems {
+namespace Systems 
+{
 
 	/**
 	* game systems
 	*/
-	public class PhysicsSystem : System {
-		public PhysicsSystem(Game game, Factory world) {
+	public class PhysicsSystem : System 
+	{
+		public PhysicsSystem(Game game, Factory world) 
+		{
 
 			var physics = world.GetGroup(Matcher.AllOf({Components.VelocityComponent}));
 
@@ -13,15 +16,19 @@ namespace Systems {
 			* physics system
 			* model movement
 			*/
-			Execute = (delta) => {
-				physics.entities.ForEach(it => {
-					if (it.IsActive()) {
+			Execute = (delta) => 
+			{
+				physics.entities.ForEach(it => 
+				{
+					if (it.IsActive()) 
+					{
 
 						var x = it.transform.position.x + it.velocity.x * delta;
 						var y = it.transform.position.y + it.velocity.y * delta;
 						it.SetPosition(x, y);
 
-						switch (it.pool) {
+						switch (it.pool) 
+						{
 							case Pool.ENEMY1:
 								if (it.transform.position.y > game.height) 
 									world.DeleteEntity(it);

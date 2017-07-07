@@ -1,11 +1,36 @@
-namespace Entitas {
-
+/*******************************************************************************
+ *# MIT License
+ *
+ * Copyright (c) 2015-2017 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * 'Software'), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+namespace Entitas 
+{
 	/**
 	 * Match entities by component
 	 * complile list of components to bit array for fast comparison
 	 *
 	 */
-	public class Matcher : Object {
+	public class Matcher : Object 
+	{
 		/**
 		 * A unique sequential index number assigned to each match
 		 * @type number */
@@ -44,14 +69,17 @@ namespace Entitas {
 		/**
 		 *  clone/merge 1 or more existing matchers
 		 */
-		public Matcher(Matcher[] matchers = null ) {
+		public Matcher(Matcher[] matchers = null ) 
+		{
 			id = uniqueId++;
-			if (matchers != null) {
+			if (matchers != null) 
+			{
 				//  print("matchers != null\n");
 				var allOf = new int[0];
 				var anyOf = new int[0];
 				var noneOf = new int[0];
-				for (var i=0;  i < matchers.length; i++) {
+				for (var i=0;  i < matchers.length; i++) 
+				{
 					allOfMask |= matchers[i].allOfMask;
 					anyOfMask |= matchers[i].anyOfMask;
 					noneOfMask |= matchers[i].noneOfMask;
@@ -62,8 +90,6 @@ namespace Entitas {
 				allOfIndices = Matcher.DistinctIndices(allOf);
 				anyOfIndices = Matcher.DistinctIndices(anyOf);
 				noneOfIndices = Matcher.DistinctIndices(noneOf);
-			} else {
-				//  print("matchers == null\n");
 				
 			}
 		}
@@ -72,40 +98,20 @@ namespace Entitas {
 		 * A list of the component ordinals that this matches
 		 * @type Array<number>
 		 * @name entitas.Matcher#indices */
-		public int[] GetIndices() {
+		public int[] GetIndices() 
+		{
 			if (indices == null)
 				indices = MergeIndices();
 			return indices;
 		}
 
 		/**
-		 * Matches anyOf the components/indices specified
-		 * @params Array<entitas.IMatcher>|Array<number> args
-		 * @returns entitas.Matcher
-		 */
-		//  public Matcher* anyOf(int[] args) { 
-		//  	anyOfIndices = Matcher.distinctIndices(args);
-		//  	indices = null;
-		//  	return this;
-		//  }
-
-		/**
-		 * Matches noneOf the components/indices specified
-		 * @params Array<entitas.IMatcher>|Array<number> args
-		 * @returns entitas.Matcher
-		 */
-		//  public Matcher* noneOf(int[] args) { 
-		//  	noneOfIndices = Matcher.distinctIndices(args);
-		//  	indices = null;
-		//  	return this;
-		//  }
-
-		/**
 		 * Check if the entity matches this matcher
 		 * @param entitas.IEntity entity	
 		 * @returns boolean
 		 */
-		public bool Matches(Entity* entity) {
+		public bool Matches(Entity* entity) 
+		{
 			var mask = entity.mask ^ ACTIVE; 
 			var matchesAllOf  = allOfMask  == 0 ? true : (mask & allOfMask) == allOfMask;
 			var matchesAnyOf  = anyOfMask  == 0 ? true : (mask & anyOfMask) != 0;
@@ -117,7 +123,8 @@ namespace Entitas {
 		 * Merge list of component indices
 		 * @returns Array<number>
 		 */
-		public int[] MergeIndices() {
+		public int[] MergeIndices() 
+		{
 
 			var indices = new int[0];
 			if (allOfIndices != null)
@@ -136,22 +143,27 @@ namespace Entitas {
 		 * toString representation of this matcher
 		 * @returns string
 		 */
-		public string ToString() {
-			if (toStringCache == null) {
+		public string ToString() 
+		{
+			if (toStringCache == null) 
+			{
 				var sb = "";
-				if (allOfIndices != null) {
+				if (allOfIndices != null) 
+				{
 					sb += "AllOf(";
 					sb += ComponentstoString(allOfIndices);
 					sb += ")";
 				}
-				if (anyOfIndices != null) {
+				if (anyOfIndices != null) 
+				{
 					if (allOfIndices != null)
 						sb += ".";
 					sb += "AnyOf(";
 					sb += ComponentstoString(anyOfIndices);
 					sb += ")";
 				}
-				if (noneOfIndices != null) {
+				if (noneOfIndices != null) 
+				{
 					sb += ".NoneOf(";
 					sb += ComponentstoString(noneOfIndices);
 					sb += ")";
@@ -161,14 +173,16 @@ namespace Entitas {
 			return toStringCache;
 		}
 
-		public static string ComponentstoString(int[] indexArray) {
+		public static string ComponentstoString(int[] indexArray) 
+		{
 			var sb = "";
 			foreach (var index in indexArray) 
 				sb += ComponentString[index];
 			return sb;
 		}
 
-		public static int[] ListToArray(List<int> list) {
+		public static int[] ListToArray(List<int> list) 
+		{
 			var a = new int[list.Length()];
 			var i = 0;
 			foreach (var x in list) a[i++] = x;
@@ -179,11 +193,13 @@ namespace Entitas {
 		 * @param Array<number> indices
 		 * @returns Array<number>
 		 */
-		public static int[] DistinctIndices(int[] indices) {
+		public static int[] DistinctIndices(int[] indices) 
+		{
 			var indicesSet = new bool[64];
 			var result = new List<int>();
 
-			foreach (var index in indices) {
+			foreach (var index in indices) 
+			{
 				if (!indicesSet[index])
 					result.Insert(index);
 				indicesSet[index] = true;
@@ -191,28 +207,14 @@ namespace Entitas {
 			return ListToArray(result);
 		}
 
-		/**
-		 * Merge all the indices of a set of Matchers
-		 * @param Array<IMatcher> matchers
-		 * @returns Array<number>
-		 */
-		//  public static int[] merge(Matcher[] matchers) throws Exception {
-		//  	var indices = new List<int>();
-
-		//  	for (var i=0; i < matchers.length-1; i++) {
-		//  		if (matchers[i].indices.length != 1)
-		//  			throw new Exception.InvalidMatcherExpression(matchers[i].toString());
-		//  		indices.prepend(matchers[i].indices[0]);
-		//  	}
-		//  	return listToArray(indices);
-		//  }
 
 		/**
 		 * Matches noneOf the components/indices specified
 		 * @params Array<entitas.IMatcher>|Array<number> args
 		 * @returns entitas.Matcher
 		 */
-		public static Matcher NoneOf(int[] args) {
+		public static Matcher NoneOf(int[] args) 
+		{
 			var matcher = new Matcher();
 			matcher.noneOfIndices = Matcher.DistinctIndices(args);
 			matcher.noneOfMask = Matcher.BuildMask(matcher.noneOfIndices);
@@ -223,7 +225,8 @@ namespace Entitas {
 		 * @params Array<entitas.IMatcher>|Array<number> args
 		 * @returns entitas.Matcher
 		 */
-		public static Matcher AllOf(int[] args) { 
+		public static Matcher AllOf(int[] args) 
+		{ 
 			var matcher = new Matcher();
 			matcher.allOfIndices = Matcher.DistinctIndices(args);
 			matcher.allOfMask = Matcher.BuildMask(matcher.allOfIndices);
@@ -235,14 +238,16 @@ namespace Entitas {
 		 * @params Array<entitas.IMatcher>|Array<number> args
 		 * @returns entitas.Matcher
 		 */
-		public static Matcher AnyOf(int[] args) { 
+		public static Matcher AnyOf(int[] args) 
+		{ 
 			var matcher = new Matcher();
 			matcher.anyOfIndices = Matcher.DistinctIndices(args);
 			matcher.anyOfMask = Matcher.BuildMask(matcher.anyOfIndices);
 			return matcher;
 		}
 
-		public static uint64 BuildMask(int[] indices) { 
+		public static uint64 BuildMask(int[] indices) 
+		{ 
 			uint64 accume = 0;
 			foreach (var index in indices) accume |= POW2[index];
 			return accume;

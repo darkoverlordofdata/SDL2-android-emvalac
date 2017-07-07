@@ -1,40 +1,54 @@
 using Entitas;
-namespace Systems {
+namespace Systems 
+{
 	/**
 	* game systems
 	*/
-	public class CollisionSystem : System {
-		public CollisionSystem(Game game, Factory world) {
+	public class CollisionSystem : System 
+	{
+		public CollisionSystem(Game game, Factory world) 
+		{
 
 			var bullets = world.GetGroup(Matcher.AllOf({ Components.BulletComponent }));
-			var enemies = world.GetGroup(Matcher.AnyOf({
-				Components.Enemy1Component, 
-				Components.Enemy2Component, 
-				Components.Enemy3Component
-			}));
+			var enemies = world.GetGroup(Matcher.AnyOf(
+				{
+					Components.Enemy1Component, 
+					Components.Enemy2Component, 
+					Components.Enemy3Component
+				}));
 
 			/**
 			* physics system
 			* model movement
 			*/
-			Execute = (delta) => {
-				enemies.entities.ForEach(enemy => {
-					if (enemy.IsActive()) {
-						bullets.entities.ForEach(bullet => {
-							if (bullet.IsActive()) {
-								if (bullet.transform.aabb.HasIntersection(enemy.transform.aabb)) {
+			Execute = (delta) => 
+			{
+				enemies.entities.ForEach(enemy => 
+				{
+					if (enemy.IsActive()) 
+					{
+						bullets.entities.ForEach(bullet => 
+						{
+							if (bullet.IsActive()) 
+							{
+								if (bullet.transform.aabb.HasIntersection(enemy.transform.aabb)) 
+								{
 									var x = (int)((float)bullet.transform.position.x);
 									var y = (int)((float)bullet.transform.position.y);
 									world.AddBang(x, y);
 									world.DeleteEntity(bullet);
 									for (var i=0; i<3; i++) 
 										world.AddParticle(x, y);
-									if (enemy.health != null) {
+									if (enemy.health != null) 
+									{
 										var current = enemy.health.current - 2;
-										if (current < 0) {
+										if (current < 0) 
+										{
 											world.AddExplosion(x, y);
 											world.DeleteEntity(enemy);
-										} else {
+										} 
+										else 
+										{
 											enemy.health.current = current;
 										}
 									} 

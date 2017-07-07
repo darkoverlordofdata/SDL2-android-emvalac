@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2017 darkoverlordofdata.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 /**
  * TextureAtlas.gs
  *
@@ -45,6 +60,18 @@ namespace Sdx.Graphics {
             return null;
         }
         
+        public NinePatch? CreatePatch(string name) {
+            foreach (var region in regions) {
+                if (region.name == name) {
+                    var splits = region.splits;
+                    if (splits == null) throw new SdlException.IllegalArgumentException("Region does not have ninepatch splits: " + name);
+                    var patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+                    //  if (region.pads != null) patch.SetPadding(region.pads[0], region.pads[1], region.pads[2], region.pads[3]);
+                    return patch;
+                }
+            }
+            return null;
+        }
 
         /**
          * @param data config to load images from
@@ -89,46 +116,43 @@ namespace Sdx.Graphics {
     }
 
     /** Describes the region of a packed image and provides information about the original image before it was packed. */
-    public class AtlasRegion : Object {
+    public class AtlasRegion : TextureRegion.FromTexture {
         
-        public TextureRegion rg;
+        //  public TextureRegion rg;
         /** The number at the end of the original image file name, or -1 if none.<br>
         * <br>
         * When sprites are packed, if the original file name ends with a number, it is stored as the index and is not considered as
         * part of the sprite's name. This is useful for keeping animation frames in order.
         * @see TextureAtlas#findRegions(String) */
-        public int index;
-        /** The name of the original image file, up to the first underscore. Underscores denote special instructions to the texture
-        * packer. */
-        public string name;
-        /** The offset from the left of the original image to the left of the packed image, after whitespace was removed for packing. */
-        public int offsetX;
-        /** The offset from the bottom of the original image to the bottom of the packed image, after whitespace was removed for
-        * packing. */
-        public int offsetY;
-        /** The width of the image, after whitespace was removed for packing. */
-        public int packedWidth;
-        /** The height of the image, after whitespace was removed for packing. */
-        public int packedHeight;
-        /** The width of the image, before whitespace was removed and rotation was applied for packing. */
-        public int originalWidth;
-        /** The height of the image, before whitespace was removed for packing. */
-        public int originalHeight;
-        /** If true, the region has been rotated 90 degrees counter clockwise. */
-        public bool rotate;
-        /** The ninepatch splits, or null if not a ninepatch. Has 4 elements: left, right, top, bottom. */
-        public int[] splits;
-        /** The ninepatch pads, or null if not a ninepatch or the has no padding. Has 4 elements: left, right, top, bottom. */
-        public int[] pads;
+        //  public int index;
+        //  /** The name of the original image file, up to the first underscore. Underscores denote special instructions to the texture
+        //  * packer. */
+        //  public string name;
+        //  /** The offset from the left of the original image to the left of the packed image, after whitespace was removed for packing. */
+        //  public int offsetX;
+        //  /** The offset from the bottom of the original image to the bottom of the packed image, after whitespace was removed for
+        //  * packing. */
+        //  public int offsetY;
+        //  /** The width of the image, after whitespace was removed for packing. */
+        //  public int packedWidth;
+        //  /** The height of the image, after whitespace was removed for packing. */
+        //  public int packedHeight;
+        //  /** The width of the image, before whitespace was removed and rotation was applied for packing. */
+        //  public int originalWidth;
+        //  /** The height of the image, before whitespace was removed for packing. */
+        //  public int originalHeight;
+        //  /** If true, the region has been rotated 90 degrees counter clockwise. */
+        //  public bool rotate;
+        //  /** The ninepatch splits, or null if not a ninepatch. Has 4 elements: left, right, top, bottom. */
+        //  public int[] splits;
+        //  /** The ninepatch pads, or null if not a ninepatch or the has no padding. Has 4 elements: left, right, top, bottom. */
+        //  public int[] pads;
 
         public AtlasRegion(Surface.TextureSurface texture, int x, int y, int width, int height) {
-            rg = new TextureRegion(texture, x, y, width, height);
+            base(texture, x, y, width, height);
         }
 
 
-        public void Flip(bool x, bool y) {
-            rg.Flip(x, y);
-        }
     }
     /**
      * povo - one for each atlas file 
@@ -180,6 +204,7 @@ namespace Sdx.Graphics {
         public bool flip;
         public int[] splits;
         public int[] pads;
+        public bool slice9;
         public Region(Page page, int left, int top, int width, int height, string name, bool rotatate) {
             this.page = page;
             this.left = left;
@@ -188,6 +213,7 @@ namespace Sdx.Graphics {
             this.height = height;
             this.name = name;
             this.rotate = rotate;
+            this.slice9 = false;
         }
     }
 
@@ -275,6 +301,7 @@ namespace Sdx.Graphics {
                         var region = new Region(pageImage, left, top, width, height, line, rotate);
 
                         if (ReadTuple(reader) == 4) {
+                            region.slice9 = true;
                             region.splits = { int.Parse(tuple[0]), int.Parse(tuple[1]), 
                                 int.Parse(tuple[2]), int.Parse(tuple[3]) };
 

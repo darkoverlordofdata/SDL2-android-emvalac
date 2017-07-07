@@ -6,6 +6,7 @@ project_name: shmupwarz
 define: ANDROID
 define: PROFILING
 define: EMSCRIPTEN
+*define: NOGOBJECT
 *define: DESKTOP
 
 gresource: resources_gresource_xml data/resources.gresource.xml
@@ -46,6 +47,7 @@ c_library: m
 *vala_source: sdx/files/files.vala
 *vala_source: sdx/graphics/BitmapFont.vala
 *vala_source: sdx/graphics/Camera.vala
+*vala_source: sdx/graphics/NinePatch.vala
 *vala_source: sdx/graphics/Sprite.vala
 *vala_source: sdx/graphics/Surface.vala
 *vala_source: sdx/graphics/TextureAtlas.vala
@@ -54,6 +56,7 @@ c_library: m
 *vala_source: sdx/graphics/graphics.vala
 *vala_source: sdx/math/Vector2.vala
 *vala_source: sdx/sdx.vala
+*vala_source: sdx/ui/Component.vala
 *vala_source: sdx/utils/Cache.vala
 *vala_source: sdx/utils/File.vala
 *vala_source: sdx/utils/Json.vala
@@ -96,6 +99,7 @@ c_library: m
 *translate: vala src/sdx/files/files.vala
 *translate: vala src/sdx/graphics/BitmapFont.vala
 *translate: vala src/sdx/graphics/Camera.vala
+*translate: vala src/sdx/graphics/NinePatch.vala
 *translate: vala src/sdx/graphics/Sprite.vala
 *translate: vala src/sdx/graphics/Surface.vala
 *translate: vala src/sdx/graphics/TextureAtlas.vala
@@ -104,6 +108,7 @@ c_library: m
 *translate: vala src/sdx/graphics/graphics.vala
 *translate: vala src/sdx/math/Vector2.vala
 *translate: vala src/sdx/sdx.vala
+*translate: vala src/sdx/ui/Component.vala
 *translate: vala src/sdx/utils/Cache.vala
 *translate: vala src/sdx/utils/File.vala
 *translate: vala src/sdx/utils/Json.vala

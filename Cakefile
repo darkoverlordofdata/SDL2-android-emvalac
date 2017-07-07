@@ -92,7 +92,7 @@ getSrc = (vala_source) ->
 ##
 androidTemplate = (defines, vapis, pkgs, list, copy) ->
     return """
-valaz --builddir build \
+adriac --builddir build \
     --cc=jni \
     #{defines} \
     --vapidir src/vapis \
@@ -114,7 +114,7 @@ cd ./android && ant debug # install
 emscriptenTemplate = (defines, vapis, pkgs, list) ->
     return """
 mkdir -p build
-valaz  \
+adriac  \
     --builddir build \
     --cc=emcc \
     #{defines} \
@@ -135,7 +135,7 @@ valaz  \
 desktopTemplate = (defines, vapis, pkgs, list) ->
     return """
 mkdir -p build
-valaz  \
+adriac  \
     --builddir build \
     --cc=clang \
     #{defines} \

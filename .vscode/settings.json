@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.lzz": "cpp",
+        "adriac": "vala",
+        "Cakefile": "coffeescript",
+        "gatomic.h": "c"
+    }
+}

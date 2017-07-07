@@ -1,12 +1,16 @@
 using Sdx;
 using Entitas;
 using Systems;
+
 /**
  * Game controller 
  */
-public class Game : AbstractGame {
-	public Game(int w, int h) {
+public class Game : AbstractGame 
+{
+	public Game(int w, int h) 
+	{
 	
+
 		width = w;
 		height = h;
 
@@ -16,7 +20,7 @@ public class Game : AbstractGame {
 		Sdx.SetShowFps(true);
 		
 		var world = new Factory();
-		var display = new DisplaySystem();
+		var display = new DisplaySystem(world);
 
 		world.SetEntityRemovedListener(it => display.sprites.Remove(it));
 
@@ -33,7 +37,8 @@ public class Game : AbstractGame {
 		 * Update
 		 * 
 		 */
-		Update = () => {
+		Update = () => 
+		{
 			world.Execute(Sdx.delta);
 		};
 
@@ -41,15 +46,15 @@ public class Game : AbstractGame {
 		 * Render
 		 * 
 		 */
-		Draw = () => {
+		Draw = () => 
+		{
 			Sdx.Begin();
-			display.sprites.ForEach(entity => {
+			display.sprites.ForEach(entity => 
+			{
 				if (entity.IsActive()) 
 					display.Draw(entity, ref entity.transform);
 			});
-			//  foreach (var entity in display.sprites) 
-			//  	if (entity.IsActive()) 
-			//  		display.Draw(entity, ref entity.transform);
+			display.Test();
 			Sdx.End();
 		};
 	}

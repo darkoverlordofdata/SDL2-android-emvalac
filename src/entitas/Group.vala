@@ -1,15 +1,42 @@
-namespace Entitas {
-
-	public class Group : Object {
+/*******************************************************************************
+ *# MIT License
+ *
+ * Copyright (c) 2015-2017 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * 'Software'), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+namespace Entitas 
+{
+	public class Group : Object 
+	{
 		public Matcher matcher;
 		public List<Entity*> entities;
 		
-		public Group(Matcher matcher) {
+		public Group(Matcher matcher) 
+		{
 			this.matcher = matcher;
 		}
 
 		/** Add entity to group */
-		public void HandleEntitySilently(Entity* entity) {
+		public void HandleEntitySilently(Entity* entity) 
+		{
 			if (matcher.Matches(entity)) 
 				entities.Insert(entity);
 			else 
@@ -17,7 +44,8 @@ namespace Entitas {
 		}
 
 		/** Add entity to group and raise events */
-		public void HandleEntity(Entity* entity, Components index) {
+		public void HandleEntity(Entity* entity, Components index) 
+		{
 			if (matcher.Matches(entity))
 				entities.Insert(entity);
 			else
@@ -25,17 +53,24 @@ namespace Entitas {
 		} 
 
 
-		public bool ContainsEntity(Entity* entity) {
+		public bool ContainsEntity(Entity* entity)
+		{
 			return entities.Find(entity) != null;
 		}
 
-		public Entity* GetSingleEntity() { 
+		public Entity* GetSingleEntity() 
+		{ 
 			var c = entities.Length();
-			if (c == 1) {
+			if (c == 1) 
+			{
 				return (Entity*)entities.Head.data;
-			} else if (c == 0) {
+			} 
+			else if (c == 0) 
+			{
 				return null;
-			} else {
+			} 
+			else 
+			{
 				throw new Exception.SingleEntity(matcher.ToString());
 			}
 		}

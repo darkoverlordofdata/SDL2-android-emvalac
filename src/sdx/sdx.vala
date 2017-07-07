@@ -1,40 +1,85 @@
+/*******************************************************************************
+ * Copyright 2017 darkoverlordofdata.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 using SDL;
 using SDL.Video;
 using SDLImage;
 
-namespace Sdx {
+namespace Sdx 
+{
 
-	public class AbstractPlatform : Object {
+	public delegate bool InputProcessorKeyDown(int keycode);
+	public delegate bool InputProcessorKeyUp(int keycode);
+	public delegate bool InputProcessorKeyTyped(char character);
+	public delegate bool InputProcessorTouchDown(int x, int y, int pointer, int button);
+	public delegate bool InputProcessorTouchUp(int x, int y, int pointer, int button);
+	public delegate bool InputProcessorTouchDragged(int x, int y, int pointer);
+	public delegate bool InputProcessorMouseMoved(int x, int y);
+	public delegate bool InputProcessorScrolled(int amount);
+
+	[SimpleType, Immutable]
+	public struct InputProcessor 
+	{ 
+		public unowned InputProcessorKeyDown KeyDown;
+		public unowned InputProcessorKeyUp KeyUp;
+		public unowned InputProcessorKeyTyped KeyTyped;
+		public unowned InputProcessorTouchDown TouchDown;
+		public unowned InputProcessorTouchUp TouchUp;
+		public unowned InputProcessorTouchDragged TouchDragged;
+		public unowned InputProcessorMouseMoved MouseMoved;
+		public unowned InputProcessorScrolled Scrolled;
+
+	}
+
+	public class AbstractPlatform : Object 
+	{
 		public int width;
 		public int height;
 		public delegate void AbstractUpdate(int tick);
 		public delegate void AbstractDraw(int tick);
 		public AbstractUpdate Update = (tick) => {};
 		public AbstractDraw Draw = (tick) => {};
-		public AbstractPlatform() {
+		public AbstractPlatform() 
+		{
 			// forces the subclassed lambda context to be reference counted
-			var r = new LambdaReference();
+			var r = new AbstractReference();
 		}
 	}
 
-	public class AbstractGame : Object {
+	public class AbstractGame : Object 
+	{
 		public int width;
 		public int height;
 		public delegate void AbstractUpdate();
 		public delegate void AbstractDraw();
 		public AbstractUpdate Update = () => {};
 		public AbstractDraw Draw = () => {};
-		public AbstractGame() {
+		public AbstractGame() 
+		{
 			// forces the subclassed lambda context to be reference counted
-			var r = new LambdaReference();
+			var r = new AbstractReference();
 		}
-		public void Start() {
+		public void Start() 
+		{
 			Sdx.Start();
 		}
 	}
 
-	public class LambdaReference: Object {}
+	public class AbstractReference: Object {}
 
+	
 	/**
 	 * Global vars
 	 * 
@@ -66,12 +111,7 @@ namespace Sdx {
 	bool showFps;
 	float fps;
 	float delta = 1.0f/60.0f;
-	int mouseX;
-	int mouseY;
-	bool mouseDown;
 	bool running;
-	uint8[] keys;
-	bool[] direction;
 	string resourceBase;
 	double currentTime;
 	double accumulator;
@@ -80,20 +120,16 @@ namespace Sdx {
 	int width;
 	int height;
 	Event _evt;
-
-	public enum Direction {
-		NONE, LEFT, RIGHT, UP, DOWN
-	}
+	InputProcessor _inputProcessor;
 
 	/**
 	 * Initialization
 	 * 
 	 */
-	Window Initialize(int width, int height, string name) {
+	Window Initialize(int width, int height, string name) 
+	{
 		Sdx.height = height;
 		Sdx.width = width;
-		keys = new uint8[256];
-		direction = new bool[5];
 
 		if (SDL.Init(SDL.InitFlag.VIDEO | SDL.InitFlag.TIMER | SDL.InitFlag.EVENTS) < 0)
 			throw new SdlException.Initialization(SDL.GetError());
@@ -132,8 +168,8 @@ namespace Sdx {
 
 		freq = SDL.Timer.GetPerformanceFrequency();
 		fpsColor = Sdx.Color.AntiqueWhite;
-		bgdColor = Sdx.Color.Black; //{ 0, 0, 0, 0 };
-
+		bgdColor = Sdx.Color.Black; 
+		
 		fps = 60;
 		MersenneTwister.InitGenrand((ulong)SDL.Timer.GetPerformanceCounter());
 		return window;
@@ -141,6 +177,11 @@ namespace Sdx {
 
 	double GetRandom() {
 		return MersenneTwister.GenrandReal2();
+	}
+
+	public void SetInputProcessor(InputProcessor inputProcessor) 
+	{
+		_inputProcessor = inputProcessor;
 	}
 
 	void SetResourceBase(string path) {
@@ -155,13 +196,16 @@ namespace Sdx {
 		smallFont = new Sdx.Font(path, size);
 	}
 
-	void SetLargeFont(string path, int size) {
+	void SetLargeFont(string path, int size) 
+	{
 		largeFont = new Sdx.Font(path, size);
 	}
 
-	void SetShowFps(bool value) {
+	void SetShowFps(bool value) 
+	{
 		showFps = value;
-		if (showFps == true) {
+		if (showFps == true) 
+		{
 
 			fps1 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
 			fps2 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
@@ -169,13 +213,17 @@ namespace Sdx {
 			fps4 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
 			fps5 = new Sdx.Graphics.Sprite.AnimatedSprite("assets/fonts/tom-thumb-white.png", 16, 24);
 
-		} else {
+		} 
+		else 
+		{
 			fpsSprite = null;
 		}
 	}
 
-	void DrawFps() {
-		if (showFps) {
+	void DrawFps() 
+	{
+		if (showFps) 
+		{
 			var f = "%2.2f".printf(fps);
 			fps1.SetFrame(f[0]);
 			fps1.Render(20, 12);
@@ -190,16 +238,19 @@ namespace Sdx {
 		}
 	}
 
-	double GetNow() {
+	double GetNow() 
+	{
 		return (double)SDL.Timer.GetPerformanceCounter()/freq;
 	} 
 
-	void Start() {
+	void Start() 
+	{
 		currentTime = GetNow();
 		running = true;
 	}
 
-	void GameLoop(AbstractGame game) {
+	void GameLoop(AbstractGame game) 
+	{
 		
 		double newTime = GetNow();
 		double frameTime = newTime - currentTime;
@@ -209,7 +260,8 @@ namespace Sdx {
 		accumulator += frameTime;
 
 		ProcessEvents();
-		while (accumulator >= MS_PER_UPDATE) {
+		while (accumulator >= MS_PER_UPDATE) 
+		{
 			game.Update();
 			accumulator -= MS_PER_UPDATE;
 		}
@@ -217,74 +269,105 @@ namespace Sdx {
 	}
 
 
-	void ProcessEvents() {
-		while (SDL.Event.poll(out _evt) != 0) {
-			switch (_evt.type) {
+	void ProcessEvents() 
+	{
+		while (SDL.Event.poll(out _evt) != 0) 
+		{
+			switch (_evt.type) 
+			{
 				case SDL.EventType.QUIT:
 					running = false;
 					break;
+
 				case SDL.EventType.KEYDOWN:
-					switch (_evt.key.keysym.scancode) {
-						case SDL.Input.Scancode.LEFT: 	direction[Direction.LEFT] = true; break;
-						case SDL.Input.Scancode.RIGHT: 	direction[Direction.RIGHT] = true; break;
-						case SDL.Input.Scancode.UP: 	direction[Direction.UP] = true; break;
-						case SDL.Input.Scancode.DOWN: 	direction[Direction.DOWN] = true; break;
-					}
 					if (_evt.key.keysym.sym < 0 || _evt.key.keysym.sym > 255) break;
-					keys[_evt.key.keysym.sym] = 1;
+                    if (_inputProcessor.KeyDown != null)
+						_inputProcessor.KeyDown(_evt.key.keysym.sym);
 					break;
+
 				case SDL.EventType.KEYUP:
-					switch (_evt.key.keysym.scancode) {
-						case SDL.Input.Scancode.LEFT: 	direction[Direction.LEFT] = false; break;
-						case SDL.Input.Scancode.RIGHT: 	direction[Direction.RIGHT] = false; break;
-						case SDL.Input.Scancode.UP: 	direction[Direction.UP] = false; break;
-						case SDL.Input.Scancode.DOWN: 	direction[Direction.DOWN] = false; break;
-					}
 					if (_evt.key.keysym.sym < 0 || _evt.key.keysym.sym > 255) break;
-					keys[_evt.key.keysym.sym] = 0;
+                    if (_inputProcessor.KeyUp != null)
+						_inputProcessor.KeyUp(_evt.key.keysym.sym);
 					break;
+
 				case SDL.EventType.MOUSEMOTION:
-					mouseX = _evt.motion.x;
-					mouseY = _evt.motion.y;
+					if (_inputProcessor.TouchDragged != null)
+						_inputProcessor.TouchDragged(_evt.motion.x, _evt.motion.y, 0);
+					if (_inputProcessor.MouseMoved != null)
+						_inputProcessor.MouseMoved(_evt.motion.x, _evt.motion.y);
 					break;
+
 				case SDL.EventType.MOUSEBUTTONDOWN:
-					mouseDown = true;
+                    if (_inputProcessor.TouchDown != null)
+						_inputProcessor.TouchDown(_evt.motion.x, _evt.motion.y, 0, 0);
 					break;
+
 				case SDL.EventType.MOUSEBUTTONUP:
-					mouseDown = false;
+                    if (_inputProcessor.TouchUp != null)
+						_inputProcessor.TouchUp(_evt.motion.x, _evt.motion.y, 0, 0);
 					break;
 #if (!ANDROID)
 				case SDL.EventType.FINGERMOTION:
 #if (EMSCRIPTEN)					
-					mouseX = (int)(_evt.tfinger.x * (float)width);
-					mouseY = (int)(_evt.tfinger.y * (float)height);
+					if (_inputProcessor.TouchDragged != null)
+						_inputProcessor.TouchDragged(
+							(int)(_evt.tfinger.x * (float)width), 
+							(int)(_evt.tfinger.y * (float)height), 
+							0);
 #else
-					mouseX = (int)_evt.tfinger.x;
-					mouseY = (int)_evt.tfinger.y;
+					if (_inputProcessor.TouchDragged != null)
+						_inputProcessor.TouchDragged(
+							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0);
 #endif
 					break;
+
 				case SDL.EventType.FINGERDOWN:
-					mouseDown = true;
+#if (EMSCRIPTEN)					
+                    if (_inputProcessor.TouchDown != null)
+						_inputProcessor.TouchDown(
+							(int)(_evt.tfinger.x * (float)width), 
+							(int)(_evt.tfinger.y * (float)height), 
+							0, 0);
+#else
+                    if (_inputProcessor.TouchDown != null)
+						_inputProcessor.TouchDown(
+							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0, 0);
+#endif
 					break;
+
 				case SDL.EventType.FINGERUP:
-					mouseDown = false;
+#if (EMSCRIPTEN)					
+                    if (_inputProcessor.TouchUp != null)
+						_inputProcessor.TouchUp(
+							(int)(_evt.tfinger.x * (float)width), 
+							(int)(_evt.tfinger.y * (float)height), 
+							0, 0);
+#else
+                    if (_inputProcessor.TouchUp != null)
+						_inputProcessor.TouchUp(
+							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0, 0);
+#endif
 					break;
 #endif
 			}
 		}
 	}
 	
-	void Begin() {
+	void Begin() 
+	{
 		renderer.SetDrawColor(bgdColor.r, bgdColor.g, bgdColor.b, bgdColor.a);
 		renderer.Clear();
 	}
 
-	void End() {
+	void End() 
+	{
 		// Sdx.drawFps();
 		renderer.Present();
 	}
 
-	void Log(string text) {
+	void Log(string text) 
+	{
 #if (ANDROID)
 		Android.LogWrite(Android.LogPriority.ERROR, "SDX", text);
 #else

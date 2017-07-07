@@ -1,21 +1,27 @@
 using Entitas;
-namespace Systems {
+namespace Systems 
+{
 
 	/**
 	* game systems
 	*/	
-	public class SpawnSystem : System {
+	public class SpawnSystem : System 
+	{
 		public delegate float SpawnEnemyFunc(float delta, float t, int enemy);
 
-		public SpawnSystem(Game game, Factory world) {
+		public SpawnSystem(Game game, Factory world) 
+		{
 			var enemyT1 = 1.0f;
 			var enemyT2 = 4.0f;
 			var enemyT3 = 6.0f;
 
-			SpawnEnemyFunc SpawnEnemy = (delta, t, enemy) => {
+			SpawnEnemyFunc SpawnEnemy = (delta, t, enemy) => 
+			{
 				var d1 = t-delta;
-				if (d1 < 0.0) {
-					switch (enemy) {
+				if (d1 < 0.0) 
+				{
+					switch (enemy) 
+					{
 						case 1:
 							var x = (int)(Sdx.GetRandom() * (game.width-70)) + 35;
 							world.AddEnemy1(x, -35);
@@ -31,7 +37,9 @@ namespace Systems {
 						default:
 							return 0;
 					}
-				} else {
+				} 
+				else 
+				{
 					return d1;
 				}    
 				
@@ -40,7 +48,8 @@ namespace Systems {
 			/**
 			 * Spawn enemy ships
 			 */
-			Execute = (delta) => {
+			Execute = (delta) => 
+			{
 				enemyT1 = SpawnEnemy(delta, enemyT1, 1);
 				enemyT2 = SpawnEnemy(delta, enemyT2, 2);
 				enemyT3 = SpawnEnemy(delta, enemyT3, 3);
