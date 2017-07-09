@@ -20,29 +20,6 @@ using SDLImage;
 namespace Sdx 
 {
 
-	public delegate bool InputProcessorKeyDown(int keycode);
-	public delegate bool InputProcessorKeyUp(int keycode);
-	public delegate bool InputProcessorKeyTyped(char character);
-	public delegate bool InputProcessorTouchDown(int x, int y, int pointer, int button);
-	public delegate bool InputProcessorTouchUp(int x, int y, int pointer, int button);
-	public delegate bool InputProcessorTouchDragged(int x, int y, int pointer);
-	public delegate bool InputProcessorMouseMoved(int x, int y);
-	public delegate bool InputProcessorScrolled(int amount);
-
-	[SimpleType, Immutable]
-	public struct InputProcessor 
-	{ 
-		public unowned InputProcessorKeyDown KeyDown;
-		public unowned InputProcessorKeyUp KeyUp;
-		public unowned InputProcessorKeyTyped KeyTyped;
-		public unowned InputProcessorTouchDown TouchDown;
-		public unowned InputProcessorTouchUp TouchUp;
-		public unowned InputProcessorTouchDragged TouchDragged;
-		public unowned InputProcessorMouseMoved MouseMoved;
-		public unowned InputProcessorScrolled Scrolled;
-
-	}
-
 	public class AbstractPlatform : Object 
 	{
 		public int width;

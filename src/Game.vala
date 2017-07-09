@@ -20,11 +20,10 @@ public class Game : AbstractGame
 		Sdx.SetShowFps(true);
 		
 		var world = new Factory();
-		var display = new DisplaySystem(world);
+		var display = new DisplaySystem(this, world);
 
-		world.SetEntityRemovedListener(it => display.sprites.Remove(it));
-
-		world.AddSystem(new SpawnSystem(this, world))
+		world
+			.AddSystem(new SpawnSystem(this, world))
 			.AddSystem(new InputSystem(this, world))
 			.AddSystem(new PhysicsSystem(this, world))
 			.AddSystem(new CollisionSystem(this, world))
@@ -54,7 +53,6 @@ public class Game : AbstractGame
 				if (entity.IsActive()) 
 					display.Draw(entity, ref entity.transform);
 			});
-			display.Test();
 			Sdx.End();
 		};
 	}

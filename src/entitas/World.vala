@@ -26,28 +26,55 @@ namespace Entitas
 {	
 	public class World : Object 
 	{
+        /**
+         * The world singleton instance
+         * @type World
+         * @name entitas.World#instance */
 		public static World instance;
-		public List<Group> groups;
-		public Entity[] pool;
-		public EntityCache[] cache;
 		public int id = 0;
-		public ISystem?[] systems = new ISystem?[100];
-		public int count = 0;
-		public EntityRemovedListener EntityRemoved;
+		public Entity[] pool;
+		public ISystem[] systems;
+		public EntityCache[] cache;
+		public List<Group> groups;
+
+        /**
+         * Subscribe to IEntity Created Event
+         * @type Entitas.WorldChanged */
+		public WorldChanged onEntityCreated;
+
+        /**
+         * Subscribe to IEntity Will Be Destroyed Event
+         * @type Entitas.WorldChanged */
+		public WorldChanged onEntityWillBeDestroyed;
+
+        /**
+         * Subscribe to IEntity Destroyed Event
+         * @type Entitas.WorldChanged */
+		public WorldChanged onEntityDestroyed;
+
+        /**
+         * Subscribe to Group Created Event
+         * @type Entitas.GroupsChanged */
+		public GroupsChanged onGroupCreated;
 
 		public World() 
 		{
 			instance = this;
+			systems = new ISystem[0];
+            onGroupCreated = new GroupsChanged();
+            onEntityCreated = new WorldChanged();
+            onEntityDestroyed = new WorldChanged();
+            onEntityWillBeDestroyed = new WorldChanged();
 		}
 
-		public static void OnComponentAdded(Entity* e, Components c) 
+		public static void OnComponentAdded(Entity* entity, Components index, void* component) 
 		{
-			instance.ComponentAddedOrRemoved(e, c);
+			instance.ComponentAddedOrRemoved(entity, index, component);
 		}
 
-		public static void OnComponentRemoved(Entity* e, Components c) 
+		public static void OnComponentRemoved(Entity* entity, Components index, void* component) 
 		{
-			instance.ComponentAddedOrRemoved(e, c);
+			instance.ComponentAddedOrRemoved(entity, index, component);
 		}
 
 		public void SetPool(int size, int count, Buffer[] buffers) 
@@ -66,47 +93,70 @@ namespace Entitas
 			}
 		}
 				
+        /**
+         * add System
+         * @param entitas.ISystem|Function
+         * @returns entitas.ISystem
+         */
 		public World AddSystem(System system) 
 		{
-			systems[count++] = system._ISystem;
+			// make a local copy of the array
+			// so we can copy and concat
+
+			var sy = systems;
+			sy += system.ISystem;
+			systems = sy;
 			return this;
 		}
+
+        /**
+         * Initialize Systems
+         */
 		public void Initialize() 
 		{
-			for (var i=0; i < count; i++)
-				systems[i].Initialize();
+			foreach (var system in systems)
+				system.Initialize();
 		}
 
+        /**
+         * Execute Systems
+         */
 		public void Execute(float delta) 
 		{
-			for (var i=0; i < count; i++)
-				systems[i].Execute(delta);
+			foreach (var system in systems)
+				system.Execute(delta);
 		}
 
-		public void SetEntityRemovedListener(EntityRemovedListener removed) 
-		{
-			EntityRemoved = removed;
-		}
-
-		public void ComponentAddedOrRemoved(Entity* entity, Components component) 
+        /**
+         * @param entitas.IEntity entity
+         * @param number index
+         * @param entitas.IComponent component
+         */
+		public void ComponentAddedOrRemoved(Entity* entity, Components index, void* component) 
 		{
 			foreach (var group in groups)
-				group.HandleEntity(entity, component);
+				group.HandleEntity(entity, index, component);
 		}
 
-		/**
-		* send antity back to it's pool
-		*/		
+        /**
+         * Destroy an entity
+         * @param entitas.IEntity entity
+         */
 		public void DeleteEntity(Entity* entity) 
 		{
-			entity.SetActive(false);
+            onEntityWillBeDestroyed.Dispatch(this, entity);
+			entity.Destroy();
+            onEntityDestroyed.Dispatch(this, entity);
 			cache[entity.pool].Enque(entity);
-			EntityRemoved(entity);
+
+			//EntityRemoved(entity);
 		}
 
-		/**
-		* create an entity from the pool
-		*/
+        /**
+         * Create a new entity
+         * @param string name
+         * @returns entitas.IEntity
+         */
 		public Entity* CreateEntity(string name, int pool, bool active) 
 		{
 			var id = this.id++;
@@ -117,7 +167,13 @@ namespace Entitas
 				.SetActive(active));
 		}
 
-		public Group GetGroup(Matcher matcher) 
+       /**
+         * Gets all of the entities that match
+         *
+         * @param entias.IMatcher matcher
+         * @returns entitas.Group
+         */
+ 		public Group GetGroup(Matcher matcher) 
 		{
 			if (groups.Length() > matcher.id ) 
 			{
@@ -129,6 +185,7 @@ namespace Entitas
 				groups.Insert(new Group(matcher));
 				for (var i = 0; i < this.id-1; i++) 
 					groups.Head.data.HandleEntitySilently(&pool[i]);
+                onGroupCreated.Dispatch(this, groups.Head.data);
 				return groups.Head.data;
 			}
 		}

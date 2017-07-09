@@ -31,22 +31,22 @@ namespace Systems
 						{
 							case Pool.ENEMY1:
 								if (it.transform.position.y > game.height) 
-									world.DeleteEntity(it);
+									world.DeleteEntity(it.SetShow(false));
 								break;
 								
 							case Pool.ENEMY2:
 								if (it.transform.position.y > game.height) 
-									world.DeleteEntity(it);
+									world.DeleteEntity(it.SetShow(false));
 								break;
 								
 							case Pool.ENEMY3:
 								if (it.transform.position.y > game.height) 
-									world.DeleteEntity(it);
+									world.DeleteEntity(it.SetShow(false));
 								break;
 								
 							case Pool.BULLET:
 								if (it.transform.position.y < 0) 
-									world.DeleteEntity(it);
+									world.DeleteEntity(it.SetShow(false));
 								break;
 						}
 					}

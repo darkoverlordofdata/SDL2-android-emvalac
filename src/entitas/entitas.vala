@@ -36,19 +36,14 @@ namespace Entitas
 		WorldDoesNotContainEntity
 	}
 
-	//  public delegate Entity* EntityRemovedListener(Entity* e);
-	//  public delegate Entity* EntityAddedListener(Entity* e);
-	public delegate void EntityRemovedListener(Entity* e);
-	public delegate void EntityAddedListener(Entity* e);
-
-	public delegate Entity* Factory();
+	public delegate Entity* EntityFactory();
 
 	public struct Buffer 
 	{
 		public int pool;		   	// pool index
 		public int size;		   	// pool size
-		public Factory Factory;		// factory callback
-		public Buffer(int pool, int size, Factory factory) 
+		public EntityFactory Factory;		// factory callback
+		public Buffer(int pool, int size, EntityFactory factory) 
 		{
 			this.pool = pool;
 			this.size = size;
@@ -59,16 +54,15 @@ namespace Entitas
 	public delegate void SystemInitialize();
 	public delegate void SystemExecute(float delta);
 
-	[SimpleType, Immutable]
 	public struct ISystem 
 	{ 
-		public unowned SystemInitialize Initialize;
-		public unowned SystemExecute Execute;
+		public SystemInitialize Initialize;
+		public SystemExecute Execute;
 	}
 
 	public class System : Object 
 	{
-		public ISystem _ISystem 
+		public ISystem ISystem 
 		{ 
 			get { return { Initialize, Execute }; } 
 		}

@@ -35,11 +35,21 @@ c_library: m
 *vala_source: entitas/Matcher.vala
 *vala_source: entitas/World.vala
 *vala_source: entitas/entitas.vala
+*vala_source: entitas/events/ComponentReplaced.vala
+*vala_source: entitas/events/EntityChanged.vala
+*vala_source: entitas/events/EntityReleased.vala
+*vala_source: entitas/events/GroupChanged.vala
+*vala_source: entitas/events/GroupUpdated.vala
+*vala_source: entitas/events/GroupsChanged.vala
+*vala_source: entitas/events/WorldChanged.vala
 *vala_source: entity.vala
 *vala_source: main.vala
+*vala_source: sdx/ApplicationListener.vala
 *vala_source: sdx/Color.gs
 *vala_source: sdx/Files.vala
 *vala_source: sdx/Font.vala
+*vala_source: sdx/InputProcessor.vala
+*vala_source: sdx/Screen.vala
 *vala_source: sdx/audio/Sound.vala
 *vala_source: sdx/audio/audio.vala
 *vala_source: sdx/exceptions.gs
@@ -86,12 +96,22 @@ c_library: m
 *translate: vala src/entitas/Matcher.vala
 *translate: vala src/entitas/World.vala
 *translate: vala src/entitas/entitas.vala
+*translate: vala src/entitas/events/ComponentReplaced.vala
+*translate: vala src/entitas/events/EntityChanged.vala
+*translate: vala src/entitas/events/EntityReleased.vala
+*translate: vala src/entitas/events/GroupChanged.vala
+*translate: vala src/entitas/events/GroupUpdated.vala
+*translate: vala src/entitas/events/GroupsChanged.vala
+*translate: vala src/entitas/events/WorldChanged.vala
 *translate: vala src/entity.vala
 *translate: vala src/main.vala
 *translate: c src/mt19937ar.c
+*translate: vala src/sdx/ApplicationListener.vala
 *translate: genie src/sdx/Color.gs
 *translate: vala src/sdx/Files.vala
 *translate: vala src/sdx/Font.vala
+*translate: vala src/sdx/InputProcessor.vala
+*translate: vala src/sdx/Screen.vala
 *translate: vala src/sdx/audio/Sound.vala
 *translate: vala src/sdx/audio/audio.vala
 *translate: genie src/sdx/exceptions.gs

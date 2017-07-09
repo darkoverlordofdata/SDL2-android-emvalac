@@ -36,7 +36,7 @@ namespace Systems
 									var x = (int)((float)bullet.transform.position.x);
 									var y = (int)((float)bullet.transform.position.y);
 									world.AddBang(x, y);
-									world.DeleteEntity(bullet);
+									world.DeleteEntity(bullet.SetShow(false));
 									for (var i=0; i<3; i++) 
 										world.AddParticle(x, y);
 									if (enemy.health != null) 
@@ -45,7 +45,7 @@ namespace Systems
 										if (current < 0) 
 										{
 											world.AddExplosion(x, y);
-											world.DeleteEntity(enemy);
+											world.DeleteEntity(enemy.SetShow(false));
 										} 
 										else 
 										{

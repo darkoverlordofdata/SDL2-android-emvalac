@@ -150,7 +150,8 @@ public class Factory : World
 			cache[Pool.BACKGROUND].Enque(CreateBackground());
 			Sdx.Log("out of background\n");
 		}
-		DisplaySystem.Add(cache[Pool.BACKGROUND].Deque());
+		cache[Pool.BACKGROUND].Deque()
+			.SetShow(true);
 	}
 		
 	public void AddPlayer(int x, int y) 
@@ -160,7 +161,8 @@ public class Factory : World
 			cache[Pool.PLAYER].Enque(CreatePlayer());
 			Sdx.Log("out of player\n");
 		}
-		DisplaySystem.Add(cache[Pool.PLAYER].Deque());
+		cache[Pool.PLAYER].Deque()
+			.SetShow(true);
 	}
 
 	public void AddBullet(int x, int y) 
@@ -170,9 +172,10 @@ public class Factory : World
 			cache[Pool.BULLET].Enque(CreateBullet());
 			Sdx.Log("out of bullets\n");
 		}
-		DisplaySystem.Add(cache[Pool.BULLET].Deque()
+		cache[Pool.BULLET].Deque()
+			.SetShow(true)
 			.SetPosition(x, y)
-			.SetActive(true));
+			.SetActive(true);
 	}
 
 	public void AddEnemy1(int x, int y) 
@@ -182,10 +185,11 @@ public class Factory : World
 			cache[Pool.ENEMY1].Enque(CreateEnemy1());
 			Sdx.Log("out of enemy1\n");
 		}
-		DisplaySystem.Add(cache[Pool.ENEMY1].Deque()
+		cache[Pool.ENEMY1].Deque()
+			.SetShow(true)
 			.SetPosition(x, y)
 			.SetHealth(10, 10)
-			.SetActive(true));
+			.SetActive(true);
 	}
 
 	public void AddEnemy2(int x, int y) 
@@ -195,10 +199,11 @@ public class Factory : World
 			cache[Pool.ENEMY2].Enque(CreateEnemy2());
 			Sdx.Log("out of enemy2\n");
 		}
-		DisplaySystem.Add(cache[Pool.ENEMY2].Deque()
+		cache[Pool.ENEMY2].Deque()
+			.SetShow(true)
 			.SetPosition(x, y)
 			.SetHealth(20, 20) 
-			.SetActive(true));
+			.SetActive(true);
 	}
 
 	public void AddEnemy3(int x, int y) 
@@ -208,10 +213,11 @@ public class Factory : World
 			cache[Pool.ENEMY3].Enque(CreateEnemy3());
 			Sdx.Log("out of enemy3\n");
 		}
-		DisplaySystem.Add(cache[Pool.ENEMY3].Deque()
+		cache[Pool.ENEMY3].Deque()
+			.SetShow(true)
 			.SetPosition(x, y)
 			.SetHealth(60, 60)
-			.SetActive(true));
+			.SetActive(true);
 	}
 
 	public void AddExplosion(int x, int y) 
@@ -222,13 +228,14 @@ public class Factory : World
 			Sdx.Log("out of explosions\n");
 		}
 		var entity = cache[Pool.EXPLOSION].Deque();
-		DisplaySystem.Add(entity
+		entity
+			.SetShow(true)
 			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.SetTween(0.006f, 0.6f, -3f, false, true)
 			.SetPosition(x, y)
 			.SetScale(0.6f*Sdx.pixelFactor, 0.6f*Sdx.pixelFactor)
 			.SetExpires(0.2f)
-			.SetActive(true));
+			.SetActive(true);
 	}
 
 	public void AddBang(int x, int y) 
@@ -239,13 +246,14 @@ public class Factory : World
 			Sdx.Log("out of bang\n");
 		}
 		var entity = cache[Pool.BANG].Deque();
-		DisplaySystem.Add(entity
+		entity
+			.SetShow(true)
 			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.SetTween(0.003f, 0.3f, -3f, false, true)
 			.SetPosition(x, y)
 			.SetScale(0.3f*Sdx.pixelFactor, 0.3f*Sdx.pixelFactor)
 			.SetExpires(0.2f)
-			.SetActive(true));
+			.SetActive(true);
 	}
 
 	public void AddParticle(int x, int y) 
@@ -261,12 +269,13 @@ public class Factory : World
 		var velocityY = magnitude * Math.sin(radians);
 		var scale = (float)Sdx.GetRandom();
 		var entity = cache[Pool.PARTICLE].Deque();
-		DisplaySystem.Add(entity
+		entity
+			.SetShow(true)
 			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.SetPosition(x, y)
 			.SetScale(scale*Sdx.pixelFactor, scale*Sdx.pixelFactor)
 			.SetVelocity((float)velocityX, (float)velocityY)
 			.SetExpires(0.75f)
-			.SetActive(true));
+			.SetActive(true);
 	}
 }

@@ -84,8 +84,6 @@ namespace Systems
 					return false;
 				}
 			});
-				
 		}
-			
 	}
 }

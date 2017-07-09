@@ -82,6 +82,12 @@ namespace Entitas
 		public bool active;
     }
 
+	[SimpleType, Immutable]
+	public struct Show 
+	{
+		public bool active;
+    }
+    
 	public struct Sound 
 	{
 		public Sdx.Audio.Sound sound;
@@ -134,11 +140,12 @@ namespace Entitas
 	const uint64 HUD 			= 0x00080;
 	const uint64 LAYER 			= 0x00100;
 	const uint64 PLAYER 		= 0x00200;
-	const uint64 SOUND 			= 0x00400;
-	const uint64 TEXT 			= 0x00800;
-	const uint64 TINT 			= 0x01000;
-	const uint64 TWEEN 			= 0x02000;
-	const uint64 VELOCITY 		= 0x04000;
+	const uint64 SHOW 			= 0x00400;
+	const uint64 SOUND 			= 0x00800;
+	const uint64 TEXT 			= 0x01000;
+	const uint64 TINT 			= 0x02000;
+	const uint64 TWEEN 			= 0x04000;
+	const uint64 VELOCITY 		= 0x08000;
 	const uint64 ACTIVE 		= 0x8000000000000000;
 
 	/**
@@ -157,6 +164,7 @@ namespace Entitas
 		"Hud",
 		"Layer",
 		"Player",
+		"Show",
 		"Sound",
 		"Text",
 		"Tint",
@@ -180,6 +188,7 @@ namespace Entitas
 		HudComponent,
 		LayerComponent,
 		PlayerComponent,
+		ShowComponent,
 		SoundComponent,
 		TextComponent,
 		TintComponent,

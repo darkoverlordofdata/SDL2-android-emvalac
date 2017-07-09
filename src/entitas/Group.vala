@@ -26,38 +26,140 @@ namespace Entitas
 {
 	public class Group : Object 
 	{
-		public Matcher matcher;
+        /**
+         * Get a list of the entities in this group
+         *
+         * @type List<entitas.Entity*>
+         */
 		public List<Entity*> entities;
+        /**
+         * Get the Matcher for this group
+         * @type entitas.IMatcher
+         * @name entitas.Group#matcher */
+ 		public Matcher matcher;
+       /**
+         * Subscribe to IEntity Addded events
+         * @type entitas.utils.ISignal */
+		public GroupChanged onEntityAdded;
+        /**
+         * Subscribe to IEntity Removed events
+         * @type entitas.utils.ISignal */
+		public GroupChanged onEntityRemoved;
+        /**
+         * Subscribe to IEntity Updated events
+         * @type entitas.utils.ISignal */
+		public GroupUpdated onEntityUpdated;
+		
 		
 		public Group(Matcher matcher) 
 		{
 			this.matcher = matcher;
+            onEntityAdded = new GroupChanged();
+            onEntityRemoved = new GroupChanged();
+            onEntityUpdated = new GroupUpdated();
 		}
 
-		/** Add entity to group */
-		public void HandleEntitySilently(Entity* entity) 
+        /**
+         * Handle adding and removing component from the entity without raising events
+         * @param entity
+         */
+ 		public void HandleEntitySilently(Entity* entity) 
 		{
 			if (matcher.Matches(entity)) 
-				entities.Insert(entity);
+				AddEntitySilently(entity);
 			else 
-				entities.Remove(entity);
+				RemoveEntitySilently(entity);
 		}
 
-		/** Add entity to group and raise events */
-		public void HandleEntity(Entity* entity, Components index) 
+        /**
+         * Handle adding and removing component from the entity and raisieevents
+         * @param entity
+         * @param index
+         * @param component
+         */
+ 		public void HandleEntity(Entity* entity, Components index, void* component) 
 		{
 			if (matcher.Matches(entity))
-				entities.Insert(entity);
+				AddEntity(entity, index, component);
 			else
-				entities.Remove(entity);
+				RemoveEntity(entity, index, component);
 		} 
 
+        /**
+         * Add entity without raising events
+         * @param entity
+         */
+		public void AddEntitySilently(Entity* entity) 
+		{
+			if (entities.Find(entity) == null) 
+			{
+				entities.Insert(entity);
+			}
 
+		}
+
+        /**
+         * Add entity and raise events
+         * @param entity
+         * @param index
+         * @param component
+         */
+		public void AddEntity(Entity* entity, Components index, void* component) 
+		{
+			if (entities.Find(entity) == null) 
+			{
+				entities.Insert(entity);
+				onEntityAdded.Dispatch(this, entity, index, component);
+			}
+
+		}
+
+        /**
+         * Remove entity without raising events
+         * @param entity
+         */
+		public void RemoveEntitySilently(Entity* entity) 
+		{
+			if (entities.Find(entity) != null) 
+			{
+				entities.Remove(entity);
+			}
+		}
+
+
+        /**
+         * Remove entity and raise events
+         * @param entity
+         * @param index
+         * @param component
+         */
+		public void RemoveEntity(Entity* entity, Components index, void* component) 
+		{
+			if (entities.Find(entity) != null) 
+			{
+				entities.Remove(entity);
+				onEntityRemoved.Dispatch(this, entity, index, component);
+			}
+		}
+
+ 
+        /**
+         * Check if group has this entity
+         *
+         * @param entity
+         * @returns boolean
+         */
 		public bool ContainsEntity(Entity* entity)
 		{
 			return entities.Find(entity) != null;
 		}
 
+        /**
+         * Gets an entity singleton.
+         * If a group has more than 1 entity, this is an error condition.
+         *
+         * @returns entitas.IEntity
+         */
 		public Entity* GetSingleEntity() 
 		{ 
 			var c = entities.Length();

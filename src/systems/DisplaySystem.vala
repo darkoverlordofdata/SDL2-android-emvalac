@@ -4,42 +4,28 @@ using Sdx.Graphics;
 namespace Systems 
 {
 	/**
-	* game systems
+	* Display systems
 	*/
 	public class DisplaySystem : Object 
 	{
-		public static DisplaySystem instance; 
 		public List<Entity*> sprites = new List<Entity*>();
-		public NinePatch btn9;
-		public Sprite button;
 
-		public static void Add(Entity* e) 
+		public DisplaySystem(Game game, Factory world) 
 		{
-			instance.AddEntity(e);
-		}
-		
-		public DisplaySystem(Factory world) 
-		{
-			instance = this;
-			btn9 = Factory.atlas.CreatePatch("btnPressed");
-			//  button = new Sprite.NineSliceSprite(btn9);
-			button = new Sprite.UISprite(btn9, "Click Me", Sdx.font, Sdx.Color.Black);
+			
+			var show = world.GetGroup(Matcher.AllOf({ Components.ShowComponent }));
+
+			show.onEntityAdded.Add(OnEntityAdded);
+			show.onEntityRemoved.Add(OnEntityRemoved);
 
 		}
 
-		public void Test()
+		public void OnEntityAdded(Group group, Entity* entity, int index,  void* component) 
 		{
-
-			Sdx.renderer.Copy(button.texture, null, { 100, 100, button.width, button.height } );			
-		}
-		public void AddEntity(Entity* e) 
-		{
-			//sprites.ForEach(it => Sdx.Log(it.ToString()));
-
-			var layer = e.layer.value;
+			var layer = entity.layer.value;
 			if (sprites.Length() == 0) 
 			{
-				sprites.Add(e);
+				sprites.Add(entity);
 			} 
 			else 
 			{
@@ -49,7 +35,7 @@ namespace Systems
 					assert(s != null);
 					if (layer <= s.layer.value) 
 					{
-						sprites.Insert(e, i);
+						sprites.Insert(entity, i);
 						return;
 					} 
 					else 
@@ -57,8 +43,13 @@ namespace Systems
 						i++;
 					}
 				}
-				sprites.Add(e);
+				sprites.Add(entity);
 			}
+		}
+
+		public void OnEntityRemoved(Group group, Entity* entity, int index,  void* component) 
+		{
+			sprites.Remove(entity);
 		}
 
 		public bool Draw(Entity* e, ref Transform t) 

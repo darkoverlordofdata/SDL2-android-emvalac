@@ -10,7 +10,7 @@ namespace Systems
 		public ExpireSystem(Game game, Factory world) 
 		{
 
-			var expiring = world.GetGroup(Matcher.AllOf({Components.ExpiresComponent}));
+			var expiring = world.GetGroup(Matcher.AllOf({ Components.ExpiresComponent }));
 			
 			/**
 			 * Remove exired entities
@@ -23,7 +23,7 @@ namespace Systems
 					{
 						entity.expires.value -= delta; 
 						if (entity.expires.value < 0)	
-							world.DeleteEntity(entity);
+							world.DeleteEntity(entity.SetShow(false));
 					}
 				});
 			};
