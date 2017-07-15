@@ -249,14 +249,16 @@ namespace Sdx.Graphics
 			 * @param function that returns a list of rectangles
 			 * 
 			 */
-
-			public UISprite(NinePatch patch, string text, Sdx.Font font, SDL.Video.Color color, int width = 125, int height = 80) 
+			public UISprite(NinePatch patch, string text, Sdx.Font font, SDL.Video.Color color, int width = 50, int height = 20) 
 			{
 
-				var textSurface = font.Render(text, Sdx.Color.DodgerBlue);
+				var textSurface = font.Render(text, color);
 				
 				width = (int)GLib.Math.fmax(width, textSurface.w);
 				height = (int)GLib.Math.fmax(height, textSurface.h);
+
+				//  width = (int)textSurface.w;
+				//  height = (int)textSurface.h;
 
 				var w = (int)patch.GetTotalWidth()+width;
 				var h = (int)patch.GetTotalHeight()+height;
@@ -301,7 +303,8 @@ namespace Sdx.Graphics
 				{
 					patch.texture.surface.BlitScaled(segment.source, surface, dest[i++]);
 				}
-				textSurface.BlitScaled({ 0, 0, 108, 80 }, surface, { 10, 20, 108, 80 });
+				//  textSurface.BlitScaled({ 0, 0, 108, 80 }, surface, { 0, 0, 108, 80 });
+				textSurface.BlitScaled({ 0, 0, width, height }, surface, { 0, 0, width, height });
 
 
 				texture = SDL.Video.Texture.CreateFromSurface(renderer, surface);
@@ -323,9 +326,9 @@ namespace Sdx.Graphics
 			 * @param color foregound text color (background transparent)
 			 * 
 			 */
-			public TextSprite(string text, Sdx.Font font, SDL.Video.Color color) 
+			public TextSprite(string text, Sdx.Font font, SDL.Video.Color fg, SDL.Video.Color? bg = null) 
 			{
-				SetText(text, font, color);
+				SetText(text, font, fg, bg);
 				centered = false;
 				kind = Kind.TextSprite;
 			}
@@ -337,9 +340,9 @@ namespace Sdx.Graphics
 			 * @param font used to generate text
 			 * @param color foregound text color (background transparent)
 			 */
-			public void SetText(string text, Sdx.Font font, SDL.Video.Color color) 
+			public void SetText(string text, Sdx.Font font, SDL.Video.Color fg, SDL.Video.Color? bg = null) 
 			{
-				var surface = font.Render(text, color);
+				var surface = font.Render(text, fg, bg);
 				texture = SDL.Video.Texture.CreateFromSurface(renderer, surface);
 				texture.SetBlendMode(SDL.Video.BlendMode.BLEND);
 				width = surface.w;

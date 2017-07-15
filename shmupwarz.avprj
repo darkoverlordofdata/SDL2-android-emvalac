@@ -30,7 +30,6 @@ c_library: m
 *vala_source: Factory.vala
 *vala_source: Game.vala
 *vala_source: components.vala
-*vala_source: entitas/Cache.vala
 *vala_source: entitas/Group.vala
 *vala_source: entitas/Matcher.vala
 *vala_source: entitas/World.vala
@@ -66,7 +65,9 @@ c_library: m
 *vala_source: sdx/graphics/graphics.vala
 *vala_source: sdx/math/Vector2.vala
 *vala_source: sdx/sdx.vala
+*vala_source: sdx/ui/Button.vala
 *vala_source: sdx/ui/Component.vala
+*vala_source: sdx/ui/Label.vala
 *vala_source: sdx/utils/Cache.vala
 *vala_source: sdx/utils/File.vala
 *vala_source: sdx/utils/Json.vala
@@ -81,6 +82,7 @@ c_library: m
 *vala_source: systems/PhysicsSystem.vala
 *vala_source: systems/RemoveSystem.vala
 *vala_source: systems/ScoreSystem.vala
+*vala_source: systems/SoundSystem.vala
 *vala_source: systems/SpawnSystem.vala
 *c_source: mt19937ar.c
 *h_folder: .
@@ -91,7 +93,6 @@ c_library: m
 *translate: vala src/Factory.vala
 *translate: vala src/Game.vala
 *translate: vala src/components.vala
-*translate: vala src/entitas/Cache.vala
 *translate: vala src/entitas/Group.vala
 *translate: vala src/entitas/Matcher.vala
 *translate: vala src/entitas/World.vala
@@ -128,7 +129,9 @@ c_library: m
 *translate: vala src/sdx/graphics/graphics.vala
 *translate: vala src/sdx/math/Vector2.vala
 *translate: vala src/sdx/sdx.vala
+*translate: vala src/sdx/ui/Button.vala
 *translate: vala src/sdx/ui/Component.vala
+*translate: vala src/sdx/ui/Label.vala
 *translate: vala src/sdx/utils/Cache.vala
 *translate: vala src/sdx/utils/File.vala
 *translate: vala src/sdx/utils/Json.vala
@@ -143,6 +146,7 @@ c_library: m
 *translate: vala src/systems/PhysicsSystem.vala
 *translate: vala src/systems/RemoveSystem.vala
 *translate: vala src/systems/ScoreSystem.vala
+*translate: vala src/systems/SoundSystem.vala
 *translate: vala src/systems/SpawnSystem.vala
 
 *data: data/local

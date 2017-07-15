@@ -40,9 +40,9 @@ namespace Entitas
 
 	public struct Buffer 
 	{
-		public int pool;		   	// pool index
-		public int size;		   	// pool size
-		public EntityFactory Factory;		// factory callback
+		public int pool;		   		// pool index
+		public int size;		   		// pool size
+		public EntityFactory Factory;	// factory callback
 		public Buffer(int pool, int size, EntityFactory factory) 
 		{
 			this.pool = pool;
@@ -51,14 +51,14 @@ namespace Entitas
 		}
 	}
 
-	public delegate void SystemInitialize();
-	public delegate void SystemExecute(float delta);
 
 	public struct ISystem 
 	{ 
 		public SystemInitialize Initialize;
 		public SystemExecute Execute;
 	}
+	public delegate void SystemInitialize();
+	public delegate void SystemExecute(float delta);
 
 	public class System : Object 
 	{
@@ -69,6 +69,8 @@ namespace Entitas
 		public SystemInitialize Initialize = () => {};
 		public SystemExecute Execute = (delta) => {};
 	}	
+
+
 
 	/**
 	 * Bit array masks

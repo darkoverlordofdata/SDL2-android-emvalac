@@ -27,11 +27,12 @@ namespace Sdx.Audio {
             chunk = new SDLMixer.Chunk.WAV_RW(file.GetRWops());
         }
 
-        public void Play(int loops = 0) {            
+        public void Play(int loops = 0) {   
             SDLMixer.play(-1, chunk, loops);
-
         }
 #else
+// TODO:  use vorbis for emscripten
+
         public Sound(FileHandle file) {
         }
 

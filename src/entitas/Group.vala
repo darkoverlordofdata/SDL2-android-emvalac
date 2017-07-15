@@ -29,34 +29,33 @@ namespace Entitas
         /**
          * Get a list of the entities in this group
          *
-         * @type List<entitas.Entity*>
+         * @type List<Entity*>
          */
 		public List<Entity*> entities;
         /**
          * Get the Matcher for this group
-         * @type entitas.IMatcher
-         * @name entitas.Group#matcher */
+         * @type Entitas.Matcher */
  		public Matcher matcher;
        /**
          * Subscribe to IEntity Addded events
-         * @type entitas.utils.ISignal */
-		public GroupChanged onEntityAdded;
+         * @type Event.GroupChanged */
+		public Event.GroupChanged onEntityAdded;
         /**
          * Subscribe to IEntity Removed events
-         * @type entitas.utils.ISignal */
-		public GroupChanged onEntityRemoved;
+         * @type Event.GroupChanged */
+		public Event.GroupChanged onEntityRemoved;
         /**
          * Subscribe to IEntity Updated events
-         * @type entitas.utils.ISignal */
-		public GroupUpdated onEntityUpdated;
+         * @type Event.GroupUpdated */
+		public Event.GroupUpdated onEntityUpdated;
 		
 		
 		public Group(Matcher matcher) 
 		{
 			this.matcher = matcher;
-            onEntityAdded = new GroupChanged();
-            onEntityRemoved = new GroupChanged();
-            onEntityUpdated = new GroupUpdated();
+            onEntityAdded = new Event.GroupChanged();
+            onEntityRemoved = new Event.GroupChanged();
+            onEntityUpdated = new Event.GroupUpdated();
 		}
 
         /**
@@ -77,7 +76,7 @@ namespace Entitas
          * @param index
          * @param component
          */
- 		public void HandleEntity(Entity* entity, Components index, void* component) 
+ 		public void HandleEntity(Entity* entity, int index, void* component) 
 		{
 			if (matcher.Matches(entity))
 				AddEntity(entity, index, component);
@@ -104,7 +103,7 @@ namespace Entitas
          * @param index
          * @param component
          */
-		public void AddEntity(Entity* entity, Components index, void* component) 
+		public void AddEntity(Entity* entity, int index, void* component) 
 		{
 			if (entities.Find(entity) == null) 
 			{
@@ -133,7 +132,7 @@ namespace Entitas
          * @param index
          * @param component
          */
-		public void RemoveEntity(Entity* entity, Components index, void* component) 
+		public void RemoveEntity(Entity* entity, int index, void* component) 
 		{
 			if (entities.Find(entity) != null) 
 			{

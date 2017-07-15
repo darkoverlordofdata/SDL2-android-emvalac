@@ -112,7 +112,7 @@ namespace Sdx.Graphics {
 
             var json = Sdx.Utils.Json.Parse(fontFile.Read());
             var padding = json.Member("font").Member("info").Member("padding").string.Split(",", 4);
-            if (padding.length != 4) throw new SdlException.RuntimeException("Invalid padding.");
+            if (padding.length != 4) throw new SdlException.RuntimeException("Invalid padding: %d.", padding.length);
             padTop = int.Parse(padding[0]);
             padRight = int.Parse(padding[1]);
             padBottom = int.Parse(padding[2]);

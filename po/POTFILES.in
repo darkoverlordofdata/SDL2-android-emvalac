@@ -1,7 +1,6 @@
 src/Factory.vala
 src/Game.vala
 src/components.vala
-src/entitas/Cache.vala
 src/entitas/Group.vala
 src/entitas/Matcher.vala
 src/entitas/World.vala
@@ -37,7 +36,9 @@ src/sdx/graphics/TextureRegion.vala
 src/sdx/graphics/graphics.vala
 src/sdx/math/Vector2.vala
 src/sdx/sdx.vala
+src/sdx/ui/Button.vala
 src/sdx/ui/Component.vala
+src/sdx/ui/Label.vala
 src/sdx/utils/Cache.vala
 src/sdx/utils/File.vala
 src/sdx/utils/Json.vala
@@ -52,5 +53,6 @@ src/systems/InputSystem.vala
 src/systems/PhysicsSystem.vala
 src/systems/RemoveSystem.vala
 src/systems/ScoreSystem.vala
+src/systems/SoundSystem.vala
 src/systems/SpawnSystem.vala
 src/mt19937ar.c

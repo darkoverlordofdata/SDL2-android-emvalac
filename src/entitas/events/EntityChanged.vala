@@ -22,9 +22,9 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Entitas 
+namespace Entitas.Event
 {
-    public delegate void OnEntityChanged(Entity* e, int index,  void* component);
+    public delegate void OnEntityChanged(Entity* e, int index, void* component);
     
     public class EntityChanged : Object 
     {
@@ -36,10 +36,10 @@ namespace Entitas
                 this.event = event;
             }
         }
-        public List<Listener> listeners;
+        public GenericArray<Listener> listeners;
         public EntityChanged() 
         {
-            listeners = new List<Listener>();
+            listeners = new GenericArray<Listener>();
         }
 
         public void Add(OnEntityChanged event) 
@@ -49,24 +49,23 @@ namespace Entitas
 
         public void Remove(OnEntityChanged event)
         {
-            foreach (var listener in listeners) {
-                if (listener.event == event) {
-                    listeners.Remove(listener);
+            for (var i=0; i<listeners.length; i++) 
+            {
+                if (listeners.Get(i).event == event) 
+                {
+                    listeners.RemoveFast(i);
                     return;
                 }
             }
         }
         public void Clear()
         {
-            listeners = new List<Listener>();
+            listeners.RemoveRange(0, listeners.length);
         }
 
         public void Dispatch(Entity* e, int index, void* component)
         {
-            foreach (var listener in listeners)
-            {
-                listener.event(e, index, component);
-            }
+            listeners.ForEach(listener => listener.event(e, index, component));
         }
     }
 }

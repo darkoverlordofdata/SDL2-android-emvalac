@@ -10,8 +10,8 @@
  *
  */
 public void game() {
-	var window = Sdx.Initialize(720, 512, "Shmupwarz");
-	var game = new Game(720, 512);
+	var window = new Sdx.Ui.Window(720, 512, "Shmupwarz");
+	var game = new Game(window);
 	game.Start();
 	Emscripten.SetMainLoopArg(MainLoop, game, 0, 1);
 	return;
@@ -31,11 +31,11 @@ public void MainLoop(void* arg) {
  */
 public int main(string args[]) {
 #if (ANDROID)
-	var window = Sdx.Initialize(1184, 768, "Shmupwarz");
-	var game = new Game(1184, 768);
+	var window = new Sdx.Ui.Window(1184, 768, "Shmupwarz");
+	var game = new Game(window);
 #else
-	var window = Sdx.Initialize(720, 512, "Shmupwarz");
-	var game = new Game(720, 512);
+	var window = new Sdx.Ui.Window(720, 512, "Shmupwarz");
+	var game = new Game(window);
 #endif
 	game.Start();
 	while (Sdx.running) {

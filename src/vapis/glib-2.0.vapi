@@ -35,6 +35,8 @@
  * 
  * Copyright (C) 2017 bruce davidson
  */
+    
+
 [SimpleType]
 [GIR (name = "gboolean")]
 [CCode (cname = "gboolean", cheader_filename = "glib.h", type_id = "G_TYPE_BOOLEAN", marshaller_type_name = "BOOLEAN", get_value_function = "g_value_get_boolean", set_value_function = "g_value_set_boolean", default_value = "FALSE", type_signature = "b")]
@@ -128,6 +130,8 @@ public struct int {
 
 	[CCode (cname = "g_strdup_printf", instance_pos = -1)]
 	public string ToString (string format = "%i");
+	[CCode (cname = "g_strdup_printf", instance_pos = -1)]
+	public string to_string (string format = "%i");
 
 	[CCode (cname = "MIN")]
 	public static int min (int a, int b);
@@ -1045,6 +1049,8 @@ public class string {
 	public int Scanf (...);
 	[CCode (cname = "g_strconcat")]
 	public string Concat (string string2, ...);
+	[CCode (cname = "g_strconcat")]
+	public string concat (string string2, ...);
 	[CCode (cname = "g_strescape")]
 	public string Escape (string? exceptions = null);
 	[CCode (cname = "g_strcompress")]
@@ -4723,7 +4729,8 @@ namespace GLib {
 		[Version (since = "2.14")]
 		public unowned StringBuilder overwrite_len (size_t pos, string val, ssize_t len);
 		public unowned StringBuilder erase (ssize_t pos = 0, ssize_t len = -1);
-		public unowned StringBuilder truncate (size_t len = 0);
+		[CCode (cname = "g_string_truncate")]
+		public unowned StringBuilder Truncate (size_t len = 0);
 
 		[PrintfFormat]
 		public void printf (string format, ...);
@@ -4799,21 +4806,73 @@ namespace GLib {
 	[Compact]
 	[CCode (cname = "GPtrArray", cprefix = "g_ptr_array_", ref_function = "g_ptr_array_ref", unref_function = "g_ptr_array_unref", type_id = "G_TYPE_PTR_ARRAY")]
 	[GIR (name = "PtrArray")]
+	public class Stack<G> {
+		[Version (since = "2.30")]
+		[CCode (cname = "g_ptr_array_new_full", simple_generics = true)]
+		public Stack (uint reserved_size = 0);
+
+		public void Clear() {
+			this.remove_range(0, this.len);
+		}
+		[CCode (cname = "g_ptr_array_index")]
+		public unowned G Get (uint index);
+		[CCode (cname = "g_ptr_array_foreach")]
+		public void ForEach (GLib.Func<G> func);
+		public bool IsEmpty () {
+			return this.len == 0;
+		}
+		[CCode (cname = "g_ptr_array_add")]
+		public void Push (owned G data);
+		public G Pop() {
+			var item = this.Get(this.len-1);
+			this.remove_index(this.len-1);
+			return item;
+		}
+		public void Set (uint index, owned G data) {
+			this.add ((owned) data);
+			this.remove_index_fast (index);
+		}
+
+		private void add (owned G data);
+		private void remove_index (uint index);
+		private void remove_index_fast (uint index);
+		private void remove_range (uint index, uint length);
+		private uint len;
+	}
+
+	[Compact]
+	[CCode (cname = "GPtrArray", cprefix = "g_ptr_array_", ref_function = "g_ptr_array_ref", unref_function = "g_ptr_array_unref", type_id = "G_TYPE_PTR_ARRAY")]
+	[GIR (name = "PtrArray")]
 	public class GenericArray<G> {
 		[Version (since = "2.30")]
 		[CCode (cname = "g_ptr_array_new_full", simple_generics = true)]
 		public GenericArray (uint reserved_size = 0);
+
+		[CCode (cname = "g_ptr_array_add")]
+		public void Add (owned G data);
 		public void add (owned G data);
+		[CCode (cname = "g_ptr_array_foreach")]
+		public void ForEach (GLib.Func<G> func);
 		public void foreach (GLib.Func<G> func);
 		[CCode (cname = "g_ptr_array_index")]
 		public unowned G get (uint index);
+		[CCode (cname = "g_ptr_array_index")]
+		public unowned G Get (uint index);
 		[Version (since = "2.40")]
 		public void insert (int index, owned G data);
 		public bool remove (G data);
 		public void remove_index (uint index);
 		public bool remove_fast (G data);
+		[CCode (cname = "g_ptr_array_remove_index_fast")]
+		public void RemoveFast (uint index);
 		public void remove_index_fast (uint index);
+		[CCode (cname = "g_ptr_array_remove_range")]
+		public void RemoveRange (uint index, uint length);
 		public void remove_range (uint index, uint length);
+		public void Set (uint index, owned G data) {
+			this.add ((owned) data);
+			this.remove_index_fast (index);
+		}
 		public void set (uint index, owned G data) {
 			this.add ((owned) data);
 			this.remove_index_fast (index);

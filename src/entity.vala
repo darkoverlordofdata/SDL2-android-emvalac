@@ -14,30 +14,74 @@ namespace Entitas
 		public uint64 		mask;			/* HasComponent bit array */
 		public Transform 	transform;		/* core game object */
 
+        /**
+         * Subscribe to Component Added Event
+         * @type Event.EntityChanged */
+		public Event.EntityChanged		onComponentAdded;
+
+        /**
+         * Subscribe to Component Removed Event
+         * @type Event.EntityChanged */
+		public Event.EntityChanged		onComponentRemoved;
+
+        /**
+         * Subscribe to Entity Released Event
+         * @type Event.EntityReleased */
+		public Event.EntityReleased		onEntityReleased;
+
+        /**
+         * Subscribe to Component Replaced Event
+         * @type Event.ComponentReplaced */
+		public Event.ComponentReplaced	onComponentReplaced;
+
 		/* ============================ */
-		public Background? 	background; 
-		public Bullet? 		bullet;		
-		public Enemy1? 		enemy1;		
-		public Enemy2? 		enemy2;		
-		public Enemy3? 		enemy3;		
-		public Expires? 	expires;		
-		public Health? 		health;		
-		public Hud? 		hud;			
-		public Layer? 		layer;		
-		public Player? 		player;
-		public Show?		show;		
-		public Sound? 		sound;
-		public Text? 		text;
-		public Tint? 		tint;
-		public Tween?		tween;
-		public Velocity? 	velocity;
+		public Background? 	background; 	/* flag */
+		public Bullet? 		bullet;			/* flag */
+		public Enemy1? 		enemy1;			/* flag */
+		public Enemy2? 		enemy2;			/* flag */
+		public Enemy3? 		enemy3;			/* flag */
+		public Expires? 	expires;		/* value */
+		public Health? 		health;			/* value */
+		public Hud? 		hud;			/* value */
+		public Layer? 		layer;			/* value */
+		public Player? 		player;			/* flag */
+		public Show?		show;			/* flag */
+		public Sound? 		sound;			/* value */
+		public Text? 		text;			/* value */
+		public Tint? 		tint;			/* value */
+		public Tween?		tween;			/* value */
+		public Velocity? 	velocity;		/* value */
 		/* ============================ */
+
+		public Entity(int id, 
+			Event.OnEntityChanged? ComponentAddedOrRemoved = null, 
+			Event.OnEntityReleased? ComponentEntityReleased = null, 
+			Event.OnComponentReplaced? ComponentComponentReplaced = null)
+		{
+
+			this.id = id;
+
+            onEntityReleased = new Event.EntityReleased();
+            onComponentAdded = new Event.EntityChanged();
+            onComponentRemoved = new Event.EntityChanged();
+            onComponentReplaced = new Event.ComponentReplaced();
+
+			if (ComponentEntityReleased != null)
+				onEntityReleased.Add(ComponentEntityReleased);
+			if (ComponentAddedOrRemoved != null)
+				onComponentAdded.Add(ComponentAddedOrRemoved);
+			if (ComponentAddedOrRemoved != null)
+				onComponentRemoved.Add(ComponentAddedOrRemoved);
+			if (ComponentComponentReplaced != null)
+				onComponentReplaced.Add(ComponentComponentReplaced);
+		}
 
         /**
          * Destroy
          *
          */
-		public void Destroy() {
+		public void Destroy() 
+		{
 			SetActive(false);
 		}
 
@@ -151,41 +195,22 @@ namespace Entitas
 		
 		public string ToString() 
 		{
-			var sb = "";
-			sb = sb + id.ToString() + "(" + name + ")";
-			var seperator = false;
-			for (var i = 1; i<=ComponentString.length; i++) 
+			var sb = new StringBuilder();
+			sb.Append(id.ToString())
+			.Append("(")
+			.Append(name)
+			.Append(")");
+
+			for (var i = 1, seperator = false; i <= ComponentString.length; i++) 
 			{
 				if (HasComponent(i)) 
 				{
-					if (seperator) sb = sb + ", ";
-					sb = sb + ComponentString[i];
+					if (seperator) sb.Append(", ");
+					sb.Append(ComponentString[i]);
 					seperator = true;
 				}
 			}
-			return sb;
-		}
-
-		/**
-		 * Components:
-		 */
-
-		public Entity* SetShow(bool value) {
-			if (value) {
-				show = { true };
-				mask |= SHOW;
-				World.OnComponentAdded(&this, Components.ShowComponent, &show);
-			} else {
-				var prev = show;
-				show = null;
-				mask ^= SHOW;
-				World.OnComponentRemoved(&this, Components.ShowComponent, &prev);
-			}
-			return &this;
-		}
-
-		public bool IsShow() {
-			return (mask & SHOW) == SHOW;
+			return sb.str;
 		}
 
 
@@ -193,12 +218,13 @@ namespace Entitas
 			if (value) {
 				background = { true };
 				mask |= BACKGROUND;
-				World.OnComponentAdded(&this, Components.BackgroundComponent, &background);
+				//eventHandler.OnEntityChanged(&this, Components.BackgroundComponent, &background);
+				onComponentAdded.Dispatch(&this, Components.BackgroundComponent, &background);
 			} else {
 				var prev = background;
 				background = null;
 				mask ^= BACKGROUND;
-				World.OnComponentRemoved(&this, Components.BackgroundComponent, &prev);
+				onComponentRemoved.Dispatch(&this, Components.BackgroundComponent, &prev);
 			}
 			return &this;
 		}
@@ -211,12 +237,12 @@ namespace Entitas
 			if (value) {
 				bullet = { true };
 				mask |= BULLET;
-				World.OnComponentAdded(&this, Components.BulletComponent, &bullet);
+				onComponentAdded.Dispatch(&this, Components.BulletComponent, &bullet);
 			} else {
 				var prev = bullet;
 				bullet = null;
 				mask ^= BULLET;
-				World.OnComponentRemoved(&this, Components.BulletComponent, &prev);
+				onComponentRemoved.Dispatch(&this, Components.BulletComponent, &prev);
 			}
 			return &this;
 		}
@@ -229,12 +255,12 @@ namespace Entitas
 			if (value) {
 				enemy1 = { true };
 				mask |= ENEMY1;
-				World.OnComponentAdded(&this, Components.Enemy1Component, &enemy1);
+				onComponentAdded.Dispatch(&this, Components.Enemy1Component, &enemy1);
 			} else {
 				var prev = enemy1;
 				enemy1 = null;
 				mask ^= ENEMY1;
-				World.OnComponentRemoved(&this, Components.Enemy1Component, &prev);
+				onComponentRemoved.Dispatch(&this, Components.Enemy1Component, &prev);
 			}
 			return &this;
 		}
@@ -247,12 +273,12 @@ namespace Entitas
 			if (value) {
 				enemy2 = { true };
 				mask |= ENEMY2;
-				World.OnComponentAdded(&this, Components.Enemy2Component, &enemy2);
+				onComponentAdded.Dispatch(&this, Components.Enemy2Component, &enemy2);
 			} else {
 				var prev = enemy2;
 				enemy2 = null;
 				mask ^= ENEMY2;
-				World.OnComponentRemoved(&this, Components.Enemy2Component, &prev);
+				onComponentRemoved.Dispatch(&this, Components.Enemy2Component, &prev);
 			}
 			return &this;
 		}
@@ -265,12 +291,12 @@ namespace Entitas
 			if (value) {
 				enemy3 = { true };
 				mask |= ENEMY3;
-				World.OnComponentAdded(&this, Components.Enemy3Component, &enemy3);
+				onComponentAdded.Dispatch(&this, Components.Enemy3Component, &enemy3);
 			} else {
 				var prev = enemy3;
 				enemy3 = null;
 				mask ^= ENEMY3;
-				World.OnComponentRemoved(&this, Components.Enemy3Component, &prev);
+				onComponentRemoved.Dispatch(&this, Components.Enemy3Component, &prev);
 			}
 			return &this;
 		}
@@ -287,7 +313,7 @@ namespace Entitas
 			if ((mask & EXPIRES) == EXPIRES) throw new Exception.EntityAlreadyHasComponent("Expires");
 			expires = { value };
 			mask |= EXPIRES;
-			World.OnComponentAdded(&this, Components.ExpiresComponent, &expires);
+			onComponentAdded.Dispatch(&this, Components.ExpiresComponent, &expires);
 			return &this;
 		}
 
@@ -302,7 +328,7 @@ namespace Entitas
 			var prev = expires;
 			expires = null;
 			mask ^= EXPIRES;
-			World.OnComponentRemoved(&this, Components.ExpiresComponent, &prev);
+			onComponentRemoved.Dispatch(&this, Components.ExpiresComponent, &prev);
 			return &this;
 		}
 
@@ -314,7 +340,7 @@ namespace Entitas
 			if ((mask & HEALTH) == HEALTH) throw new Exception.EntityAlreadyHasComponent("Health");
 			health = { current, maximum };
 			mask |= HEALTH;
-			World.OnComponentAdded(&this, Components.HealthComponent, &health);
+			onComponentAdded.Dispatch(&this, Components.HealthComponent, &health);
 			return &this;
 		}
 
@@ -330,7 +356,7 @@ namespace Entitas
 			var prev = health;
 			health = null;
 			mask ^= HEALTH;
-			World.OnComponentRemoved(&this, Components.HealthComponent, &prev);
+			onComponentRemoved.Dispatch(&this, Components.HealthComponent, &prev);
 			return &this;
 		}
 
@@ -338,12 +364,12 @@ namespace Entitas
 			if (value) {
 				hud = { true };
 				mask |= HUD;
-				World.OnComponentAdded(&this, Components.HudComponent, &hud);
+				onComponentAdded.Dispatch(&this, Components.HudComponent, &hud);
 			} else {
 				var prev = hud;
 				hud = null;
 				mask ^= HUD;
-				World.OnComponentRemoved(&this, Components.HudComponent, &prev);
+				onComponentRemoved.Dispatch(&this, Components.HudComponent, &prev);
 			}
 			return &this;
 		}
@@ -361,7 +387,7 @@ namespace Entitas
 			if ((mask & LAYER) == LAYER) throw new Exception.EntityAlreadyHasComponent("Layer");
 			layer = { value };
 			mask |= LAYER;
-			World.OnComponentAdded(&this, Components.LayerComponent, &layer);
+			onComponentAdded.Dispatch(&this, Components.LayerComponent, &layer);
 			return &this;
 		}
 
@@ -376,7 +402,7 @@ namespace Entitas
 			var prev = layer;
 			layer = null;
 			mask ^= LAYER;
-			World.OnComponentRemoved(&this, Components.LayerComponent, &prev);
+			onComponentRemoved.Dispatch(&this, Components.LayerComponent, &prev);
 			return &this;
 		}
 
@@ -384,12 +410,12 @@ namespace Entitas
 			if (value) {
 				player = { true };
 				mask |= PLAYER;
-				World.OnComponentAdded(&this, Components.PlayerComponent, &player);
+				onComponentAdded.Dispatch(&this, Components.PlayerComponent, &player);
 			} else {
 				var prev = player;
 				player = null;
 				mask ^= PLAYER;
-				World.OnComponentRemoved(&this, Components.PlayerComponent, &prev);
+				onComponentRemoved.Dispatch(&this, Components.PlayerComponent, &prev);
 			}
 			return &this;
 		}
@@ -397,6 +423,25 @@ namespace Entitas
 		public bool IsPlayer() {
 			return (mask & PLAYER) == PLAYER;
 		}
+
+		public Entity* SetShow(bool value) {
+			if (value) {
+				show = { true };
+				mask |= SHOW;
+				onComponentAdded.Dispatch(&this, Components.ShowComponent, &show);
+			} else {
+				var prev = show;
+				show = null;
+				mask ^= SHOW;
+				onComponentRemoved.Dispatch(&this, Components.ShowComponent, &prev);
+			}
+			return &this;
+		}
+
+		public bool IsShow() {
+			return (mask & SHOW) == SHOW;
+		}
+
 
 		public bool HasSound() {
 			return (mask & SOUND) == SOUND;
@@ -406,7 +451,7 @@ namespace Entitas
 			if ((mask & SOUND) == SOUND) throw new Exception.EntityAlreadyHasComponent("Sound");
 			this.sound = { sound };
 			mask |= SOUND;
-			World.OnComponentAdded(&this, Components.SoundComponent, &this.sound);
+			onComponentAdded.Dispatch(&this, Components.SoundComponent, &this.sound);
 			return &this;
 		}
 
@@ -421,7 +466,7 @@ namespace Entitas
 			var prev = sound;
 			sound = null;
 			mask ^= SOUND;
-			World.OnComponentRemoved(&this, Components.SoundComponent, &prev);
+			onComponentRemoved.Dispatch(&this, Components.SoundComponent, &prev);
 			return &this;
 		}
 
@@ -433,7 +478,7 @@ namespace Entitas
 			if ((mask & TEXT) == TEXT) throw new Exception.EntityAlreadyHasComponent("Text");
 			this.text = { text, texture };
 			mask |= TEXT;
-			World.OnComponentAdded(&this, Components.TextComponent, &this.text);
+			onComponentAdded.Dispatch(&this, Components.TextComponent, &this.text);
 			return &this;
 		}
 
@@ -449,7 +494,7 @@ namespace Entitas
 			var prev = text;
 			text = null;
 			mask ^= TEXT;
-			World.OnComponentRemoved(&this, Components.TextComponent, &prev);
+			onComponentRemoved.Dispatch(&this, Components.TextComponent, &prev);
 			return &this;
 		}
 
@@ -461,7 +506,7 @@ namespace Entitas
 			if ((mask & TINT) == TINT) throw new Exception.EntityAlreadyHasComponent("Tint");
 			tint = { r, g, b, a };
 			mask |= TINT;
-			World.OnComponentAdded(&this, Components.TintComponent, &tint);
+			onComponentAdded.Dispatch(&this, Components.TintComponent, &tint);
 			return &this;
 		}
 
@@ -479,7 +524,7 @@ namespace Entitas
 			var prev = tint;
 			tint = null;
 			mask ^= TINT;
-			World.OnComponentRemoved(&this, Components.TintComponent, &prev);
+			onComponentRemoved.Dispatch(&this, Components.TintComponent, &prev);
 			return &this;
 		}
 
@@ -491,7 +536,7 @@ namespace Entitas
 			if ((mask & TWEEN) == TWEEN) throw new Exception.EntityAlreadyHasComponent("Tween");
 			tween = { min, max, speed, repeat, active };
 			mask |= TWEEN;
-			World.OnComponentAdded(&this, Components.TweenComponent, &tween);
+			onComponentAdded.Dispatch(&this, Components.TweenComponent, &tween);
 			return &this;
 		}
 
@@ -510,7 +555,7 @@ namespace Entitas
 			var prev = tween;
 			tween = null;
 			mask ^= TWEEN;
-			World.OnComponentRemoved(&this, Components.TweenComponent, &prev);
+			onComponentRemoved.Dispatch(&this, Components.TweenComponent, &prev);
 			return &this;
 		}
 
@@ -522,7 +567,7 @@ namespace Entitas
 			if ((mask & VELOCITY) == VELOCITY) throw new Exception.EntityAlreadyHasComponent("Velocity");
 			velocity = { x, y };
 			mask |= VELOCITY;
-			World.OnComponentAdded(&this, Components.VelocityComponent, &velocity);
+			onComponentAdded.Dispatch(&this, Components.VelocityComponent, &velocity);
 			return &this;
 		}
 
@@ -538,7 +583,7 @@ namespace Entitas
 			var prev = velocity;
 			velocity = null;
 			mask ^= VELOCITY;
-			World.OnComponentRemoved(&this, Components.VelocityComponent, &prev);
+			onComponentRemoved.Dispatch(&this, Components.VelocityComponent, &prev);
 			return &this;
 		}
 	}

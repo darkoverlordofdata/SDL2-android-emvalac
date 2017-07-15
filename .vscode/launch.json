@@ -7,6 +7,8 @@
             "request": "launch",
             "cwd": "${workspaceRoot}/install/src",
             "program": "${workspaceRoot}/install/src/${workspaceRootFolderName}",
+            // "cwd": "${workspaceRoot}/build",
+            // "program": "${workspaceRoot}/build/${workspaceRootFolderName}",
             "args": []
         }
     ]

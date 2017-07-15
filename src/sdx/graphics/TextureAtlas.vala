@@ -60,6 +60,10 @@ namespace Sdx.Graphics {
             return null;
         }
         
+        public Sprite? CreateUI(string name, string text, Sdx.Font font, SDL.Video.Color color, int width = 125, int height = 80) { 
+            return new Sprite.UISprite(CreatePatch(name), text, font, color, width, height);
+        }
+
         public NinePatch? CreatePatch(string name) {
             foreach (var region in regions) {
                 if (region.name == name) {
@@ -225,7 +229,7 @@ namespace Sdx.Graphics {
         public static int ReadTuple(DataInputStream reader) {
             var line = reader.ReadLine();
             var ts = line.Split(":");
-            if (ts.length == 0) throw new IOException.InvalidData("invalid line "+line);
+            if (ts.length == 0) throw new IOException.InvalidData("invalid line: %s", line);
             tuple = ts[1].Split(",");
             for (var i=0; i<tuple.length; i++) {
                 tuple[i] = tuple[i];
@@ -237,7 +241,7 @@ namespace Sdx.Graphics {
         public static string ReadValue(DataInputStream reader) {
             var line = reader.ReadLine();
             var ts = line.Split(":");
-            if (ts.length == 0) throw new IOException.InvalidData("invalid line "+line);
+            if (ts.length == 0) throw new IOException.InvalidData("invalid line: %s ", line);
             return ts[1];
         }
 

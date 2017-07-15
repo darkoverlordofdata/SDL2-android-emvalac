@@ -147,38 +147,43 @@ namespace Entitas
 		{
 			if (toStringCache == null) 
 			{
-				var sb = "";
+				var sb = new StringBuilder();
 				if (allOfIndices != null) 
 				{
-					sb += "AllOf(";
-					sb += ComponentstoString(allOfIndices);
-					sb += ")";
+					sb.Append("AllOf(")
+					.Append(ComponentsToString(allOfIndices))
+					.Append(")");
 				}
 				if (anyOfIndices != null) 
 				{
 					if (allOfIndices != null)
-						sb += ".";
-					sb += "AnyOf(";
-					sb += ComponentstoString(anyOfIndices);
-					sb += ")";
+						sb.Append(".");
+					sb.Append("AnyOf(")
+					.Append(ComponentsToString(anyOfIndices))
+					.Append(")");
 				}
 				if (noneOfIndices != null) 
 				{
-					sb += ".NoneOf(";
-					sb += ComponentstoString(noneOfIndices);
-					sb += ")";
+					sb.Append(".NoneOf(")
+					.Append(ComponentsToString(noneOfIndices))
+					.Append(")");
 				}
-				toStringCache = sb;
+				toStringCache = sb.str;
 			}
 			return toStringCache;
 		}
 
-		public static string ComponentstoString(int[] indexArray) 
+		public static string ComponentsToString(int[] indexArray) 
 		{
-			var sb = "";
+			var sb = new StringBuilder();
+			var i = 0;
 			foreach (var index in indexArray) 
-				sb += ComponentString[index];
-			return sb;
+			{
+				sb.Append(ComponentString[index]).Append(",");
+				i = 1;
+			}
+			sb.Truncate(sb.len-i);
+			return sb.str;
 		}
 
 		public static int[] ListToArray(List<int> list) 

@@ -85,6 +85,7 @@ namespace Sdx
 	Sdx.Graphics.Sprite.AnimatedSprite fps3;
 	Sdx.Graphics.Sprite.AnimatedSprite fps4;
 	Sdx.Graphics.Sprite.AnimatedSprite fps5;
+	Sdx.Graphics.TextureAtlas atlas;
 	bool showFps;
 	float fps;
 	float delta = 1.0f/60.0f;
@@ -96,8 +97,10 @@ namespace Sdx
 	double freq;
 	int width;
 	int height;
+	Sdx.Ui.Window ui;
 	Event _evt;
-	InputProcessor _inputProcessor;
+	InputProcessor? _ui1; // primary user input 
+	InputProcessor? _ui2; // secondary user input
 
 	/**
 	 * Initialization
@@ -120,13 +123,12 @@ namespace Sdx
 		if (SDLTTF.Init() == -1)
 			throw new SdlException.TtfInitialization(SDL.GetError());
 
+#if (!EMSCRIPTEN) 
+		if (SDLMixer.Open(22050, SDL.Audio.AudioFormat.S16LSB, 2, 4096) == -1)
+			print("SDL_mixer unagle to initialize! SDL Error: %s\n", SDL.GetError());
+#endif
 		display = 0;
 		display.GetMode(0, out displayMode);
-		//  if (display.GetDpi(null, null, null) == -1) {
-		//  	pixelFactor = 1;
-		//  } else {
-		//  	pixelFactor = 1;
-		//  }
 
 #if (ANDROID)    
 
@@ -156,9 +158,17 @@ namespace Sdx
 		return MersenneTwister.GenrandReal2();
 	}
 
+	public void SetAtlas(string path)
+	{
+		atlas = new Sdx.Graphics.TextureAtlas(Sdx.Files.Default(path));
+	}
+
 	public void SetInputProcessor(InputProcessor inputProcessor) 
 	{
-		_inputProcessor = inputProcessor;
+		if (_ui1 == null)	
+			_ui1 = inputProcessor;
+		else
+			_ui2 = inputProcessor;
 	}
 
 	void SetResourceBase(string path) {
@@ -258,71 +268,108 @@ namespace Sdx
 
 				case SDL.EventType.KEYDOWN:
 					if (_evt.key.keysym.sym < 0 || _evt.key.keysym.sym > 255) break;
-                    if (_inputProcessor.KeyDown != null)
-						_inputProcessor.KeyDown(_evt.key.keysym.sym);
+                    if (_ui1.KeyDown != null)
+						_ui1.KeyDown(_evt.key.keysym.sym);
+                    if (_ui2.KeyDown != null)
+						_ui2.KeyDown(_evt.key.keysym.sym);
 					break;
 
 				case SDL.EventType.KEYUP:
 					if (_evt.key.keysym.sym < 0 || _evt.key.keysym.sym > 255) break;
-                    if (_inputProcessor.KeyUp != null)
-						_inputProcessor.KeyUp(_evt.key.keysym.sym);
+                    if (_ui1.KeyUp != null)
+						_ui1.KeyUp(_evt.key.keysym.sym);
+                    if (_ui2.KeyUp != null)
+						_ui2.KeyUp(_evt.key.keysym.sym);
 					break;
 
 				case SDL.EventType.MOUSEMOTION:
-					if (_inputProcessor.TouchDragged != null)
-						_inputProcessor.TouchDragged(_evt.motion.x, _evt.motion.y, 0);
-					if (_inputProcessor.MouseMoved != null)
-						_inputProcessor.MouseMoved(_evt.motion.x, _evt.motion.y);
+					if (_ui1.TouchDragged != null)
+						_ui1.TouchDragged(_evt.motion.x, _evt.motion.y, 0);
+					if (_ui1.MouseMoved != null)
+						_ui1.MouseMoved(_evt.motion.x, _evt.motion.y);
+
+					if (_ui2.TouchDragged != null)
+						_ui2.TouchDragged(_evt.motion.x, _evt.motion.y, 0);
+					if (_ui2.MouseMoved != null)
+						_ui2.MouseMoved(_evt.motion.x, _evt.motion.y);
 					break;
 
 				case SDL.EventType.MOUSEBUTTONDOWN:
-                    if (_inputProcessor.TouchDown != null)
-						_inputProcessor.TouchDown(_evt.motion.x, _evt.motion.y, 0, 0);
+                    if (_ui1.TouchDown != null)
+						_ui1.TouchDown(_evt.motion.x, _evt.motion.y, 0, 0);
+                    if (_ui2.TouchDown != null)
+						_ui2.TouchDown(_evt.motion.x, _evt.motion.y, 0, 0);
 					break;
 
 				case SDL.EventType.MOUSEBUTTONUP:
-                    if (_inputProcessor.TouchUp != null)
-						_inputProcessor.TouchUp(_evt.motion.x, _evt.motion.y, 0, 0);
+                    if (_ui1.TouchUp != null)
+						_ui1.TouchUp(_evt.motion.x, _evt.motion.y, 0, 0);
+                    if (_ui2.TouchUp != null)
+						_ui2.TouchUp(_evt.motion.x, _evt.motion.y, 0, 0);
 					break;
 #if (!ANDROID)
 				case SDL.EventType.FINGERMOTION:
 #if (EMSCRIPTEN)					
-					if (_inputProcessor.TouchDragged != null)
-						_inputProcessor.TouchDragged(
+					if (_ui1.TouchDragged != null)
+						_ui1.TouchDragged(
+							(int)(_evt.tfinger.x * (float)width), 
+							(int)(_evt.tfinger.y * (float)height), 
+							0);
+					if (_ui2.TouchDragged != null)
+						_ui2.TouchDragged(
 							(int)(_evt.tfinger.x * (float)width), 
 							(int)(_evt.tfinger.y * (float)height), 
 							0);
 #else
-					if (_inputProcessor.TouchDragged != null)
-						_inputProcessor.TouchDragged(
+					if (_ui1.TouchDragged != null)
+						_ui1.TouchDragged(
+							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0);
+					if (_ui2.TouchDragged != null)
+						_ui2.TouchDragged(
 							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0);
 #endif
 					break;
 
 				case SDL.EventType.FINGERDOWN:
 #if (EMSCRIPTEN)					
-                    if (_inputProcessor.TouchDown != null)
-						_inputProcessor.TouchDown(
+                    if (_ui1.TouchDown != null)
+						_ui1.TouchDown(
+							(int)(_evt.tfinger.x * (float)width), 
+							(int)(_evt.tfinger.y * (float)height), 
+							0, 0);
+                    if (_ui2.TouchDown != null)
+						_ui2.TouchDown(
 							(int)(_evt.tfinger.x * (float)width), 
 							(int)(_evt.tfinger.y * (float)height), 
 							0, 0);
 #else
-                    if (_inputProcessor.TouchDown != null)
-						_inputProcessor.TouchDown(
+                    if (_ui1.TouchDown != null)
+						_ui1.TouchDown(
+							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0, 0);
+                    if (_ui2.TouchDown != null)
+						_ui2.TouchDown(
 							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0, 0);
 #endif
 					break;
 
 				case SDL.EventType.FINGERUP:
 #if (EMSCRIPTEN)					
-                    if (_inputProcessor.TouchUp != null)
-						_inputProcessor.TouchUp(
+                    if (_ui1.TouchUp != null)
+						_ui1.TouchUp(
+							(int)(_evt.tfinger.x * (float)width), 
+							(int)(_evt.tfinger.y * (float)height), 
+							0, 0);
+                    if (_ui2.TouchUp != null)
+						_ui2.TouchUp(
 							(int)(_evt.tfinger.x * (float)width), 
 							(int)(_evt.tfinger.y * (float)height), 
 							0, 0);
 #else
-                    if (_inputProcessor.TouchUp != null)
-						_inputProcessor.TouchUp(
+                    if (_ui1.TouchUp != null)
+						_ui1.TouchUp(
+							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0, 0);
+                    if (_ui2.TouchUp != null)
+						_ui2.TouchUp(
 							(int)_evt.tfinger.x, (int)_evt.tfinger.y, 0, 0);
 #endif
 					break;
@@ -340,6 +387,7 @@ namespace Sdx
 	void End() 
 	{
 		// Sdx.drawFps();
+		ui.Render();
 		renderer.Present();
 	}
 

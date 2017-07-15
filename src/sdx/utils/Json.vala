@@ -213,7 +213,7 @@ namespace Sdx.Utils
             // If a c parameter is provided, verify that it matches the current character.
             if (c != null && c != ch) 
             {
-                throw new JsonException.UnexpectedCharacter("Expected '" + c.ToString() + "' instead of '" + ch.ToString() + "'");
+                throw new JsonException.UnexpectedCharacter("Expected '%s' instead of '%s'", c.ToString(), ch.ToString());
             }
             // Get the next character. When there are no more characters,
             // return the empty string.
@@ -374,7 +374,7 @@ namespace Sdx.Utils
                     Next('l');
                     return new JsVariant(JsType.JS_OBJECT, true);
             }
-            throw new JsonException.UnexpectedCharacter("Unexpected '" + ch.ToString() + "'");
+            throw new JsonException.UnexpectedCharacter("Unexpected '%s'", ch.ToString());
 
         }
 

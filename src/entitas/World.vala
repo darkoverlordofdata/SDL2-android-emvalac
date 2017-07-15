@@ -26,69 +26,72 @@ namespace Entitas
 {	
 	public class World : Object 
 	{
-        /**
-         * The world singleton instance
-         * @type World
-         * @name entitas.World#instance */
-		public static World instance;
+		/**
+		 * A unique sequential index number assigned to each entity
+		 * @type int */
 		public int id = 0;
+
+		/**
+		 * Pool of prebuilt entities
+		 * @type Entity[] */
 		public Entity[] pool;
+
+		/**
+		 * Systems to run
+		 * @type ISystem[] */
 		public ISystem[] systems;
-		public EntityCache[] cache;
+
+		/**
+		 * Cache of unused Entity* in poool
+		 * @type Queue<Entity*>[] */
+		public Stack<Entity*>[] cache;
+
+		/**
+		 * List of active groups
+		 * @type List<Group> */
 		public List<Group> groups;
 
         /**
-         * Subscribe to IEntity Created Event
-         * @type Entitas.WorldChanged */
-		public WorldChanged onEntityCreated;
+         * Subscribe to Entity Created Event
+         * @type Event.WorldChanged */
+		public Event.WorldChanged onEntityCreated;
 
         /**
-         * Subscribe to IEntity Will Be Destroyed Event
-         * @type Entitas.WorldChanged */
-		public WorldChanged onEntityWillBeDestroyed;
+         * Subscribe to Entity Will Be Destroyed Event
+         * @type Event.WorldChanged */
+		public Event.WorldChanged onEntityWillBeDestroyed;
 
         /**
-         * Subscribe to IEntity Destroyed Event
-         * @type Entitas.WorldChanged */
-		public WorldChanged onEntityDestroyed;
+         * Subscribe to Entity Destroyed Event
+         * @type Event.WorldChanged */
+		public Event.WorldChanged onEntityDestroyed;
 
         /**
          * Subscribe to Group Created Event
-         * @type Entitas.GroupsChanged */
-		public GroupsChanged onGroupCreated;
+         * @type Event.GroupsChanged */
+		public Event.GroupsChanged onGroupCreated;
 
 		public World() 
 		{
-			instance = this;
 			systems = new ISystem[0];
-            onGroupCreated = new GroupsChanged();
-            onEntityCreated = new WorldChanged();
-            onEntityDestroyed = new WorldChanged();
-            onEntityWillBeDestroyed = new WorldChanged();
-		}
-
-		public static void OnComponentAdded(Entity* entity, Components index, void* component) 
-		{
-			instance.ComponentAddedOrRemoved(entity, index, component);
-		}
-
-		public static void OnComponentRemoved(Entity* entity, Components index, void* component) 
-		{
-			instance.ComponentAddedOrRemoved(entity, index, component);
+            onGroupCreated = new Event.GroupsChanged();
+            onEntityCreated = new Event.WorldChanged();
+            onEntityDestroyed = new Event.WorldChanged();
+            onEntityWillBeDestroyed = new Event.WorldChanged();
 		}
 
 		public void SetPool(int size, int count, Buffer[] buffers) 
 		{
-			pool = new Entity[size];
-			cache = new EntityCache[count];
-			for (var i=0;  i < buffers.length; i++) 
+			pool = new Entity[size+1];
+			cache = new Stack<Entity*>[count];
+			for (var i = 0; i < buffers.length; i++) 
 			{
-				var iPool = buffers[i].pool;
-				var iSize = buffers[i].size;
-				cache[iPool] = new EntityCache(); //iSize) 
-				for (var k=0;  k < iSize; k++) 
+				var bufferPool = buffers[i].pool;
+				var bufferSize = buffers[i].size;
+				cache[bufferPool] = new Stack<Entity*>(bufferSize); 
+				for (var k = 0; k < bufferSize; k++) 
 				{
-					cache[iPool].Enque(buffers[i].Factory());
+					cache[bufferPool].Push(buffers[i].Factory());
 				}
 			}
 		}
@@ -128,11 +131,11 @@ namespace Entitas
 		}
 
         /**
-         * @param entitas.IEntity entity
+         * @param entitas.Entity entity
          * @param number index
          * @param entitas.IComponent component
          */
-		public void ComponentAddedOrRemoved(Entity* entity, Components index, void* component) 
+		public void ComponentAddedOrRemoved(Entity* entity, int index, void* component) 
 		{
 			foreach (var group in groups)
 				group.HandleEntity(entity, index, component);
@@ -140,32 +143,43 @@ namespace Entitas
 
         /**
          * Destroy an entity
-         * @param entitas.IEntity entity
+         * @param entitas.Entity entity
          */
 		public void DeleteEntity(Entity* entity) 
 		{
             onEntityWillBeDestroyed.Dispatch(this, entity);
 			entity.Destroy();
             onEntityDestroyed.Dispatch(this, entity);
-			cache[entity.pool].Enque(entity);
+			cache[entity.pool].Push(entity);
 
 			//EntityRemoved(entity);
+		}
+
+		public void onEntityReleased(Entity* e) 
+		{
+
+		}
+
+		public void onComponentReplaced(Entity* e, int index,  void* component, void* replacement)
+		{
+
 		}
 
         /**
          * Create a new entity
          * @param string name
-         * @returns entitas.IEntity
+         * @returns entitas.Entity
          */
 		public Entity* CreateEntity(string name, int pool, bool active) 
 		{
-			var id = this.id++;
-			return (this.pool[id]
-				.SetId(id)
+			id++;
+			this.pool[id] = Entity(id, ComponentAddedOrRemoved, onEntityReleased, onComponentReplaced);
+			return this.pool[id]
 				.SetName(name)
 				.SetPool(pool)
-				.SetActive(active));
+				.SetActive(active);
 		}
+
 
        /**
          * Gets all of the entities that match
@@ -183,7 +197,7 @@ namespace Entitas
 			{
 				//  groups.prepend(new Group(matcher));
 				groups.Insert(new Group(matcher));
-				for (var i = 0; i < this.id-1; i++) 
+				for (var i = 0; i < id-1; i++) 
 					groups.Head.data.HandleEntitySilently(&pool[i]);
                 onGroupCreated.Dispatch(this, groups.Head.data);
 				return groups.Head.data;

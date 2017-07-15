@@ -66,14 +66,16 @@ namespace Sdx.Graphics {
             switch (value)  {
                 case "ClampToEdge": return ClampToEdge;
                 case "Repeat": return Repeat;
-                default: throw new SdlException.NotReached("TextureWrap.from["+value+"]");
+                default: return ClampToEdge;
+                //  default: throw new SdlException.NotReached("TextureWrap.from[%s]", value);
             }
         }
         public string ToString() {
             switch (this) {
                 case ClampToEdge: return "ClampToEdge";
                 case Repeat: return "Repeat";
-                default: throw new SdlException.NotReached("TextureWrap.ToString["+this.ToString()+"]");
+                default: return "ClampToEdge";
+                //  default: throw new SdlException.NotReached("TextureWrap.ToString[%s]", this.ToString());
             }
         }
     }

@@ -52,7 +52,7 @@ namespace Sdx.Files
 			else 
 			{
                 var raw = new SDL.RWops.FromFile(GetPath(), "r");
-                if (raw == null)
+				if (raw == null)
 					throw new SdlException.UnableToLoadResource(GetPath());
                 return raw;
 

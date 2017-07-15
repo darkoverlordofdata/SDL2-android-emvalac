@@ -43,9 +43,16 @@ namespace Sdx
 		 * @param color foreground color of text
 		 * @return new Surface
 		 */
-		public SDL.Video.Surface Render(string text, SDL.Video.Color color) 
+		public SDL.Video.Surface Render(string text, SDL.Video.Color fg, SDL.Video.Color? bg = null) 
 		{
-			return innerFont.render(text, color);
+			if (bg == null)
+			{
+				return innerFont.Render(text, fg);
+			}
+			else
+			{
+				return innerFont.RenderShaded(text, fg, bg);
+			}
 		}
 	}
 }
