@@ -31,9 +31,23 @@ cake build:android
 
 ## build requirements
 * autovala for desktop
-* emscripten and android require emvalac (https://github.com/darkoverlordofdata/emvalac)
-* emvalac requires nodejs
+* emscripten and android require ZeroG (https://github.com/darkoverlordofdata/zerog)
+* zerog requires nodejs
 * android requires SDL2.0.5, SDL_image and SDL_ttf linked or copied to the jni folder
 
 
-##### <center>Powered by ZeroG</center>
+##### <center>[Powered by ZeroG](https://github.com/darkoverlordofdata/zerog)</center>
+
+
+
+
+### todo after install
+
+
+ln -s /home/bruce/Applications/zerog/lib/goop goop
+ln -s /home/bruce/Applications/zerog/lib/entitas entitas
+ln -s /home/bruce/Applications/zerog/lib/sdx sdx
+ln -s /home/bruce/Applications/zerog/lib/vapis vapis
+ln -s /home/bruce/Applications/zerog/lib/vapis-em vapis-em
+ln -s /home/bruce/Applications/zerog/lib/mt19937ar.c mt19937ar.c
+ln -s /home/bruce/Applications/zerog/lib/mt19937ar.h mt19937ar.h

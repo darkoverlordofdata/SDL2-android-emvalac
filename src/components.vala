@@ -129,23 +129,23 @@ namespace Entitas
 	/**
 	 *  Component bit masks
 	 */
-	const uint64 UNKNOWN		= 0x00000;
-	const uint64 BACKGROUND 	= 0x00001;
-	const uint64 BULLET 		= 0x00002;
-	const uint64 ENEMY1 		= 0x00004;
-	const uint64 ENEMY2 		= 0x00008;
-	const uint64 ENEMY3 		= 0x00010;
-	const uint64 EXPIRES 		= 0x00020;
-	const uint64 HEALTH 		= 0x00040;
-	const uint64 HUD 			= 0x00080;
-	const uint64 LAYER 			= 0x00100;
-	const uint64 PLAYER 		= 0x00200;
-	const uint64 SHOW 			= 0x00400;
-	const uint64 SOUND 			= 0x00800;
-	const uint64 TEXT 			= 0x01000;
-	const uint64 TINT 			= 0x02000;
-	const uint64 TWEEN 			= 0x04000;
-	const uint64 VELOCITY 		= 0x08000;
+	const uint64 UNKNOWN		= 0x0000000000000000;
+	const uint64 BACKGROUND 	= 0x0000000000000001;
+	const uint64 BULLET 		= 0x0000000000000002;
+	const uint64 ENEMY1 		= 0x0000000000000004;
+	const uint64 ENEMY2 		= 0x0000000000000008;
+	const uint64 ENEMY3 		= 0x0000000000000010;
+	const uint64 EXPIRES 		= 0x0000000000000020;
+	const uint64 HEALTH 		= 0x0000000000000040;
+	const uint64 HUD 			= 0x0000000000000080;
+	const uint64 LAYER 			= 0x0000000000000100;
+	const uint64 PLAYER 		= 0x0000000000000200;
+	const uint64 SHOW 			= 0x0000000000000400;
+	const uint64 SOUND 			= 0x0000000000000800;
+	const uint64 TEXT 			= 0x0000000000001000;
+	const uint64 TINT 			= 0x0000000000002000;
+	const uint64 TWEEN 			= 0x0000000000004000;
+	const uint64 VELOCITY 		= 0x0000000000008000;
 	const uint64 ACTIVE 		= 0x8000000000000000;
 
 	/**

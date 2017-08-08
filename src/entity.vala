@@ -54,9 +54,9 @@ namespace Entitas
 		/* ============================ */
 
 		public Entity(int id, 
-			Event.OnEntityChanged? ComponentAddedOrRemoved = null, 
-			Event.OnEntityReleased? ComponentEntityReleased = null, 
-			Event.OnComponentReplaced? ComponentComponentReplaced = null)
+			Event.EntityChanged.Handler? ComponentAddedOrRemoved = null, 
+			Event.EntityReleased.Handler? ComponentEntityReleased = null, 
+			Event.ComponentReplaced.Handler? ComponentComponentReplaced = null)
 		{
 
 			this.id = id;
@@ -248,7 +248,7 @@ namespace Entitas
 		}
 
 		public bool IsBullet() {
-			return (mask & BULLET)  == BULLET;
+			return (mask & BULLET) == BULLET;
 		}
 
 		public Entity* SetEnemy1(bool value) {

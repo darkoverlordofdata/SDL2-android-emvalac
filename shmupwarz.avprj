@@ -42,16 +42,19 @@ c_library: m
 *vala_source: entitas/events/GroupsChanged.vala
 *vala_source: entitas/events/WorldChanged.vala
 *vala_source: entity.vala
+*vala_source: goop/Class.vala
+*vala_source: goop/Guid.vala
 *vala_source: main.vala
 *vala_source: sdx/ApplicationListener.vala
-*vala_source: sdx/Color.gs
+*vala_source: sdx/Color.vala
 *vala_source: sdx/Files.vala
 *vala_source: sdx/Font.vala
+*vala_source: sdx/InputMultiplexer.vala
 *vala_source: sdx/InputProcessor.vala
 *vala_source: sdx/Screen.vala
 *vala_source: sdx/audio/Sound.vala
 *vala_source: sdx/audio/audio.vala
-*vala_source: sdx/exceptions.gs
+*vala_source: sdx/exceptions.vala
 *vala_source: sdx/files/FileHandle.vala
 *vala_source: sdx/files/files.vala
 *vala_source: sdx/graphics/BitmapFont.vala
@@ -63,6 +66,12 @@ c_library: m
 *vala_source: sdx/graphics/TextureEnums.vala
 *vala_source: sdx/graphics/TextureRegion.vala
 *vala_source: sdx/graphics/graphics.vala
+*vala_source: sdx/math/Interpolation.vala
+*vala_source: sdx/math/Timeline.vala
+*vala_source: sdx/math/Tween.vala
+*vala_source: sdx/math/TweenAccessor.vala
+*vala_source: sdx/math/TweenManager.vala
+*vala_source: sdx/math/Tweenbase.vala
 *vala_source: sdx/math/Vector2.vala
 *vala_source: sdx/sdx.vala
 *vala_source: sdx/ui/Button.vala
@@ -105,17 +114,20 @@ c_library: m
 *translate: vala src/entitas/events/GroupsChanged.vala
 *translate: vala src/entitas/events/WorldChanged.vala
 *translate: vala src/entity.vala
+*translate: vala src/goop/Class.vala
+*translate: vala src/goop/Guid.vala
 *translate: vala src/main.vala
 *translate: c src/mt19937ar.c
 *translate: vala src/sdx/ApplicationListener.vala
-*translate: genie src/sdx/Color.gs
+*translate: vala src/sdx/Color.vala
 *translate: vala src/sdx/Files.vala
 *translate: vala src/sdx/Font.vala
+*translate: vala src/sdx/InputMultiplexer.vala
 *translate: vala src/sdx/InputProcessor.vala
 *translate: vala src/sdx/Screen.vala
 *translate: vala src/sdx/audio/Sound.vala
 *translate: vala src/sdx/audio/audio.vala
-*translate: genie src/sdx/exceptions.gs
+*translate: vala src/sdx/exceptions.vala
 *translate: vala src/sdx/files/FileHandle.vala
 *translate: vala src/sdx/files/files.vala
 *translate: vala src/sdx/graphics/BitmapFont.vala
@@ -127,6 +139,12 @@ c_library: m
 *translate: vala src/sdx/graphics/TextureEnums.vala
 *translate: vala src/sdx/graphics/TextureRegion.vala
 *translate: vala src/sdx/graphics/graphics.vala
+*translate: vala src/sdx/math/Interpolation.vala
+*translate: vala src/sdx/math/Timeline.vala
+*translate: vala src/sdx/math/Tween.vala
+*translate: vala src/sdx/math/TweenAccessor.vala
+*translate: vala src/sdx/math/TweenManager.vala
+*translate: vala src/sdx/math/Tweenbase.vala
 *translate: vala src/sdx/math/Vector2.vala
 *translate: vala src/sdx/sdx.vala
 *translate: vala src/sdx/ui/Button.vala

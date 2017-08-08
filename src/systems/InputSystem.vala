@@ -18,9 +18,7 @@ namespace Systems
 			var shoot = false;
 			var timeToFire = FIRE_RATE;
 			var player = world.GetGroup(Matcher.AllOf({ Components.PlayerComponent }));
-			
-			world.AddBackground(0, 0);
-			world.AddPlayer(0, 0);
+
 			/**
 			 * get player input
 			 */
@@ -39,51 +37,50 @@ namespace Systems
 			/**
 			 * process input events
 			 */
-			Sdx.SetInputProcessor(InputProcessor() 
-			{ 
-
-				KeyDown = (keycode) => 
+			Sdx.AddInputProcessor(new InputProcessor() 
+			
+				.SetKeyDown((keycode) => 
 				{
 					if (keycode == SDL.Input.Keycode.z) shoot = true;
 					return false;
-				},
+				})
 
-				KeyUp = (keycode) => 
+				.SetKeyUp((keycode) => 
 				{
 					if (keycode == SDL.Input.Keycode.z) shoot = false;
 					return false;
-				},
+				})
 
-				TouchDown = (screenX, screenY, pointer, button) => 
+				.SetTouchDown((screenX, screenY, pointer, button) => 
 				{
 					x = screenX;
 					y = screenY;
 					mouseDown = true;
 					return false;
-				},
+				})
 
-				TouchUp = (screenX, screenY, pointer, button) => 
+				.SetTouchUp((screenX, screenY, pointer, button) => 
 				{
 					x = screenX;
 					y = screenY;
 					mouseDown = false;
 					return false;
-				},
+				})
 
-				TouchDragged = (screenX, screenY, pointer) => 
+				.SetTouchDragged((screenX, screenY, pointer) => 
 				{
 					x = screenX;
 					y = screenY;
 					return false;
-				},
+				})
 
-				MouseMoved = (screenX, screenY) => 
+				.SetMouseMoved((screenX, screenY) => 
 				{
 					x = screenX;
 					y = screenY;
 					return false;
-				}
-			});
+				})
+			);
 		}
 	}
 }

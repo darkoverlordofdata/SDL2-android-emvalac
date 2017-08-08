@@ -3,6 +3,8 @@
         "*.lzz": "cpp",
         "adriac": "vala",
         "Cakefile": "coffeescript",
-        "gatomic.h": "c"
+        "gatomic.h": "c",
+        "tttypes.h": "c",
+        "hb-buffer.h": "c"
     }
 }

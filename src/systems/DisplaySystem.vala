@@ -12,44 +12,51 @@ namespace Systems
 
 		public DisplaySystem(Game game, Factory world) 
 		{
-			
+			/**
+			 * Wire up the events
+			 */
 			var show = world.GetGroup(Matcher.AllOf({ Components.ShowComponent }));
-
-			show.onEntityAdded.Add(OnEntityAdded);
-			show.onEntityRemoved.Add(OnEntityRemoved);
-
-		}
-
-		public void OnEntityAdded(Group group, Entity* entity, int index,  void* component) 
-		{
-			var layer = entity.layer.value;
-			if (sprites.Length() == 0) 
-			{
-				sprites.Add(entity);
-			} 
-			else 
-			{
-				var i = 0;
-				foreach (var s in sprites) 
+			/**
+			 * Remove the entity from the display
+			 */
+			show.onEntityRemoved.Add((group, entity, index, comp) => sprites.Remove(entity));
+			/**
+			 * Add the entity to the display 
+			 * insert in z-Order
+			 */
+			show.onEntityAdded.Add((group, entity, index, comp) => {
+				var layer = entity.layer.value;
+				if (sprites.Length() == 0) 
+					sprites.Add(entity);
+				else 
 				{
-					assert(s != null);
-					if (layer <= s.layer.value) 
+					var i = 0;
+					foreach (var sprite in sprites) 
 					{
-						sprites.Insert(entity, i);
-						return;
-					} 
-					else 
-					{
+						if (layer <= sprite.layer.value) 
+						{
+							sprites.Insert(entity, i);
+							return;
+						} 
 						i++;
 					}
+					sprites.Add(entity);
 				}
-				sprites.Add(entity);
-			}
-		}
-
-		public void OnEntityRemoved(Group group, Entity* entity, int index,  void* component) 
-		{
-			sprites.Remove(entity);
+			});
+			/** 
+			 * Delegate draw 
+			 */
+			//  game.Draw = Draw;
+			game.Draw = () => {
+				Sdx.Begin();
+				sprites.ForEach(entity => 
+				{
+					if (entity.IsActive()) 
+						Draw(entity, ref entity.transform);
+				});
+				Sdx.ui.Render();
+				Sdx.End();
+			};
 		}
 
 		public bool Draw(Entity* e, ref Transform t) 
