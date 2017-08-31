@@ -1,0 +1,100 @@
+#!/usr/bin/env sh
+
+valac   --pkg SDL2_image \
+        --pkg SDL2_mixer \
+        --pkg SDL2_ttf \
+        --pkg sdl2 \
+        --pkg gio-2.0 \
+        --pkg glib-2.0 \
+        --pkg gobject-2.0 \
+        --pkg mt19937ar \
+        --disable-warnings \
+        --vapidir src/vapis \
+        --library=sdx \
+        --vapi=../../.local/lib/sdx.vapi \
+        --gir ../../.local/lib/sdx-0.1.gir \
+        --save-temps \
+        -X -fPIC \
+        -X -shared \
+        -X -O3 \
+        -X -g \
+        -o ../../.local/lib/sdx.so \
+        src/goop/Class.vala \
+        src/goop/Guid.vala \
+        src/sdx/AbstractGame.vala \
+        src/sdx/ApplicationListener.vala \
+        src/sdx/Color.vala \
+        src/sdx/Files.vala \
+        src/sdx/Font.vala \
+        src/sdx/InputMultiplexer.vala \
+        src/sdx/InputProcessor.vala \
+        src/sdx/Screen.vala \
+        src/sdx/audio/Sound.vala \
+        src/sdx/audio/audio.vala \
+        src/sdx/exceptions.vala \
+        src/sdx/files/FileHandle.vala \
+        src/sdx/files/files.vala \
+        src/sdx/graphics/BitmapFont.vala \
+        src/sdx/graphics/Camera.vala \
+        src/sdx/graphics/NinePatch.vala \
+        src/sdx/graphics/Sprite.vala \
+        src/sdx/graphics/Surface.vala \
+        src/sdx/graphics/TextureAtlas.vala \
+        src/sdx/graphics/TextureEnums.vala \
+        src/sdx/graphics/TextureRegion.vala \
+        src/sdx/graphics/graphics.vala \
+        src/sdx/math/Interpolation.vala \
+        src/sdx/math/Timeline.vala \
+        src/sdx/math/Tween.vala \
+        src/sdx/math/TweenAccessor.vala \
+        src/sdx/math/TweenManager.vala \
+        src/sdx/math/Tweenbase.vala \
+        src/sdx/math/Vector2.vala \
+        src/sdx/sdx.vala \
+        src/sdx/ui/Button.vala \
+        src/sdx/ui/Component.vala \
+        src/sdx/ui/Label.vala \
+        src/sdx/utils/Cache.vala \
+        src/sdx/utils/File.vala \
+        src/sdx/utils/Json.vala \
+        src/sdx/utils/StringTokenizer.vala \
+        src/sdx/utils/utils.vala \
+        src/sdx/script/api.gs \
+        src/mt19937ar.c
+
+
+# g-ir-compiler ./install/sdx-0.1.gir \
+#         --shared-library=./install/sdx.so \
+#         --output=./install/sdx-0.1.typelib 
+        
+
+npm run gir2dts
+sed -i -e 's/extends Sdx./extends /' src/js/sdx.d.ts
+sed -i -e 's/: Sdx\./:/'  src/js/sdx.d.ts
+sed -i -e 's/: Sdx\./:/'  src/js/sdx.d.ts
+sed -i -e 's/:Sdx\./:/'  src/js/sdx.d.ts
+sed -i -e 's/:Sdx\./:/'  src/js/sdx.d.ts
+# cat << EOF > ./tsconfig.json
+# {
+#   "compilerOptions": {
+#     "target": "es5",
+#     "module": "amd",
+#     "rootDir": "src/js",
+#     "allowJs": true,
+#     "outFile": "bin/game"
+#   },
+#   "files": [
+#     "node_modules/entitas-cli/build/entitas.d.ts",
+#     "src/js/gobject-2.0.d.ts",
+#     "src/js/sdx.d.ts",
+#     "src/js/gjs.d.ts",
+#     "src/js/gjs.js",
+#     "src/js/entitas.js",
+#     "src/js/generatedExtensions.js",
+#     "src/js/generatedComponents.ts",
+#     "src/js/sdx.shim.js",
+#     "src/js/global.js",
+#     "src/js/game.js"
+#   ]
+# }
+# EOF

@@ -5,8 +5,8 @@
             "name": "Debug",
             "type": "lldb",
             "request": "launch",
-            "cwd": "${workspaceRoot}/install/src",
-            "program": "${workspaceRoot}/install/src/${workspaceRootFolderName}",
+            "cwd": "${workspaceRoot}/bin",
+            "program": "${workspaceRoot}/bin/game",
             "args": []
         }
     ]

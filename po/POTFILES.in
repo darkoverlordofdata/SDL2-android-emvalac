@@ -16,6 +16,7 @@ src/entity.vala
 src/goop/Class.vala
 src/goop/Guid.vala
 src/main.vala
+src/sdx/AbstractGame.vala
 src/sdx/ApplicationListener.vala
 src/sdx/Color.vala
 src/sdx/Files.vala

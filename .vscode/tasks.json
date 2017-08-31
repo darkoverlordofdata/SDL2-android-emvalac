@@ -9,17 +9,11 @@
     "suppressTaskName": true,
     "tasks": [
         {
-            "isBuildCommand",
+            "isBuildCommand": true,
             "taskName": "build",
-            "args": ["cd install && make"]
-        },
-        {
-            "taskName": "clean",
-            "args": ["rm -r ${workspaceRoot}/install && mkdir ${workspaceRoot}/install"]
-        },
-        {
-            "taskName": "update",
-            "args": ["autovala refresh && sed -i -n '/*vala_check_package:/!p' ./${workspaceRootFolderName}.avprj && autovala cmake  && cd install && cmake .. "]
+            // "args": ["tsc"]
+            "args": ["coffee -bc share/game/lib/sdx.coffee && /usr/bin/time tsc && cat src/js/prolog.js bin/game | sponge bin/game"]
+            // "args": ["coffee -bc share/game/lib/sdx.coffee && /usr/bin/time tsc && cat src/js/prolog.js bin/game | sponge bin/game"]
         }
     ]
 }
