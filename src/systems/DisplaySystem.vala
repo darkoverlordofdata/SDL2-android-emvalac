@@ -76,11 +76,11 @@ namespace Systems
 					t.sprite.texture.SetColorMod((uint8)e.tint.r, (uint8)e.tint.g, (uint8)e.tint.b);
 					t.sprite.texture.SetAlphaMod((uint8)e.tint.a);
 				}
-				Sdx.renderer.Copy(t.sprite.texture, null, 
+				Sdx.Render(t.sprite.texture, null, 
 					{ t.aabb.x, t.aabb.y, (uint)t.aabb.w, (uint)t.aabb.h });
 
 			if (e.HasText())
-				Sdx.renderer.Copy(e.text.sprite.texture, null, 
+				Sdx.Render(e.text.sprite.texture, null, 
 					{ 
 						(int)t.position.x, 
 						(int)t.position.y, 

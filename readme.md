@@ -1,17 +1,7 @@
-# zerog-ffi-ts
+# <del>ShmupWarz II</del> Better Than Shmup
 
-## status
-wip:
 
-cloned from git@github.com:darkoverlordofdata/zerog-shmupwarz.git
-
-Adds a top layer api written using genie.
-compile with GObject enabled
-generate sdx as a *.so or *.dll usable from typescript
-
-roll into zerog
-
-add *cake build:dll* to generate 
+vala-entitas running on android, emscripten and linux desktop.
 
 
 ## build
