@@ -14,6 +14,18 @@ android/jni/libmikmod*
 android/jni/smpeg*
 project.vapi
 
+# linked Libraries #
+####################
+src/goop
+src/entitas
+src/sdx
+src/vapis
+src/vapis-em
+src/mt19937ar.c
+src/mt19937ar.h
+
+
+
 *.nw
 web/shmupwarz.*
 # Compiled source #
