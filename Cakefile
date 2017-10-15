@@ -134,7 +134,7 @@ adriac  \
 ##
 desktopTemplate = (defines, vapis, pkgs, list) ->
     return """
-mkdir -p build
+#mkdir -p build
 adriac  \
     --builddir build \
     --cc=clang \

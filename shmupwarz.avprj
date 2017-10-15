@@ -9,6 +9,7 @@ define: EMSCRIPTEN
 *define: NOGOBJECT
 *define: DESKTOP
 *define: NODEJS
+*define: LIBRARY
 
 gresource: resources_gresource_xml data/resources.gresource.xml
 
@@ -23,7 +24,6 @@ vala_vapi: vapis/posix.vapi
 vala_check_package: SDL2_image
 vala_check_package: SDL2_mixer
 vala_check_package: SDL2_ttf
-vala_check_package: gio-2.0
 vala_check_package: glib-2.0
 vala_check_package: gobject-2.0
 vala_check_package: sdl2
@@ -75,9 +75,6 @@ c_library: m
 *vala_source: sdx/math/TweenManager.vala
 *vala_source: sdx/math/Tweenbase.vala
 *vala_source: sdx/math/Vector2.vala
-*vala_source: sdx/script/JsFactory.gs
-*vala_source: sdx/script/JsGame.gs
-*vala_source: sdx/script/api.gs
 *vala_source: sdx/sdx.vala
 *vala_source: sdx/ui/Button.vala
 *vala_source: sdx/ui/Component.vala
@@ -98,47 +95,7 @@ c_library: m
 *vala_source: systems/ScoreSystem.vala
 *vala_source: systems/SoundSystem.vala
 *vala_source: systems/SpawnSystem.vala
-*c_source: goop/Class.c
-*c_source: goop/Guid.c
 *c_source: mt19937ar.c
-*c_source: sdx/AbstractGame.c
-*c_source: sdx/ApplicationListener.c
-*c_source: sdx/Color.c
-*c_source: sdx/Files.c
-*c_source: sdx/Font.c
-*c_source: sdx/InputMultiplexer.c
-*c_source: sdx/InputProcessor.c
-*c_source: sdx/Screen.c
-*c_source: sdx/audio/Sound.c
-*c_source: sdx/audio/audio.c
-*c_source: sdx/exceptions.c
-*c_source: sdx/files/FileHandle.c
-*c_source: sdx/files/files.c
-*c_source: sdx/graphics/BitmapFont.c
-*c_source: sdx/graphics/Camera.c
-*c_source: sdx/graphics/NinePatch.c
-*c_source: sdx/graphics/Sprite.c
-*c_source: sdx/graphics/Surface.c
-*c_source: sdx/graphics/TextureAtlas.c
-*c_source: sdx/graphics/TextureEnums.c
-*c_source: sdx/graphics/TextureRegion.c
-*c_source: sdx/graphics/graphics.c
-*c_source: sdx/math/Interpolation.c
-*c_source: sdx/math/Timeline.c
-*c_source: sdx/math/Tween.c
-*c_source: sdx/math/TweenAccessor.c
-*c_source: sdx/math/TweenManager.c
-*c_source: sdx/math/Tweenbase.c
-*c_source: sdx/math/Vector2.c
-*c_source: sdx/sdx.c
-*c_source: sdx/ui/Button.c
-*c_source: sdx/ui/Component.c
-*c_source: sdx/ui/Label.c
-*c_source: sdx/utils/Cache.c
-*c_source: sdx/utils/File.c
-*c_source: sdx/utils/Json.c
-*c_source: sdx/utils/StringTokenizer.c
-*c_source: sdx/utils/utils.c
 *h_folder: .
 
 
@@ -146,6 +103,7 @@ c_library: m
 
 *translate: vala src/Factory.vala
 *translate: vala src/Game.vala
+*translate: genie src/SdxWrapper.gs
 *translate: vala src/components.vala
 *translate: vala src/entitas/Group.vala
 *translate: vala src/entitas/Matcher.vala
@@ -159,90 +117,47 @@ c_library: m
 *translate: vala src/entitas/events/GroupsChanged.vala
 *translate: vala src/entitas/events/WorldChanged.vala
 *translate: vala src/entity.vala
-*translate: c src/goop/Class.c
 *translate: vala src/goop/Class.vala
-*translate: c src/goop/Guid.c
 *translate: vala src/goop/Guid.vala
 *translate: vala src/main.vala
 *translate: c src/mt19937ar.c
-*translate: c src/sdx/AbstractGame.c
 *translate: vala src/sdx/AbstractGame.vala
-*translate: c src/sdx/ApplicationListener.c
 *translate: vala src/sdx/ApplicationListener.vala
-*translate: c src/sdx/Color.c
 *translate: vala src/sdx/Color.vala
-*translate: c src/sdx/Files.c
 *translate: vala src/sdx/Files.vala
-*translate: c src/sdx/Font.c
 *translate: vala src/sdx/Font.vala
-*translate: c src/sdx/InputMultiplexer.c
 *translate: vala src/sdx/InputMultiplexer.vala
-*translate: c src/sdx/InputProcessor.c
 *translate: vala src/sdx/InputProcessor.vala
-*translate: c src/sdx/Screen.c
 *translate: vala src/sdx/Screen.vala
-*translate: c src/sdx/audio/Sound.c
 *translate: vala src/sdx/audio/Sound.vala
-*translate: c src/sdx/audio/audio.c
 *translate: vala src/sdx/audio/audio.vala
-*translate: c src/sdx/exceptions.c
 *translate: vala src/sdx/exceptions.vala
-*translate: c src/sdx/files/FileHandle.c
 *translate: vala src/sdx/files/FileHandle.vala
-*translate: c src/sdx/files/files.c
 *translate: vala src/sdx/files/files.vala
-*translate: c src/sdx/graphics/BitmapFont.c
 *translate: vala src/sdx/graphics/BitmapFont.vala
-*translate: c src/sdx/graphics/Camera.c
 *translate: vala src/sdx/graphics/Camera.vala
-*translate: c src/sdx/graphics/NinePatch.c
 *translate: vala src/sdx/graphics/NinePatch.vala
-*translate: c src/sdx/graphics/Sprite.c
 *translate: vala src/sdx/graphics/Sprite.vala
-*translate: c src/sdx/graphics/Surface.c
 *translate: vala src/sdx/graphics/Surface.vala
-*translate: c src/sdx/graphics/TextureAtlas.c
 *translate: vala src/sdx/graphics/TextureAtlas.vala
-*translate: c src/sdx/graphics/TextureEnums.c
 *translate: vala src/sdx/graphics/TextureEnums.vala
-*translate: c src/sdx/graphics/TextureRegion.c
 *translate: vala src/sdx/graphics/TextureRegion.vala
-*translate: c src/sdx/graphics/graphics.c
 *translate: vala src/sdx/graphics/graphics.vala
-*translate: c src/sdx/math/Interpolation.c
 *translate: vala src/sdx/math/Interpolation.vala
-*translate: c src/sdx/math/Timeline.c
 *translate: vala src/sdx/math/Timeline.vala
-*translate: c src/sdx/math/Tween.c
 *translate: vala src/sdx/math/Tween.vala
-*translate: c src/sdx/math/TweenAccessor.c
 *translate: vala src/sdx/math/TweenAccessor.vala
-*translate: c src/sdx/math/TweenManager.c
 *translate: vala src/sdx/math/TweenManager.vala
-*translate: c src/sdx/math/Tweenbase.c
 *translate: vala src/sdx/math/Tweenbase.vala
-*translate: c src/sdx/math/Vector2.c
 *translate: vala src/sdx/math/Vector2.vala
-*translate: genie src/sdx/script/JsFactory.gs
-*translate: genie src/sdx/script/JsGame.gs
-*translate: genie src/sdx/script/api.gs
-*translate: c src/sdx/sdx.c
 *translate: vala src/sdx/sdx.vala
-*translate: c src/sdx/ui/Button.c
 *translate: vala src/sdx/ui/Button.vala
-*translate: c src/sdx/ui/Component.c
 *translate: vala src/sdx/ui/Component.vala
-*translate: c src/sdx/ui/Label.c
 *translate: vala src/sdx/ui/Label.vala
-*translate: c src/sdx/utils/Cache.c
 *translate: vala src/sdx/utils/Cache.vala
-*translate: c src/sdx/utils/File.c
 *translate: vala src/sdx/utils/File.vala
-*translate: c src/sdx/utils/Json.c
 *translate: vala src/sdx/utils/Json.vala
-*translate: c src/sdx/utils/StringTokenizer.c
 *translate: vala src/sdx/utils/StringTokenizer.vala
-*translate: c src/sdx/utils/utils.c
 *translate: vala src/sdx/utils/utils.vala
 *translate: vala src/shmupwarz.vala
 *translate: vala src/systems/AnimationSystem.vala
