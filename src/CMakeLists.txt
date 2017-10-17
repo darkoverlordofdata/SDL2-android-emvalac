@@ -149,7 +149,7 @@ endif()
 set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --disable-warnings --cc=clang )
 set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --gresources=${CMAKE_SOURCE_DIR}/data/resources.gresource.xml )
 
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Og" )
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Og -mwindows" )
 include_directories (AFTER mt19937 )
 
 vala_precompile(VALA_C shmupwarz
