@@ -89,16 +89,16 @@ c_library: m
 *vala_source: source/entity.vala
 *vala_source: source/main.vala
 *vala_source: source/shmupwarz.vala
-*vala_source: systems/AnimationSystem.vala
-*vala_source: systems/CollisionSystem.vala
-*vala_source: systems/DisplaySystem.vala
-*vala_source: systems/ExpireSystem.vala
-*vala_source: systems/InputSystem.vala
-*vala_source: systems/PhysicsSystem.vala
-*vala_source: systems/RemoveSystem.vala
-*vala_source: systems/ScoreSystem.vala
-*vala_source: systems/SoundSystem.vala
-*vala_source: systems/SpawnSystem.vala
+*vala_source: source/systems/AnimationSystem.vala
+*vala_source: source/systems/CollisionSystem.vala
+*vala_source: source/systems/DisplaySystem.vala
+*vala_source: source/systems/ExpireSystem.vala
+*vala_source: source/systems/InputSystem.vala
+*vala_source: source/systems/PhysicsSystem.vala
+*vala_source: source/systems/RemoveSystem.vala
+*vala_source: source/systems/ScoreSystem.vala
+*vala_source: source/systems/SoundSystem.vala
+*vala_source: source/systems/SpawnSystem.vala
 *c_source: mt19937/mt19937ar.c
 *h_folder: mt19937
 
@@ -166,16 +166,16 @@ c_library: m
 *translate: vala src/source/entity.vala
 *translate: vala src/source/main.vala
 *translate: vala src/source/shmupwarz.vala
-*translate: vala src/systems/AnimationSystem.vala
-*translate: vala src/systems/CollisionSystem.vala
-*translate: vala src/systems/DisplaySystem.vala
-*translate: vala src/systems/ExpireSystem.vala
-*translate: vala src/systems/InputSystem.vala
-*translate: vala src/systems/PhysicsSystem.vala
-*translate: vala src/systems/RemoveSystem.vala
-*translate: vala src/systems/ScoreSystem.vala
-*translate: vala src/systems/SoundSystem.vala
-*translate: vala src/systems/SpawnSystem.vala
+*translate: vala src/source/systems/AnimationSystem.vala
+*translate: vala src/source/systems/CollisionSystem.vala
+*translate: vala src/source/systems/DisplaySystem.vala
+*translate: vala src/source/systems/ExpireSystem.vala
+*translate: vala src/source/systems/InputSystem.vala
+*translate: vala src/source/systems/PhysicsSystem.vala
+*translate: vala src/source/systems/RemoveSystem.vala
+*translate: vala src/source/systems/ScoreSystem.vala
+*translate: vala src/source/systems/SoundSystem.vala
+*translate: vala src/source/systems/SpawnSystem.vala
 
 *data: data/local
 
