@@ -1,0 +1,45 @@
+{
+	"vala": [
+		"src/AbstractGame.vala",
+		"src/ApplicationListener.vala",
+		"src/Color.vala",
+		"src/Files.vala",
+		"src/Font.vala",
+		"src/InputMultiplexer.vala",
+		"src/InputProcessor.vala",
+		"src/Screen.vala",
+		"src/audio/Sound.vala",
+		"src/audio/audio.vala",
+		"src/exceptions.vala",
+		"src/files/FileHandle.vala",
+		"src/files/files.vala",
+		"src/graphics/BitmapFont.vala",
+		"src/graphics/Camera.vala",
+		"src/graphics/NinePatch.vala",
+		"src/graphics/Sprite.vala",
+		"src/graphics/Surface.vala",
+		"src/graphics/TextureAtlas.vala",
+		"src/graphics/TextureEnums.vala",
+		"src/graphics/TextureRegion.vala",
+		"src/graphics/graphics.vala",
+		"src/math/Interpolation.vala",
+		"src/math/Timeline.vala",
+		"src/math/Tween.vala",
+		"src/math/TweenAccessor.vala",
+		"src/math/TweenManager.vala",
+		"src/math/Tweenbase.vala",
+		"src/math/Vector2.vala",
+		"src/script/JsFactory.gs
+		"src/script/JsGame.gs
+		"src/script/api.gs
+		"src/sdx.vala",
+		"src/ui/Button.vala",
+		"src/ui/Component.vala",
+		"src/ui/Label.vala",
+		"src/utils/Cache.vala",
+		"src/utils/File.vala",
+		"src/utils/Json.vala",
+		"src/utils/StringTokenizer.vala",
+		"src/utils/utils.vala"
+	]
+}

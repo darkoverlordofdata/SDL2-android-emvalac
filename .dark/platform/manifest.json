@@ -1,0 +1,29 @@
+{
+	"desktop": {
+		"vapi": "vapis/",
+		"vapis": [
+			"vapis/gio-2.0.vapi",
+			"vapis/glib-2.0.vapi",
+			"vapis/posix.vapi"
+		]
+
+	},
+	"emscripten": {
+		"vapi": "vapis-em/",
+		"vapis": [
+			"vapis/emscripten.vapi",
+			"vapis/glib-2.0.vapi",
+			"vapis/posix.vapi"
+		]
+
+	},
+	"android": {
+		"vapi": "vapis-em/",
+		"vapis": [
+			"vapis/android.vapi",
+			"vapis/glib-2.0.vapi",
+			"vapis/posix.vapi"
+		]
+
+	}
+}
