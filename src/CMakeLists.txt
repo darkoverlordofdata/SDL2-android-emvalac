@@ -102,7 +102,7 @@ set (APP_SOURCES ${APP_SOURCES} source/systems/ScoreSystem.vala)
 set (APP_SOURCES ${APP_SOURCES} source/systems/SoundSystem.vala)
 set (APP_SOURCES ${APP_SOURCES} source/systems/SpawnSystem.vala)
 
-set (CUSTOM_VAPIS_LIST ${CUSTOM_VAPIS_LIST} ${CMAKE_SOURCE_DIR}/src/vapis/mt19937ar.vapi)
+set (CUSTOM_VAPIS_LIST ${CUSTOM_VAPIS_LIST} ${CMAKE_SOURCE_DIR}/src/vapis/mt19937/mt19937ar.vapi)
 set (CUSTOM_VAPIS_LIST ${CUSTOM_VAPIS_LIST} ${CMAKE_SOURCE_DIR}/src/vapis/posix.vapi)
 
 if (ANDROID)
@@ -141,6 +141,9 @@ if (LIBRARY)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBRARY " )
 endif ()
 set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --vapidir=${CMAKE_SOURCE_DIR}/src/vapis )
+set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --vapidir=${CMAKE_SOURCE_DIR}/src/vapis/lua )
+set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --vapidir=${CMAKE_SOURCE_DIR}/src/vapis/mt19937 )
+set (COMPILE_OPTIONS ${COMPILE_OPTIONS} --vapidir=${CMAKE_SOURCE_DIR}/src/vapis/sdx )
 
 if ((${CMAKE_BUILD_TYPE} STREQUAL "Debug") OR (${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo"))
 	set(COMPILE_OPTIONS ${COMPILE_OPTIONS} "-g")

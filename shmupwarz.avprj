@@ -14,12 +14,15 @@ define: EMSCRIPTEN
 gresource: resources_gresource_xml data/resources.gresource.xml
 
 vapidir: src/vapis
+vapidir: src/vapis/lua
+vapidir: src/vapis/mt19937
+vapidir: src/vapis/sdx
 
 vala_binary: src/shmupwarz
 compile_options: --disable-warnings --cc=clang
 compile_c_options: -g -Og
 use_gresource: resources_gresource_xml
-vala_vapi: vapis/mt19937ar.vapi
+vala_vapi: vapis/mt19937/mt19937ar.vapi
 vala_vapi: vapis/posix.vapi
 vala_check_package: SDL2_image
 vala_check_package: SDL2_mixer
