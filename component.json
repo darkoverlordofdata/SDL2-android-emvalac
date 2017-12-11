@@ -1,0 +1,41 @@
+{
+  "name": "shmupwarz",
+  "template": "default",
+  "version": "0.0.1",
+  "vala": "0.34",
+  "authors": [],
+  "description": "shmupwarz",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "goop": "git://github.com/darkoverlordofdata/doran-goop",
+    "entitas": "git://github.com/darkoverlordofdata/doran-entitas",
+    "mt19937": "git://github.com/darkoverlordofdata/doran-mt19937",
+    "sdx": "git://github.com/darkoverlordofdata/doran-sdx"
+  },
+  "files": [
+    "src/components.vala",
+    "src/entity.vala",
+    "src/Factory.vala",
+    "src/main.vala",
+    "src/Game.vala",
+    "src/shmupwarz.vala",
+    "src/systems/DisplaySystem.vala",
+    "src/systems/CollisionSystem.vala",
+    "src/systems/ExpireSystem.vala",
+    "src/systems/InputSystem.vala",
+    "src/systems/PhysicsSystem.vala",
+    "src/systems/RemoveSystem.vala",
+    "src/systems/ScoreSystem.vala",
+    "src/systems/SpawnSystem.vala",
+    "src/systems/SoundSystem.vala",
+    "src/systems/AnimationSystem.vala"
+  ],
+  "packages": [
+    "glib-2.0",
+    "gio-2.0"
+  ],
+  "options": [],
+  "vapidir": "/src/vapis",
+  "console": true
+}

@@ -1,6 +1,0 @@
-{
-	"vala": [
-		"src/Class.vala",
-		"src/Guid.vala"
-	]
-}

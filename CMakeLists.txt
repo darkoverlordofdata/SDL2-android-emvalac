@@ -1,80 +1,126 @@
-### CMakeLists automatically created with AutoVala
-### Do not edit
+cmake_minimum_required ( VERSION 3.1 )
+###################################################################################
+#
+#   Build shmupwarz
+#
+###################################################################################
+project ( shmupwarz VERSION 0.0.1 )
 
-project (shmupwarz)
-cmake_minimum_required (VERSION 2.6)
-cmake_policy (VERSION 2.8)
-list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-enable_testing ()
-option(ICON_UPDATE "Update the icon cache after installing" ON)
-option(BUILD_VALADOC "Build API documentation if Valadoc is available" OFF)
-option(ANDROID "ANDROID" OFF)
-option(PROFILING "PROFILING" OFF)
-option(EMSCRIPTEN "EMSCRIPTEN" OFF)
-option(DESKTOP "DESKTOP" OFF)
-option(NOGOBJECT "NOGOBJECT" OFF)
-option(NODEJS "NODEJS" OFF)
-option(LIBRARY "LIBRARY" OFF)
+#
+# enable features
+#
+include ( CMakeToolsHelpers OPTIONAL )
+list ( APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/vala)
+find_package (PkgConfig)
+find_package (Vala REQUIRED)
 
-if( NOT CMAKE_BUILD_TYPE )
-	set(CMAKE_BUILD_TYPE Release)
-endif()
+#
+#   libraries - sources & packages
+#
+add_subdirectory ( .lib/goop )
+add_subdirectory ( .lib/entitas )
+add_subdirectory ( .lib/mal )
+add_subdirectory ( .lib/mt19937 )
+add_subdirectory ( .lib/sdx )
+if (EXISTS ${CMAKE_SOURCE_DIR}/data AND NOT DEFINED ZEROG )
+    add_subdirectory (data)
+    list ( APPEND RESOURCES ${resources_gresource_xml_C_FILE} )
+endif ()
 
-include(GNUInstallDirs)
-if( ( ${CMAKE_INSTALL_PREFIX} MATCHES "^/usr/local" ) )
-	# A workaround to ensure that works 'out of the box' in Debian-based systems
-	set(CMAKE_INSTALL_LIBDIR lib)
-endif()
+#
+#   generated code configuration
+#
+configure_file ( 
+    ${CMAKE_SOURCE_DIR}/src/Config.vala.base 
+    ${CMAKE_BINARY_DIR}/src/Config.vala 
+)
+file (RELATIVE_PATH CONFIG_VALA ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}/src/Config.vala)
 
-set(HAVE_VALADOC OFF)
-if(BUILD_VALADOC)
-	find_package(Valadoc)
-	if(VALADOC_FOUND)
-		set(HAVE_VALADOC ON)
-		include(Valadoc)
-	else()
-		message("Valadoc not found, will not build documentation")
-	endif()
-endif()
+#
+#   application source
+#
+list ( APPEND VALA_SOURCES ${CONFIG_VALA} )
+list ( APPEND VALA_SOURCES src/components.vala )
+list ( APPEND VALA_SOURCES src/entity.vala )
+list ( APPEND VALA_SOURCES src/Factory.vala )
+list ( APPEND VALA_SOURCES src/main.vala )
+list ( APPEND VALA_SOURCES src/Game.vala )
+list ( APPEND VALA_SOURCES src/shmupwarz.vala )
+list ( APPEND VALA_SOURCES src/systems/DisplaySystem.vala )
+list ( APPEND VALA_SOURCES src/systems/CollisionSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/ExpireSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/InputSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/PhysicsSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/RemoveSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/ScoreSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/SpawnSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/SoundSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/AnimationSystem.vala )
+#
+#   pkg-config dependencies
+#
+list ( APPEND PACKAGES glib-2.0 )
+list ( APPEND PACKAGES gio-2.0 )
 
-find_package(PkgConfig)
+pkg_check_modules (DEPS REQUIRED ${PACKAGES})
+add_definitions ( ${DEPS_CFLAGS} )
+link_libraries ( ${DEPS_LIBRARIES} )
+link_directories ( ${DEPS_LIBRARY_DIRS} )
 
-set(MODULES_TO_CHECK ${MODULES_TO_CHECK} SDL2_image)
-set(MODULES_TO_CHECK ${MODULES_TO_CHECK} SDL2_mixer)
-set(MODULES_TO_CHECK ${MODULES_TO_CHECK} SDL2_ttf)
-set(MODULES_TO_CHECK ${MODULES_TO_CHECK} glib-2.0)
-set(MODULES_TO_CHECK ${MODULES_TO_CHECK} gobject-2.0)
-set(MODULES_TO_CHECK ${MODULES_TO_CHECK} sdl2)
-set(MODULES_TO_CHECK ${MODULES_TO_CHECK} gio-2.0)
+#
+#   compiler options
+#
+list ( APPEND VALAC_OPTIONS --disable-warnings --enable-experimental )
+list ( APPEND VALAC_OPTIONS --vapidir=${CMAKE_SOURCE_DIR}/src/vapis)
 
-pkg_check_modules(DEPS REQUIRED ${MODULES_TO_CHECK})
+if (WIN32)  
+    set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mwindows" )
+endif ()
+set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -w -std=c99 -O3" )
 
+include_directories(AFTER ${INCLUDES})
+#
+#   compile vala code
+#
+include (ValaVersion)
+ensure_vala_version (0.34 MINIMUM)
+include (ValaPrecompile)
+vala_precompile (
+    VALA_C ${PROJECT_NAME}
+        ${VALA_SOURCES}
+    PACKAGES
+        ${PACKAGES}
+    CUSTOM_VAPIS
+        ${CUSTOM_VAPIS}
+    OPTIONS
+        ${VALAC_OPTIONS}
+    )
 
-find_program ( WHERE_GRESOURCE glib-compile-resources )
-if ( NOT WHERE_GRESOURCE )
-	MESSAGE(FATAL_ERROR "Error! GLIB-COMPILE-RESOURCES is not installed.")
-endif()
+#
+#   compile ccode & link executable
+#
+add_executable ( ${PROJECT_NAME} ${VALA_C} ${C_SOURCES} ${RESOURCES} )
+target_link_libraries ( ${PROJECT_NAME} m )
+install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
-add_subdirectory(src/vapis)
-add_subdirectory(src/vapis/mt19937)
-add_subdirectory(po)
-add_subdirectory(src/sdx/ui)
-add_subdirectory(src/sdx/graphics)
-add_subdirectory(src/mt19937)
-add_subdirectory(src/vapis/lua)
-add_subdirectory(data)
-add_subdirectory(src/vapis/sdx)
-add_subdirectory(src/entitas)
-add_subdirectory(src/sdx/audio)
-add_subdirectory(src/goop)
-add_subdirectory(src/sdx/script)
-add_subdirectory(data/icons)
-add_subdirectory(src/entitas/events)
-add_subdirectory(src/sdx)
-add_subdirectory(src/sdx/files)
-add_subdirectory(src/sdx/utils)
-add_subdirectory(src/source)
-add_subdirectory(src/source/systems)
-add_subdirectory(src/sdx/math)
-add_subdirectory(src)
+if (EXISTS ${CMAKE_SOURCE_DIR}/data AND DEFINED ZEROG)
+    install ( DIRECTORY ${CMAKE_SOURCE_DIR}/data/assets DESTINATION . )
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} 
+            -E 
+            copy_directory
+            ${CMAKE_SOURCE_DIR}/data/assets 
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets 
+    )    
+elseif (EXISTS ${CMAKE_SOURCE_DIR}/assets)
+    install ( DIRECTORY ${CMAKE_SOURCE_DIR}/assets DESTINATION . )
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} 
+            -E 
+            copy_directory
+            ${CMAKE_SOURCE_DIR}/assets 
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets 
+    )    
+endif ()
 
+# (generated from template: default. Do not modify. )
