@@ -16,9 +16,9 @@
   "files": [
     "src/Factory.vala",
     "src/Game.vala",
-    "src/main.vala",
-    "src/components.vala",
     "src/entity.vala",
+    "src/components.vala",
+    "src/main.vala",
     "src/shmupwarz.vala",
     "src/systems/AnimationSystem.vala",
     "src/systems/CollisionSystem.vala",

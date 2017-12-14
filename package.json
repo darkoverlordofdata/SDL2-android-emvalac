@@ -34,6 +34,5 @@
     "gulp-shell": "^0.4.2",
     "liquid.coffee": "^0.1.8"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
