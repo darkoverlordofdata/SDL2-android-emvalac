@@ -17,11 +17,11 @@ find_package (Vala REQUIRED)
 #
 #   libraries - sources & packages
 #
-add_subdirectory ( .lib/goop )
 add_subdirectory ( .lib/entitas )
 add_subdirectory ( .lib/mal )
-add_subdirectory ( .lib/mt19937 )
+add_subdirectory ( .lib/goop )
 add_subdirectory ( .lib/sdx )
+add_subdirectory ( .lib/mt19937 )
 if (EXISTS ${CMAKE_SOURCE_DIR}/data AND NOT DEFINED ZEROG )
     add_subdirectory (data)
     list ( APPEND RESOURCES ${resources_gresource_xml_C_FILE} )
@@ -40,22 +40,22 @@ file (RELATIVE_PATH CONFIG_VALA ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}/src/Conf
 #   application source
 #
 list ( APPEND VALA_SOURCES ${CONFIG_VALA} )
+list ( APPEND VALA_SOURCES src/Factory.vala )
+list ( APPEND VALA_SOURCES src/Game.vala )
+list ( APPEND VALA_SOURCES src/main.vala )
 list ( APPEND VALA_SOURCES src/components.vala )
 list ( APPEND VALA_SOURCES src/entity.vala )
-list ( APPEND VALA_SOURCES src/Factory.vala )
-list ( APPEND VALA_SOURCES src/main.vala )
-list ( APPEND VALA_SOURCES src/Game.vala )
 list ( APPEND VALA_SOURCES src/shmupwarz.vala )
-list ( APPEND VALA_SOURCES src/systems/DisplaySystem.vala )
+list ( APPEND VALA_SOURCES src/systems/AnimationSystem.vala )
 list ( APPEND VALA_SOURCES src/systems/CollisionSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/DisplaySystem.vala )
 list ( APPEND VALA_SOURCES src/systems/ExpireSystem.vala )
 list ( APPEND VALA_SOURCES src/systems/InputSystem.vala )
 list ( APPEND VALA_SOURCES src/systems/PhysicsSystem.vala )
 list ( APPEND VALA_SOURCES src/systems/RemoveSystem.vala )
 list ( APPEND VALA_SOURCES src/systems/ScoreSystem.vala )
-list ( APPEND VALA_SOURCES src/systems/SpawnSystem.vala )
 list ( APPEND VALA_SOURCES src/systems/SoundSystem.vala )
-list ( APPEND VALA_SOURCES src/systems/AnimationSystem.vala )
+list ( APPEND VALA_SOURCES src/systems/SpawnSystem.vala )
 #
 #   pkg-config dependencies
 #
@@ -101,7 +101,7 @@ vala_precompile (
 #
 add_executable ( ${PROJECT_NAME} ${VALA_C} ${C_SOURCES} ${RESOURCES} )
 target_link_libraries ( ${PROJECT_NAME} m )
-install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
+install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION . )
 
 if (EXISTS ${CMAKE_SOURCE_DIR}/data AND DEFINED ZEROG)
     install ( DIRECTORY ${CMAKE_SOURCE_DIR}/data/assets DESTINATION . )
@@ -122,5 +122,7 @@ elseif (EXISTS ${CMAKE_SOURCE_DIR}/assets)
             $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets 
     )    
 endif ()
+
+include (CPack)
 
 # (generated from template: default. Do not modify. )

@@ -13,73 +13,62 @@
         "name": "Debug",
         "projects": [
           {
-            "buildDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build/.lib/entitas",
+            "buildDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build/.lib/entitas",
             "name": "entitas",
-            "sourceDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/.lib/entitas",
+            "sourceDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/.lib/entitas",
             "targets": []
           },
           {
-            "buildDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build/.lib/goop",
+            "buildDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build/.lib/goop",
             "name": "goop",
-            "sourceDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/.lib/goop",
+            "sourceDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/.lib/goop",
             "targets": []
           },
           {
-            "buildDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build/.lib/mal",
+            "buildDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build/.lib/mal",
             "name": "mt19937",
-            "sourceDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/.lib/mal",
+            "sourceDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/.lib/mal",
             "targets": []
           },
           {
-            "buildDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build/data",
+            "buildDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build/data",
             "name": "resources",
-            "sourceDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/data",
+            "sourceDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/data",
             "targets": []
           },
           {
-            "buildDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build/.lib/sdx",
+            "buildDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build/.lib/sdx",
             "name": "sdx",
-            "sourceDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/.lib/sdx",
+            "sourceDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/.lib/sdx",
             "targets": []
           },
           {
-            "buildDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build",
+            "buildDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build",
             "name": "shmupwarz",
-            "sourceDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz",
+            "sourceDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz",
             "targets": [
               {
                 "artifacts": [
-                  "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build/shmupwarz.exe",
-                  "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build/libshmupwarz.dll.a",
-                  "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build/shmupwarz.pdb"
+                  "/home/bruce/Documents/GitHub/zerog-shmupwarz/build/shmupwarz"
                 ],
-                "buildDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build",
+                "buildDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build",
                 "fileGroups": [
                   {
-                    "isGenerated": true,
-                    "sources": [
-                      "build/.lib/goop/src/Class.c.rule",
-                      "build/shmupwarz_valac.stamp.rule"
-                    ]
-                  },
-                  {
-                    "compileFlags": " -mwindows -w -std=c99 -O3 -g   -pthread -mms-bitfields -IC:/msys64/mingw64/include/SDL2 -IC:/msys64/mingw64/include/glib-2.0 -IC:/msys64/mingw64/lib/glib-2.0/include -IC:/msys64/mingw64/include",
+                    "compileFlags": " -w -std=c99 -O3 -g   -pthread -I/usr/include/SDL2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include",
                     "defines": [
-                      "main=SDL_main"
+                      "_REENTRANT"
                     ],
                     "includePath": [
                       {
-                        "path": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/.lib/mt19937/src"
+                        "path": "/home/bruce/Documents/GitHub/zerog-shmupwarz/.lib/mt19937/src"
                       },
                       {
-                        "path": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build"
+                        "path": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build"
                       }
                     ],
                     "isGenerated": true,
                     "language": "C",
                     "sources": [
-                      "build/.lib/goop/src/Class.c",
-                      "build/.lib/goop/src/Guid.c",
                       "build/.lib/entitas/src/entitas.c",
                       "build/.lib/entitas/src/Group.c",
                       "build/.lib/entitas/src/Matcher.c",
@@ -91,6 +80,8 @@
                       "build/.lib/entitas/src/events/GroupsChanged.c",
                       "build/.lib/entitas/src/events/GroupUpdated.c",
                       "build/.lib/entitas/src/events/WorldChanged.c",
+                      "build/.lib/goop/src/Class.c",
+                      "build/.lib/goop/src/Guid.c",
                       "build/.lib/sdx/src/AbstractGame.c",
                       "build/.lib/sdx/src/ApplicationListener.c",
                       "build/.lib/sdx/src/Color.c",
@@ -133,35 +124,42 @@
                       "build/.lib/sdx/src/utils/StringTokenizer.c",
                       "build/.lib/sdx/src/utils/utils.c",
                       "build/build/src/Config.c",
+                      "build/src/Factory.c",
+                      "build/src/Game.c",
+                      "build/src/main.c",
                       "build/src/components.c",
                       "build/src/entity.c",
-                      "build/src/Factory.c",
-                      "build/src/main.c",
-                      "build/src/Game.c",
                       "build/src/shmupwarz.c",
-                      "build/src/systems/DisplaySystem.c",
+                      "build/src/systems/AnimationSystem.c",
                       "build/src/systems/CollisionSystem.c",
+                      "build/src/systems/DisplaySystem.c",
                       "build/src/systems/ExpireSystem.c",
                       "build/src/systems/InputSystem.c",
                       "build/src/systems/PhysicsSystem.c",
                       "build/src/systems/RemoveSystem.c",
                       "build/src/systems/ScoreSystem.c",
-                      "build/src/systems/SpawnSystem.c",
                       "build/src/systems/SoundSystem.c",
-                      "build/src/systems/AnimationSystem.c"
+                      "build/src/systems/SpawnSystem.c"
                     ]
                   },
                   {
-                    "compileFlags": " -mwindows -w -std=c99 -O3 -g   -pthread -mms-bitfields -IC:/msys64/mingw64/include/SDL2 -IC:/msys64/mingw64/include/glib-2.0 -IC:/msys64/mingw64/lib/glib-2.0/include -IC:/msys64/mingw64/include",
+                    "isGenerated": true,
+                    "sources": [
+                      "build/.lib/entitas/src/entitas.c.rule",
+                      "build/shmupwarz_valac.stamp.rule"
+                    ]
+                  },
+                  {
+                    "compileFlags": " -w -std=c99 -O3 -g   -pthread -I/usr/include/SDL2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include",
                     "defines": [
-                      "main=SDL_main"
+                      "_REENTRANT"
                     ],
                     "includePath": [
                       {
-                        "path": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/.lib/mt19937/src"
+                        "path": "/home/bruce/Documents/GitHub/zerog-shmupwarz/.lib/mt19937/src"
                       },
                       {
-                        "path": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz/build"
+                        "path": "/home/bruce/Documents/GitHub/zerog-shmupwarz/build"
                       }
                     ],
                     "isGenerated": false,
@@ -172,12 +170,13 @@
                     ]
                   }
                 ],
-                "fullName": "shmupwarz.exe",
-                "linkLanguageFlags": "-mwindows -w -std=c99 -O3 -g",
-                "linkLibraries": "-lSDL2_image -lSDL2_mixer -lSDL2_ttf -lmingw32 -lSDL2main -lSDL2 -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lintl -lm -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
+                "fullName": "shmupwarz",
+                "linkFlags": "-rdynamic",
+                "linkLanguageFlags": "-w -std=c99 -O3 -g",
+                "linkLibraries": "-lSDL2_image -lSDL2_mixer -lSDL2_ttf -lSDL2 -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lm",
                 "linkerLanguage": "C",
                 "name": "shmupwarz",
-                "sourceDirectory": "C:/Users/darko/Documents/GitHub/zerog-shmupwarz",
+                "sourceDirectory": "/home/bruce/Documents/GitHub/zerog-shmupwarz",
                 "type": "EXECUTABLE"
               }
             ]
@@ -185,7 +184,7 @@
         ]
       }
     ],
-    "cookie": "0.0609873964754899",
+    "cookie": "0.2444736708568287",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

@@ -14,22 +14,22 @@
     "sdx": "git://github.com/darkoverlordofdata/doran-sdx"
   },
   "files": [
+    "src/Factory.vala",
+    "src/Game.vala",
+    "src/main.vala",
     "src/components.vala",
     "src/entity.vala",
-    "src/Factory.vala",
-    "src/main.vala",
-    "src/Game.vala",
     "src/shmupwarz.vala",
-    "src/systems/DisplaySystem.vala",
+    "src/systems/AnimationSystem.vala",
     "src/systems/CollisionSystem.vala",
+    "src/systems/DisplaySystem.vala",
     "src/systems/ExpireSystem.vala",
     "src/systems/InputSystem.vala",
     "src/systems/PhysicsSystem.vala",
     "src/systems/RemoveSystem.vala",
     "src/systems/ScoreSystem.vala",
-    "src/systems/SpawnSystem.vala",
     "src/systems/SoundSystem.vala",
-    "src/systems/AnimationSystem.vala"
+    "src/systems/SpawnSystem.vala"
   ],
   "packages": [
     "glib-2.0",
