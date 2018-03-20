@@ -2,6 +2,7 @@ node_modules
 build/
 install/
 .publish/
+.lib/
 android/bin
 android/gen
 android/libs

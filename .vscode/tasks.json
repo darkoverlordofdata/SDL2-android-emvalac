@@ -13,7 +13,7 @@
             {
                 "isBuildCommand": true,
                 "taskName": "build",
-                "args": ["cd $OLDPWD/build; make"]
+                "args": ["cd build; make"]
             }
         ]
     },

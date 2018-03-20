@@ -3,17 +3,14 @@
  * 
  * 
  */
-namespace Entitas 
-{ 
-	public struct Transform 
-	{
+namespace Entitas { 
+	public struct Transform {
 		public Sdx.Math.Vector2? scale;
 		public Sdx.Math.Vector2? position;
 		public SDL.Video.Rect? aabb;
  		public Sdx.Graphics.Sprite? sprite;
 
-		public Transform(Sdx.Graphics.Sprite sprite) 
-		{
+		public Transform(Sdx.Graphics.Sprite sprite) {
 			this.sprite = sprite;
 			position = { 0, 0 };
 			scale = { sprite.scale.x, sprite.scale.y };
@@ -22,87 +19,73 @@ namespace Entitas
 	}
 
 	[SimpleType, Immutable]
-	public struct Background 
-	{
+	public struct Background {
 		public bool active;
     }
     
 	[SimpleType, Immutable]
-	public struct Bullet 
-	{
+	public struct Bullet {
 		public bool active;
     }
 
 	[SimpleType, Immutable]
-	public struct Enemy1 
-	{
+	public struct Enemy1 {
 		public bool active;
     }
 
 	[SimpleType, Immutable]
-	public struct Enemy2 
-	{
+	public struct Enemy2 {
 		public bool active;
     }
 
 	[SimpleType, Immutable]
-	public struct Enemy3 
-	{
+	public struct Enemy3 {
 		public bool active;
     }
 
 	[SimpleType]
-	public struct Expires 
-	{
+	public struct Expires {
 		public float value; 
     }
 
 	[SimpleType]
-	public struct Health 
-	{
+	public struct Health {
 		public float current; 
 		public float maximum; 
     }
 
 	[SimpleType, Immutable]
-	public struct Hud 
-	{
+	public struct Hud {
 		public bool active;
     }
 
 	[SimpleType]
-	public struct Layer 
-	{
+	public struct Layer {
 		public int value; 
     }
 
 	[SimpleType, Immutable]
-	public struct Player 
-	{
+	public struct Player {
 		public bool active;
     }
 
 	[SimpleType, Immutable]
-	public struct Show 
-	{
+	public struct Show {
 		public bool active;
     }
     
-	public struct Sound 
-	{
+	public struct Sound {
 		public Sdx.Audio.Sound sound;
     } 
 
-	public struct Text 
-	{
+	public struct Text {
         public string text;
  		public Sdx.Graphics.Sprite.TextSprite sprite;
         
     }
 
 	[SimpleType]
-	public struct Tint 
-	{
+	public struct Tint {
         public int r;
         public int g;
         public int b;
@@ -110,8 +93,7 @@ namespace Entitas
     }
 
 	[SimpleType]
-	public struct Tween 
-	{
+	public struct Tween {
 		public float min; 
 		public float max; 
 		public float speed; 
@@ -120,8 +102,7 @@ namespace Entitas
     }
 
 	[SimpleType]
-	public struct Velocity 
-	{
+	public struct Velocity {
 		public float x; 
 		public float y; 
     }
@@ -151,8 +132,7 @@ namespace Entitas
 	/**
 	* Component names
 	*/
-	const string[] ComponentString = 
-	{
+	const string[] ComponentString = {
 		"Unknown",
 		"Background",
 		"Bullet",
@@ -175,8 +155,7 @@ namespace Entitas
 	/**
 	* Components
 	*/
-	public enum Components 
-	{
+	public enum Components {
 		UnknownComponent,
 		BackgroundComponent,
 		BulletComponent,

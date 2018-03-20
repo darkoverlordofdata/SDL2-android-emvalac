@@ -6,15 +6,14 @@ namespace Systems {
 	*/
 	public class RemoveSystem : System {
 		public RemoveSystem(Game game, Factory world) {
-
-			var moving = world.GetGroup(Matcher.AllOf({Components.VelocityComponent}));
+			var moving = world.getGroup(Matcher.allOf({Components.VelocityComponent}));
 			
 			/**
 			 * Remove entities that have gone off-screen
 			 */
-			Execute = (delta) => {
+			execute = (delta) => {
 				foreach (var entity in moving.entities) {
-					if (entity.IsActive()) {
+					if (entity.isActive()) {
 						//  switch (entity.pool) {
 						//  	case Pool.ENEMY1:
 						//  		if (entity.transform.position.y > game.height) world.deleteEntity(entity);
