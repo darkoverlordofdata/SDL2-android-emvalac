@@ -11,11 +11,7 @@ namespace Systems {
 			/**
 			 * Remove entities that have gone off-screen
 			 */
-<<<<<<< HEAD
 			update = (delta) => {
-=======
-			execute = (delta) => {
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				foreach (var entity in moving.entities) {
 					if (entity.isActive()) {
 						//  switch (entity.pool) {

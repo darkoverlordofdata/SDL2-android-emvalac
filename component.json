@@ -17,10 +17,6 @@
     "src/components.vala",
     "src/Factory.vala",
     "src/entity.vala",
-<<<<<<< HEAD
-=======
-    "src/Factory.vala",
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
     "src/Game.vala",
     "src/main.vala",
     "src/shmupwarz.vala",

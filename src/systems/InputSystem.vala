@@ -17,11 +17,7 @@ namespace Systems {
 						.getGroup(Matcher.allOf({ Components.PlayerComponent }))
 						.getSingleEntity();
 						
-<<<<<<< HEAD
 			update = (delta) => {
-=======
-			execute = (delta) => {
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				player.setPosition(x, y);
 				if (shoot || mouseDown) timeToFire -= delta;
 				if (timeToFire < 0) {

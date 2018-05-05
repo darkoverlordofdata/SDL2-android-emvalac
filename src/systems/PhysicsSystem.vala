@@ -12,11 +12,7 @@ namespace Systems {
 			* physics system
 			* model movement
 			*/
-<<<<<<< HEAD
 			update = (delta) => {
-=======
-			execute = (delta) => {
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				physics.entities.forEach(it => {
 					if (it.isActive()) {
 

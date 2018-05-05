@@ -51,18 +51,12 @@ enum Pool {
  */
 public class Factory : World {
 
-<<<<<<< HEAD
 	//public static Sdx.Graphics.TextureAtlas atlas;
 	public Factory() {
 		base();		
 		//atlas = new Sdx.Graphics.TextureAtlas(Sdx.Files.Default("assets/assets.atlas"));
 		setPool(COUNT_ALL, Pool.Count, 
 			{
-=======
-	public Factory() {
-		base();		
-		setPool(COUNT_ALL, Pool.Count, {
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				Buffer(Pool.BACKGROUND,	COUNT_BACKGROUND,	createBackground),
 				Buffer(Pool.PLAYER, 	COUNT_PLAYER, 		createPlayer),
 				Buffer(Pool.BULLET, 	COUNT_BULLET, 		createBullet),
