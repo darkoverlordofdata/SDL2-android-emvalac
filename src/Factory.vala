@@ -30,8 +30,7 @@ const int COUNT_ALL
 		+ COUNT_PARTICLE;
 
 /* entity types - each gets a pool partition  */
-enum Pool 
-{
+enum Pool {
 	BACKGROUND,
 	ENEMY1,
 	ENEMY2,
@@ -49,25 +48,23 @@ enum Pool
 /**
  * fabricate specialized entities
  */
-public class Factory : World 
-{
+public class Factory : World {
 
 	//public static Sdx.Graphics.TextureAtlas atlas;
-	public Factory() 
-	{
+	public Factory() {
 		base();		
 		//atlas = new Sdx.Graphics.TextureAtlas(Sdx.Files.Default("assets/assets.atlas"));
-		SetPool(COUNT_ALL, Pool.Count, 
+		setPool(COUNT_ALL, Pool.Count, 
 			{
-				Buffer(Pool.BACKGROUND,	COUNT_BACKGROUND,	CreateBackground),
-				Buffer(Pool.PLAYER, 	COUNT_PLAYER, 		CreatePlayer),
-				Buffer(Pool.BULLET, 	COUNT_BULLET, 		CreateBullet),
-				Buffer(Pool.ENEMY1, 	COUNT_ENEMY1, 		CreateEnemy1),
-				Buffer(Pool.ENEMY2,  	COUNT_ENEMY2, 		CreateEnemy2),
-				Buffer(Pool.ENEMY3,  	COUNT_ENEMY3, 		CreateEnemy3),
-				Buffer(Pool.EXPLOSION, 	COUNT_EXPLOSION, 	CreateExplosion),
-				Buffer(Pool.BANG,      	COUNT_BANG, 		CreateBang),
-				Buffer(Pool.PARTICLE,  	COUNT_PARTICLE, 	CreateParticle)
+				Buffer(Pool.BACKGROUND,	COUNT_BACKGROUND,	createBackground),
+				Buffer(Pool.PLAYER, 	COUNT_PLAYER, 		createPlayer),
+				Buffer(Pool.BULLET, 	COUNT_BULLET, 		createBullet),
+				Buffer(Pool.ENEMY1, 	COUNT_ENEMY1, 		createEnemy1),
+				Buffer(Pool.ENEMY2,  	COUNT_ENEMY2, 		createEnemy2),
+				Buffer(Pool.ENEMY3,  	COUNT_ENEMY3, 		createEnemy3),
+				Buffer(Pool.EXPLOSION, 	COUNT_EXPLOSION, 	createExplosion),
+				Buffer(Pool.BANG,      	COUNT_BANG, 		createBang),
+				Buffer(Pool.PARTICLE,  	COUNT_PARTICLE, 	createParticle)
 			}
 		);
 	}
@@ -77,209 +74,201 @@ public class Factory : World
 	/**
 	 * The stuff that all entities have
 	 */
-	public Entity* CreateBase(string name, int pool, float scale = Sdx.pixelFactor, bool active = false, bool centered = true) 
-	{
-		return CreateEntity(name, pool, active)
-			.SetTransform(Sdx.atlas.CreateSprite(name).SetScale(scale, scale).SetCentered(centered))
-			.AddLayer(pool);
+	public Entity* createBase(string name, int pool, float scale = Sdx.pixelFactor, bool active = false, bool centered = true) {
+		return createEntity(name, pool, active)
+			.setTransform(Sdx.atlas.createSprite(name).setScale(scale, scale).setCentered(centered))
+			.addLayer(pool);
 	}
 
 	/** 
 	 *	factory methods:
 	 */
-	public Entity* CreateBackground() 
-	{
-		return CreateBase("background", Pool.BACKGROUND, 2*Sdx.pixelFactor, true, false)
-			.SetBackground(true);
+	public Entity* createBackground() {
+		return createBase("background", Pool.BACKGROUND, 2*Sdx.pixelFactor, true, false)
+			.setBackground(true);
 	}
 
-	public Entity* CreatePlayer() 
-	{
-		return CreateBase("spaceshipspr", Pool.PLAYER, Sdx.pixelFactor, true)
-			.SetPlayer(true);
+	public Entity* createPlayer() {
+		return createBase("spaceshipspr", Pool.PLAYER, Sdx.pixelFactor, true)
+			.setPlayer(true);
 	}
 
-	public Entity* CreateBullet() 
-	{
-		return CreateBase("bullet", Pool.BULLET)
-			.AddSound(new Sdx.Audio.Sound(Sdx.Files.Resource("assets/sounds/pew.wav")))
-			.AddTint(0xd2, 0xfa, 0, 0xfa)
-			.AddHealth(2, 2)
-			.AddVelocity(0, -800*Sdx.pixelFactor)
-			.SetBullet(true);
+	public Entity* createBullet() {
+		return createBase("bullet", Pool.BULLET)
+			.addSound(new Sdx.Audio.Sound(Sdx.Files.resource("assets/sounds/pew.wav")))
+			.addTint(0xd2, 0xfa, 0, 0xfa)
+			.addHealth(2, 2)
+			.addVelocity(0, -800*Sdx.pixelFactor)
+			.setBullet(true);
 	}
 
-	public Entity* CreateEnemy1() 
-	{
-		return CreateBase("enemy1", Pool.ENEMY1)
-			.AddHealth(10, 10)
-			.AddVelocity(0, 40)
-			.AddText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
-			.SetEnemy1(true);
+	public Entity* createEnemy1() {
+		return createBase("enemy1", Pool.ENEMY1)
+			.addHealth(10, 10)
+			.addVelocity(0, 40)
+			.addText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
+			.setEnemy1(true);
 	}
 
-	public Entity* CreateEnemy2() 
-	{
-		return CreateBase("enemy2", Pool.ENEMY2)
-			.AddHealth(20, 20)
-			.AddVelocity(0, 30)
-			.AddText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
-			.SetEnemy2(true);
+	public Entity* createEnemy2() {
+		return createBase("enemy2", Pool.ENEMY2)
+			.addHealth(20, 20)
+			.addVelocity(0, 30)
+			.addText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
+			.setEnemy2(true);
 	}
 
-	public Entity* CreateEnemy3() 
-	{
-		return CreateBase("enemy3", Pool.ENEMY3)
-			.AddHealth(60, 60)
-			.AddVelocity(0, 20)
-			.AddText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
-			.SetEnemy3(true);
+	public Entity* createEnemy3() {
+		return createBase("enemy3", Pool.ENEMY3)
+			.addHealth(60, 60)
+			.addVelocity(0, 20)
+			.addText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
+			.setEnemy3(true);
 	}
 
-	public Entity* CreateExplosion() 
-	{
-		return CreateBase("explosion", Pool.EXPLOSION, 0.6f)
-			.AddSound(new Sdx.Audio.Sound(Sdx.Files.Resource("assets/sounds/asplode.wav")))
-			.AddTint(0xd2, 0xfa, 0xd2, 0x7f)
-			.AddExpires(0.2f)
-			.AddTween(0.006f, 0.6f, -3f, false, true);
+	public Entity* createExplosion() {
+		return createBase("explosion", Pool.EXPLOSION, 0.6f)
+			.addSound(new Sdx.Audio.Sound(Sdx.Files.resource("assets/sounds/asplode.wav")))
+			.addTint(0xd2, 0xfa, 0xd2, 0x7f)
+			.addExpires(0.2f)
+			.addTween(0.006f, 0.6f, -3f, false, true);
 	}
 
-	public Entity* CreateBang() 
-	{
-		return CreateBase("explosion", Pool.BANG, 0.1f)
-			.AddSound(new Sdx.Audio.Sound(Sdx.Files.Resource("assets/sounds/smallasplode.wav")))
-			.AddTint(0xd2, 0xfa, 0xd2, 0x9f)
-			.AddExpires(0.2f)
-			.AddTween(0.001f, 0.1f, -3f, false, true);
+	public Entity* createBang() {
+		return createBase("explosion", Pool.BANG, 0.1f)
+			.addSound(new Sdx.Audio.Sound(Sdx.Files.resource("assets/sounds/smallasplode.wav")))
+			.addTint(0xd2, 0xfa, 0xd2, 0x9f)
+			.addExpires(0.2f)
+			.addTween(0.001f, 0.1f, -3f, false, true);
 	}
 
-	public Entity* CreateParticle() 
-	{
-		return CreateBase("star", Pool.PARTICLE)
-			.AddTint(0xd2, 0xfa, 0xd2, 0xfa)
-			.AddExpires(0.75f)
-			.AddVelocity(0, 0);
+	public Entity* createParticle() {
+		return createBase("star", Pool.PARTICLE)
+			.addTint(0xd2, 0xfa, 0xd2, 0xfa)
+			.addExpires(0.75f)
+			.addVelocity(0, 0);
 	}
 	/**
 	 * Get entity from the pool and
 	 * put it on the screen at (x,y)
 	 */
-	public void AddBackground(int x, int y) 
-	{
+	public void addBackground(int x, int y) {
 		if (cache[Pool.BACKGROUND].IsEmpty()) 
-			cache[Pool.BACKGROUND].Push(CreateBackground());
+			cache[Pool.BACKGROUND].Push(createBackground());
 
 		var entity = cache[Pool.BACKGROUND].Pop();
-		entity.SetShow(true);
+		entity.setShow(true);
 	}
 		
-	public void AddPlayer(int x, int y) 
-	{
+	public void addPlayer(int x, int y) {
 		if (cache[Pool.PLAYER].IsEmpty()) 
-			cache[Pool.PLAYER].Push(CreatePlayer());
+			cache[Pool.PLAYER].Push(createPlayer());
 			
 		var entity = cache[Pool.PLAYER].Pop();
-		entity.SetShow(true);
+		entity.setShow(true);
 	}
 
-	public void AddBullet(int x, int y) 
-	{
+	public void addBullet(int x, int y) {
 		if (cache[Pool.BULLET].IsEmpty()) 
-			cache[Pool.BULLET].Push(CreateBullet());
+			cache[Pool.BULLET].Push(createBullet());
 			
 		var entity = cache[Pool.BULLET].Pop();
-		entity.SetShow(true)
-			.SetPosition(x, y)
-			.SetActive(true);
+		entity.setShow(true)
+			.setPosition(x, y)
+			.setActive(true);
 	}
 
-	public void AddEnemy1(int x, int y) 
-	{
+	public void addEnemy(int enemy, int x, int y) {
+		switch (enemy) {
+			case 1: addEnemy1(x, y); return;
+			case 2: addEnemy2(x, y); return;
+			case 3: addEnemy3(x, y); return;
+		}
+	}
+
+	public void addEnemy1(int x, int y) {
 		if (cache[Pool.ENEMY1].IsEmpty()) 
-			cache[Pool.ENEMY1].Push(CreateEnemy1());
+			cache[Pool.ENEMY1].Push(createEnemy1());
 
 		var entity = cache[Pool.ENEMY1].Pop();
-		entity.SetShow(true)
-			.SetPosition(x, y)
-			.SetHealth(10, 10)
-			.SetActive(true);
+		entity.setShow(true)
+			.setPosition(x, y)
+			.setHealth(10, 10)
+			.setActive(true);
 	}
 
-	public void AddEnemy2(int x, int y) 
-	{
+	public void addEnemy2(int x, int y) {
 		if (cache[Pool.ENEMY2].IsEmpty()) 
-			cache[Pool.ENEMY2].Push(CreateEnemy2());
+			cache[Pool.ENEMY2].Push(createEnemy2());
 			
 		var entity = cache[Pool.ENEMY2].Pop();
-		entity.SetShow(true)
-			.SetPosition(x, y)
-			.SetHealth(20, 20) 
-			.SetActive(true);
+		entity.setShow(true)
+			.setPosition(x, y)
+			.setHealth(20, 20) 
+			.setActive(true);
 	}
 
-	public void AddEnemy3(int x, int y) 
-	{
+	public void addEnemy3(int x, int y) {
 		if (cache[Pool.ENEMY3].IsEmpty()) 
-			cache[Pool.ENEMY3].Push(CreateEnemy3());
+			cache[Pool.ENEMY3].Push(createEnemy3());
 			
 		var entity = cache[Pool.ENEMY3].Pop();
-		entity.SetShow(true)
-			.SetPosition(x, y)
-			.SetHealth(60, 60)
-			.SetActive(true);
+		entity.setShow(true)
+			.setPosition(x, y)
+			.setHealth(60, 60)
+			.setActive(true);
 	}
 
-	public void AddExplosion(int x, int y) 
+	public void addExplosion(int x, int y) 
 	{
 		if (cache[Pool.EXPLOSION].IsEmpty()) 
-			cache[Pool.EXPLOSION].Push(CreateExplosion());
+			cache[Pool.EXPLOSION].Push(createExplosion());
 			
 		var entity = cache[Pool.EXPLOSION].Pop();
 		entity
-			.SetShow(true)
-			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
-			.SetTween(0.006f, 0.6f, -3f, false, true)
-			.SetPosition(x, y)
-			.SetScale(0.6f*Sdx.pixelFactor, 0.6f*Sdx.pixelFactor)
-			.SetExpires(0.2f)
-			.SetActive(true);
+			.setShow(true)
+			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
+			.setTween(0.006f, 0.6f, -3f, false, true)
+			.setPosition(x, y)
+			.setScale(0.6f*Sdx.pixelFactor, 0.6f*Sdx.pixelFactor)
+			.setExpires(0.2f)
+			.setActive(true);
 	}
 
-	public void AddBang(int x, int y) 
+	public void addBang(int x, int y) 
 	{
 		if (cache[Pool.BANG].IsEmpty()) 
-			cache[Pool.BANG].Push(CreateBang());
+			cache[Pool.BANG].Push(createBang());
 			
 		var entity = cache[Pool.BANG].Pop();
 		entity
-			.SetShow(true)
-			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
-			.SetTween(0.003f, 0.3f, -3f, false, true)
-			.SetPosition(x, y)
-			.SetScale(0.3f*Sdx.pixelFactor, 0.3f*Sdx.pixelFactor)
-			.SetExpires(0.2f)
-			.SetActive(true);
+			.setShow(true)
+			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
+			.setTween(0.003f, 0.3f, -3f, false, true)
+			.setPosition(x, y)
+			.setScale(0.3f*Sdx.pixelFactor, 0.3f*Sdx.pixelFactor)
+			.setExpires(0.2f)
+			.setActive(true);
 	}
 
-	public void AddParticle(int x, int y) 
+	public void addParticle(int x, int y) 
 	{
 		if (cache[Pool.PARTICLE].IsEmpty()) 
-			cache[Pool.PARTICLE].Push(CreateParticle());
+			cache[Pool.PARTICLE].Push(createParticle());
 			
-		var radians = Sdx.GetRandom() * TAU;
-		var magnitude = Sdx.GetRandom() * 200;
+		var radians = Sdx.getRandom() * TAU;
+		var magnitude = Sdx.getRandom() * 200;
 		var velocityX = magnitude * Math.cos(radians);
 		var velocityY = magnitude * Math.sin(radians);
-		var scale = (float)Sdx.GetRandom();
+		var scale = (float)Sdx.getRandom();
 		var entity = cache[Pool.PARTICLE].Pop();
 		entity
-			.SetShow(true)
-			.SetBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
-			.SetPosition(x, y)
-			.SetScale(scale*Sdx.pixelFactor, scale*Sdx.pixelFactor)
-			.SetVelocity((float)velocityX, (float)velocityY)
-			.SetExpires(0.75f)
-			.SetActive(true);
+			.setShow(true)
+			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
+			.setPosition(x, y)
+			.setScale(scale*Sdx.pixelFactor, scale*Sdx.pixelFactor)
+			.setVelocity((float)velocityX, (float)velocityY)
+			.setExpires(0.75f)
+			.setActive(true);
 	}
 }

@@ -7,6 +7,9 @@
     // Bash on Ubuntu (on Windows)
     // Update the autovala
     // "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\bash.exe"
+    // Asus:
+    // "terminal.integrated.shell.windows": "C:\\msys64\\usr\\bin\\bash.exe",
+    // "terminal.integrated.shellArgs.windows": ["-l"],
     "files.associations": {
         "*.lzz": "cpp",
         "adriac": "vala",

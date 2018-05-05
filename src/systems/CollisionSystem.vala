@@ -1,54 +1,40 @@
 using Entitas;
-namespace Systems 
-{
+namespace Systems {
 	/**
 	* game systems
 	*/
-	public class CollisionSystem : System 
-	{
-		public CollisionSystem(Game game, Factory world) 
-		{
-
-			var bullets = world.GetGroup(Matcher.AllOf({ Components.BulletComponent }));
-			var enemies = world.GetGroup(Matcher.AnyOf(
-				{
+	public class CollisionSystem : System {
+		public CollisionSystem(Game game, Factory world) {
+			var bullets = world.getGroup(Matcher.allOf({ Components.BulletComponent }));
+			var enemies = world.getGroup(Matcher.anyOf({
 					Components.Enemy1Component, 
 					Components.Enemy2Component, 
 					Components.Enemy3Component
-				}));
+			}));
 
 			/**
 			* physics system
 			* model movement
 			*/
-			Execute = (delta) => 
-			{
-				enemies.entities.ForEach(enemy => 
-				{
-					if (enemy.IsActive()) 
-					{
-						bullets.entities.ForEach(bullet => 
-						{
-							if (bullet.IsActive()) 
-							{
-								if (bullet.transform.aabb.HasIntersection(enemy.transform.aabb)) 
-								{
+			update = (delta) => {
+				enemies.entities.forEach(enemy => {
+					if (enemy.isActive()) {
+						bullets.entities.forEach(bullet => {
+							if (bullet.isActive()) {
+								if (bullet.transform.aabb.HasIntersection(enemy.transform.aabb)) {
 									var x = (int)((float)bullet.transform.position.x);
 									var y = (int)((float)bullet.transform.position.y);
-									world.AddBang(x, y);
-									world.DeleteEntity(bullet.SetShow(false));
+									world.addBang(x, y);
+									world.deleteEntity(bullet.setShow(false));
 									for (var i=0; i<3; i++) 
-										world.AddParticle(x, y);
-									if (enemy.health != null) 
-									{
+										world.addParticle(x, y);
+									if (enemy.health != null) {
 										var current = enemy.health.current - 2;
-										if (current < 0) 
-										{
-											world.AddExplosion(x, y);
-											world.DeleteEntity(enemy.SetShow(false));
+										if (current < 0) {
+											world.addExplosion(x, y);
+											world.deleteEntity(enemy.setShow(false));
 										} 
-										else 
-										{
+										else {
 											enemy.health.current = current;
 										}
 									} 

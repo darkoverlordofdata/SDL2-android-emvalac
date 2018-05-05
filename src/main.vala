@@ -38,9 +38,9 @@ public int main(string args[]) {
 	var window = new Sdx.Ui.Window(720, 512, "ShmupWarz");
 	var game = new Game(window);
 #endif
-	game.Start();
+	game.start();
 	while (Sdx.running) {
-		Sdx.GameLoop(game);
+		Sdx.gameLoop(game);
 	}
 	return 0;
 }
