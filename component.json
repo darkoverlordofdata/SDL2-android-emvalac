@@ -17,6 +17,10 @@
     "src/components.vala",
     "src/Factory.vala",
     "src/entity.vala",
+<<<<<<< HEAD
+=======
+    "src/Factory.vala",
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
     "src/Game.vala",
     "src/main.vala",
     "src/shmupwarz.vala",
@@ -26,10 +30,17 @@
     "src/systems/ExpireSystem.vala",
     "src/systems/InputSystem.vala",
     "src/systems/PhysicsSystem.vala",
+<<<<<<< HEAD
     "src/systems/RemoveSystem.vala",
     "src/systems/SoundSystem.vala",
     "src/systems/SpawnSystem.vala",
     "src/systems/ScoreSystem.vala"
+=======
+    "src/systems/ScoreSystem.vala",
+    "src/systems/SoundSystem.vala",
+    "src/systems/RemoveSystem.vala",
+    "src/systems/SpawnSystem.vala"
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
   ],
   "packages": [
     "gio-2.0",

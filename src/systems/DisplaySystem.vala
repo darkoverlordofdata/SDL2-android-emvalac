@@ -6,6 +6,7 @@ namespace Systems {
 	/**
 	* Display systems
 	*/
+<<<<<<< HEAD
 	public class DisplaySystem : System {
 		//  public static List<Entity*>? sprites;
 
@@ -13,6 +14,12 @@ namespace Systems {
 
 			List<Entity*> sprites = new List<Entity*>();
 
+=======
+	public class DisplaySystem : Object {
+		public List<Entity*> sprites = new List<Entity*>();
+
+		public DisplaySystem(Game game, Factory world) {
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			/**
 			 * Wire up the events
 			 */
@@ -53,7 +60,11 @@ namespace Systems {
 			};
 		}
 
+<<<<<<< HEAD
 		public bool drawSprite(Entity* e, ref Transform t) {
+=======
+		public bool draw(Entity* e, ref Transform t) {
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			if (!e.isActive()) return false;
 			if (t.sprite != null) {
 

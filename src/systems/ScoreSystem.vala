@@ -11,7 +11,11 @@ namespace Systems {
 					Components.TextComponent
 				}));
 
+<<<<<<< HEAD
 			update = (delta) => {
+=======
+			execute = (delta) => {
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				scoring.entities.forEach(entity => {
 
 					if (entity.isActive()) {

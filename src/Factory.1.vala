@@ -1,12 +1,11 @@
 /**
  * Entity Factory
  */
-using Sdx;
 using Entitas;
 using Systems;
 using GLib.Math;
 
-const double TAU = 2.0 * GLib.Math.PI; 
+const double TAU = 2.0 * Math.PI; 
 
 /** Allocations for entity pools */
 const int COUNT_BACKGROUND 	=   1;
@@ -51,18 +50,9 @@ enum Pool {
  */
 public class Factory : World {
 
-<<<<<<< HEAD
-	//public static Sdx.Graphics.TextureAtlas atlas;
-	public Factory() {
-		base();		
-		//atlas = new Sdx.Graphics.TextureAtlas(Sdx.Files.Default("assets/assets.atlas"));
-		setPool(COUNT_ALL, Pool.Count, 
-			{
-=======
 	public Factory() {
 		base();		
 		setPool(COUNT_ALL, Pool.Count, {
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				Buffer(Pool.BACKGROUND,	COUNT_BACKGROUND,	createBackground),
 				Buffer(Pool.PLAYER, 	COUNT_PLAYER, 		createPlayer),
 				Buffer(Pool.BULLET, 	COUNT_BULLET, 		createBullet),
@@ -75,18 +65,15 @@ public class Factory : World {
 			}
 		);
 	}
+
+
+
 	/**
 	 * The stuff that all entities have
 	 */
-<<<<<<< HEAD
 	public Entity* createBase(string name, int pool, float scale = Sdx.pixelFactor, bool active = false, bool centered = true) {
 		return createEntity(name, pool, active)
 			.setTransform(Sdx.atlas.createSprite(name).setScale(scale, scale).setCentered(centered))
-=======
-	public Entity* createBase(string name, int pool, float scale = pixelFactor, bool active = false, bool centered = true) {
-		return createEntity(name, pool, active)
-			.setTransform(atlas.createSprite(name).setScale(scale, scale).setCentered(centered))
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.addLayer(pool);
 	}
 
@@ -94,36 +81,21 @@ public class Factory : World {
 	 *	factory methods:
 	 */
 	public Entity* createBackground() {
-<<<<<<< HEAD
 		return createBase("background", Pool.BACKGROUND, 2*Sdx.pixelFactor, true, false)
-=======
-		return createBase("background", Pool.BACKGROUND, 2*pixelFactor, true, false)
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setBackground(true);
 	}
 
 	public Entity* createPlayer() {
-<<<<<<< HEAD
 		return createBase("spaceshipspr", Pool.PLAYER, Sdx.pixelFactor, true)
-=======
-		return createBase("spaceshipspr", Pool.PLAYER, pixelFactor, true)
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setPlayer(true);
 	}
 
 	public Entity* createBullet() {
 		return createBase("bullet", Pool.BULLET)
-<<<<<<< HEAD
 			.addSound(new Sdx.Audio.Sound(Sdx.Files.resource("assets/sounds/pew.wav")))
 			.addTint(0xd2, 0xfa, 0, 0xfa)
 			.addHealth(2, 2)
 			.addVelocity(0, -800*Sdx.pixelFactor)
-=======
-			.addSound(new Audio.Sound(Files.resource("assets/sounds/pew.wav")))
-			.addTint(0xd2, 0xfa, 0, 0xfa)
-			.addHealth(2, 2)
-			.addVelocity(0, -800*pixelFactor)
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setBullet(true);
 	}
 
@@ -131,11 +103,7 @@ public class Factory : World {
 		return createBase("enemy1", Pool.ENEMY1)
 			.addHealth(10, 10)
 			.addVelocity(0, 40)
-<<<<<<< HEAD
 			.addText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
-=======
-			.addText("100%", new Graphics.Sprite.TextSprite("100%", smallFont, Color.LimeGreen))
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setEnemy1(true);
 	}
 
@@ -143,11 +111,7 @@ public class Factory : World {
 		return createBase("enemy2", Pool.ENEMY2)
 			.addHealth(20, 20)
 			.addVelocity(0, 30)
-<<<<<<< HEAD
 			.addText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
-=======
-			.addText("100%", new Graphics.Sprite.TextSprite("100%", smallFont, Color.LimeGreen))
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setEnemy2(true);
 	}
 
@@ -155,21 +119,13 @@ public class Factory : World {
 		return createBase("enemy3", Pool.ENEMY3)
 			.addHealth(60, 60)
 			.addVelocity(0, 20)
-<<<<<<< HEAD
 			.addText("100%", new Sdx.Graphics.Sprite.TextSprite("100%", Sdx.smallFont, Sdx.Color.LimeGreen))
-=======
-			.addText("100%", new Graphics.Sprite.TextSprite("100%", smallFont, Color.LimeGreen))
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setEnemy3(true);
 	}
 
 	public Entity* createExplosion() {
 		return createBase("explosion", Pool.EXPLOSION, 0.6f)
-<<<<<<< HEAD
 			.addSound(new Sdx.Audio.Sound(Sdx.Files.resource("assets/sounds/asplode.wav")))
-=======
-			.addSound(new Audio.Sound(Files.resource("assets/sounds/asplode.wav")))
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.addTint(0xd2, 0xfa, 0xd2, 0x7f)
 			.addExpires(0.2f)
 			.addTween(0.006f, 0.6f, -3f, false, true);
@@ -177,11 +133,7 @@ public class Factory : World {
 
 	public Entity* createBang() {
 		return createBase("explosion", Pool.BANG, 0.1f)
-<<<<<<< HEAD
 			.addSound(new Sdx.Audio.Sound(Sdx.Files.resource("assets/sounds/smallasplode.wav")))
-=======
-			.addSound(new Audio.Sound(Files.resource("assets/sounds/smallasplode.wav")))
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.addTint(0xd2, 0xfa, 0xd2, 0x9f)
 			.addExpires(0.2f)
 			.addTween(0.001f, 0.1f, -3f, false, true);
@@ -275,11 +227,7 @@ public class Factory : World {
 			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setTween(0.006f, 0.6f, -3f, false, true)
 			.setPosition(x, y)
-<<<<<<< HEAD
 			.setScale(0.6f*Sdx.pixelFactor, 0.6f*Sdx.pixelFactor)
-=======
-			.setScale(0.6f*pixelFactor, 0.6f*pixelFactor)
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setExpires(0.2f)
 			.setActive(true);
 	}
@@ -295,11 +243,7 @@ public class Factory : World {
 			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setTween(0.003f, 0.3f, -3f, false, true)
 			.setPosition(x, y)
-<<<<<<< HEAD
 			.setScale(0.3f*Sdx.pixelFactor, 0.3f*Sdx.pixelFactor)
-=======
-			.setScale(0.3f*pixelFactor, 0.3f*pixelFactor)
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setExpires(0.2f)
 			.setActive(true);
 	}
@@ -309,29 +253,17 @@ public class Factory : World {
 		if (cache[Pool.PARTICLE].IsEmpty()) 
 			cache[Pool.PARTICLE].Push(createParticle());
 			
-<<<<<<< HEAD
 		var radians = Sdx.getRandom() * TAU;
 		var magnitude = Sdx.getRandom() * 200;
 		var velocityX = magnitude * Math.cos(radians);
 		var velocityY = magnitude * Math.sin(radians);
 		var scale = (float)Sdx.getRandom();
-=======
-		var radians = getRandom() * TAU;
-		var magnitude = getRandom() * 200;
-		var velocityX = magnitude * GLib.Math.cos(radians);
-		var velocityY = magnitude * GLib.Math.sin(radians);
-		var scale = (float)getRandom();
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 		var entity = cache[Pool.PARTICLE].Pop();
 		entity
 			.setShow(true)
 			.setBounds(x, y, (int)entity.transform.aabb.w, (int)entity.transform.aabb.h)
 			.setPosition(x, y)
-<<<<<<< HEAD
 			.setScale(scale*Sdx.pixelFactor, scale*Sdx.pixelFactor)
-=======
-			.setScale(scale*pixelFactor, scale*pixelFactor)
->>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.setVelocity((float)velocityX, (float)velocityY)
 			.setExpires(0.75f)
 			.setActive(true);

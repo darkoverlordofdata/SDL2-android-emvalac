@@ -17,7 +17,11 @@ namespace Systems {
 						.getGroup(Matcher.allOf({ Components.PlayerComponent }))
 						.getSingleEntity();
 						
+<<<<<<< HEAD
 			update = (delta) => {
+=======
+			execute = (delta) => {
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				player.setPosition(x, y);
 				if (shoot || mouseDown) timeToFire -= delta;
 				if (timeToFire < 0) {
@@ -27,6 +31,7 @@ namespace Systems {
 				}
 			};
 
+<<<<<<< HEAD
 			addInputEvents(InputEvents(){
 
 				keyDown = (keycode) => {
@@ -39,26 +44,46 @@ namespace Systems {
 					return false;
 				},
 
+=======
+			addInputEvents(InputEvents() {
+				keyDown = (keycode) => {
+					shoot = keycode == SDL.Input.Keycode.z ? true : false; 
+					return false;
+				},
+				keyUp = (keycode) => {
+					shoot = keycode == SDL.Input.Keycode.z ? false : true; 
+					return false;
+				},
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				touchDown = (screenX, screenY, pointer, button) => {
 					x = screenX;
 					y = screenY;
 					mouseDown = true;
 					return false;	
 				},
+<<<<<<< HEAD
 
+=======
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				touchUp = (screenX, screenY, pointer, button) => {
 					x = screenX;
 					y = screenY;
 					mouseDown = false;
 					return false;						
 				},
+<<<<<<< HEAD
 
+=======
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				touchDragged = (screenX, screenY, pointer) => {
 					x = screenX;
 					y = screenY;
 					return false;						
 				},
+<<<<<<< HEAD
 				
+=======
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 				mouseMoved = (screenX, screenY) => {
 					x = screenX;
 					y = screenY;

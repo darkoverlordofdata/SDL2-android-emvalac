@@ -8,7 +8,11 @@ using Systems;
  * Game controller 
  */
 public class Game : AbstractGame {
+<<<<<<< HEAD
 	public Game(Window window) {
+=======
+	public Game(Sdx.Ui.Window window) {
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 		width = (int)window.bounds.w;
 		height = (int)window.bounds.h;
 
@@ -36,7 +40,11 @@ public class Game : AbstractGame {
 			window.remove(button);
 			world.addPlayer(x, y);
 			update = () => {
+<<<<<<< HEAD
 				world.update(Sdx.delta);
+=======
+				world.execute(Sdx.delta);
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			};
 		};
 
@@ -47,8 +55,14 @@ public class Game : AbstractGame {
 		/**
 		 * Set up the game
 		 */
+<<<<<<< HEAD
 		world.addSystem(new DisplaySystem(this, world))
 			.addSystem(new SpawnSystem(this, world))
+=======
+		var display = new DisplaySystem(this, world);
+		
+		world.addSystem(new SpawnSystem(this, world))
+>>>>>>> 567011efbfecd90ad3cb72df824157cddf1aca1c
 			.addSystem(new InputSystem(this, world))
 			.addSystem(new PhysicsSystem(this, world))
 			.addSystem(new CollisionSystem(this, world))
